@@ -1,0 +1,65 @@
+.regform {
+	line-height: 2.182;
+	width: 100%;
+}
+
+.newmember {
+	width: 70%;
+	float: left;
+	padding-left: 0px;
+	border: 1px solid #D8D8D8;
+}
+
+.newmember h3 {
+    width: 80%;
+    text-align: center;
+}
+
+.newmember h2 {
+    padding-left: 10px;
+    color: teal;
+}
+
+.existingmember h3 {
+	width: 80%;
+	text-align: left;
+}
+
+.existingmember {
+	width: 29%;
+	float: right;
+	border: 1px solid #D8D8D8;
+}
+
+.formdef {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+.asterisk {
+	color: #cc0000;
+}
+
+.blue {
+    color: #455A79;
+    font-family: Arial, Helvetica, sans-serif;
+
+  font-weight: bold;
+}
+.regGamesTitle {
+    padding-left: 10px;
+    color: black;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.regGamesDesc {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+
+}
+.emailCasey {
+    padding-left: 10px;
+    color: #006600;
+    font-size: 12px;
+    line-height: 1.5;
+}

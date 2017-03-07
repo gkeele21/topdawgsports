@@ -1,0 +1,82 @@
+ /* COLOR SCHEME
+        * Darkest Blue = #103B40 (16-59-64)
+        * Lighter Blue = #1C5953 (28-89-83)
+        * Cream = #F2BC57 (242-188-87)
+        * Brown = #BF8339 (191-131-57)
+        * Orange = #731702 (115-23-2) */
+
+#gameMatchup, #ffPlayoff {
+    width: 100%;
+}
+/*
+#ffPlayoff .score {
+    text-decoration: underline;
+    color: #731702;
+}
+
+#ffPlayoff .topTeam, #ffPlayoff .bottomTeam {
+    text-decoration: none;
+    color: #103B40;
+}
+
+#ffPlayoff a:hover {
+    font-weight: bold;
+}
+*/
+#innerGameMatchup,#innerRoundSummary {
+    margin: 0px 10px 0px 10px;
+}
+
+#innerGameMatchup .rowTitle {
+    text-align: left;
+}
+/*
+.tourneyBracket, .bracketType, .topTeam, .bottomTeam, .winner, .score, .finalLine, .bracketNumText, .champsText, .headerInfo, .navArrows, .navText {
+    position: absolute;
+    text-align: center;
+}
+
+.tourneyBracket {
+    border: solid black 3px;
+    border-left: none;
+}
+*/
+.finalLine {
+    border-bottom: solid black 3px;
+}
+
+.bracketType {
+    border-left: solid black 3px;
+}
+
+.bracketNumText, .champsText {
+    font-size: 1.3em;
+    text-transform: uppercase;
+}
+
+.navText {
+    font-size: 1.1em;
+    color: #731702;
+    font-weight: bold;
+}
+/*
+.topTeam, .bottomTeam, .score {
+    display: block;    
+}
+
+.highlightedTeam {
+    background-color: #F2BC57;
+}
+*/
+.gameSatusHeader {
+    font-size: 1.5em;
+}
+
+.gameMatchupHeader {
+    font-size: 1.3em;
+}
+
+.gameScoreHeader {
+    font-size: 1.3em;
+    color: #731702;
+}

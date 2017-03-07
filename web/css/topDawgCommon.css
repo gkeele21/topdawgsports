@@ -1,0 +1,391 @@
+/* COLOR SCHEME
+        * Darkest Blue = #103B40 (16-59-64)
+        * Lighter Blue = #1C5953 (28-89-83)
+        * Cream = #F2BC57 (242-188-87)
+        * Brown = #BF8339 (191-131-57)
+        * Orange = #731702 (115-23-2) */
+
+/* KEEP */
+
+
+
+
+a {
+    color: #BF8339;
+}
+/*
+a:hover {
+    font-weight: bold;
+}
+*/
+img {
+    border: none;
+}
+
+/* SELECTORS BY CLASS */
+
+.bold {
+    font-weight: bold;
+}
+
+.standardLink:hover {
+    color: #731702;
+}
+
+.menuSelection {
+    background-color: #1C5953;
+}
+
+.playerName {
+    text-align: left;
+}
+
+.plusMinus {
+    vertical-align: bottom;
+}
+
+.rounded-corners {
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -khtml-border-radius: 7px;
+}
+
+.rowData {
+    background-color: #103B40;
+    color: #F2BC57;
+}
+
+.rowData2 {
+    background-color: #1C5953;
+    color: #F2BC57;
+}
+
+.rowHeader {
+    font-size: 1em;
+    color: #731702;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.rowHeader a:hover {
+    color: #731702;
+}
+
+.rowTitle {
+    font-size: 1.5em;
+    color: #1C5953;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.salaryRemaining {
+    color: #731702;
+}
+
+.smallImage {
+    height: 25px;
+    width: 60px;
+}
+
+/* SELECTORS BY ID */
+#error {
+    background: red;
+    color: white;
+}
+
+
+/* ------------------- GO THROUGH (TopDawg.css) ------------------- */
+
+body #playerStats {
+    background-color: white;
+}
+
+#standings, #leagueRoster, #leagueTransactions, #freeAgents, #playerStats, #salaryRoster, #gameBreakdown, #playerStats {
+    width: 100%;
+}
+
+#leagueStandings {
+    width: 70%;
+}
+
+#leagueResults, #leagueSchedule {
+    width: 50%;
+}
+
+#transactionOrder {
+    width: 30%;
+}
+
+#leagueStandings, #transactionOrder, #leagueResults, #leagueSchedule, #leagueTransactions {
+    float:left;
+}
+
+#container, #innerHeader, #innerLeftMenu, #innerContent, #innerFooter {
+    overflow: hidden; /* clips oversize elements */
+}
+
+/* INNER DIVS */
+#innerStandings, #innerLeagueStandings, #innerLeagueRoster, #innerSalaryRoster, #innerGameBreakdown, #innerTransactions, #innerPlayerStats {
+    margin: 0px 10px 0px 10px;
+}
+
+#innerStandings table {
+    line-height: 30px;
+}
+
+#innerTransactionOrder {
+    margin: 0px 10px 0px 0px;
+}
+
+#innerLeagueResults {
+    margin: 0px 30px 0px 10px;
+}
+
+#innerLeagueSchedule {
+    margin: 0px 10px 0px 30px;
+}
+
+#innerLeagueTransactions, #innerFreeAgents, #innerPlayerStats {
+    margin: 0px 10px 20px 10px;
+}
+
+#innerTransactions {
+    margin-top: 20px;
+}
+
+
+/* POSITION */
+#position {
+    width: 60%;
+    margin: 20px 0px 10px 0px;
+    background-color: #BF8339;
+    font-weight: bold;
+}
+
+#position a {
+    padding-left: 5%;
+    color: #103B40;
+}
+
+#position a:hover {
+    color: white;
+}
+
+#rules {
+    margin: 10px;
+}
+
+/* RULES */
+#rules h1 {
+    color:  #103B40;
+    border-bottom: solid #1C5953;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#rules h2 {
+    color:  #103B40;
+    margin-top: 25px;
+}
+
+#rules h3 {
+    display: inline;
+    margin-top: 10px;
+}
+
+#rules ul {
+    margin-left: 50px;
+}
+
+#rules p {
+    text-indent: 30px;
+}
+
+#rules table {
+    text-align: left;
+}
+
+/* Horizontal Rule */
+#freeAgents hr, #playerStats hr, #salaryRoster hr {
+    height: 15px;
+    border-left-style: none;
+    border-right-style: none;
+}
+
+#innerSalaryRoster p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#innerLeagueRoster input {
+    margin-top: 20px;
+    /*width: 100px;
+    height: 70px;*/
+}
+
+#innerTransactions form a {
+    text-transform: uppercase;
+}
+
+#innerTransactions p {
+    margin-top: 20px;
+}
+
+
+/* ------------------- GO THROUGH (OTHER GAMES.css) ------------------- */
+/* OUTER DIVS */
+#pickemMatchup {
+    width: 100%;
+}
+
+#userPicks {
+    float:left;
+    width: 22%;
+}
+
+#loveLeaveMatchup {
+    float:left;
+    width: 78%;
+}
+
+#loveLeavePop #userPicks, #loveLeavePop #innerUserPicks table{
+    width: 100%;
+    text-align: center;
+}
+
+#loveLeavePop #innerUserPicks .rowHeader {
+    font-weight: bold;
+}
+
+/* INNER DIVS */
+#innerPickemMatchup, #innerUserPicks {
+    margin: 0px 10px 0px 10px;
+    font-weight: normal;
+}
+
+#innerLoveLeaveMatchup {
+    margin: 0px 0px 0px 5px;
+    font-weight: normal;
+}
+
+/* INNER STYLES */
+#innerPickemMatchup img, #innerUserPicks img, #innerLoveLeaveMatchup img {
+    height : 60px;
+    width : 75px;
+}
+
+#innerPickemMatchup .checkmark, #innerUserPicks .checkmark, #innerLoveLeaveMatchup .checkmark {
+    height: 30px;
+    width: 30px;
+}
+
+#innerPickemMatchup table, #innerLoveLeaveMatchup table {
+    font-weight: normal;
+}
+
+/* USER PICKS DIV */
+#innerUserPicks table {
+    border: solid black thick;
+}
+
+#innerUserPicks td {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+/* WEEKNUM LINKS DIV */
+#weekNumLinks {
+    margin: 25px 25px;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+#weekNumLinks a {
+    padding-left: 20px;
+    color: #1C5953;
+    font-size: 1.1em;
+}
+
+#weekNumLinks a:hover {
+    color: #BF8339;
+}
+
+#weekNumLinks a.highlightedWeek {
+    color: #BF8339;
+    font-size: 1.6em;
+    text-decoration: none;
+}
+
+/* BYE TEAMS DIV */
+#byeTeams {
+    clear: both;
+}
+
+#byeTeams hr {
+    border: medium solid black;
+    margin: 20px 10px;
+}
+
+#byeTeams img {
+    height : 60px;
+    width : 75px;
+    border-style: none;
+}
+
+#byeTeams table{
+    width: auto;
+}
+
+#byeTeams th {
+    font-size: 1.8em;
+}
+
+#byeTeams .homeRanking {
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* CLASSES */
+.awayRanking, .homeRanking {
+    font-size: 1.2em;
+    color: blue;
+    font-weight: bold;
+}
+
+.awayTeamName, .homeRanking {
+    text-align: right;
+}
+
+.awayRanking {
+    padding-left: 10px;
+}
+
+.homeRanking {
+    padding-right: 10px;
+}
+
+.gameDate {
+    text-align: left;
+    font-weight: bold;
+}
+
+.helmetHighlight {
+    border: thick solid #731702;
+}
+
+.homeTeamName {
+    text-align: left;
+}
+
+.loserPts, .winnerPts {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.loserPts {
+    color: darkred;
+}
+
+.winnerPts {
+    color: darkgreen;
+}

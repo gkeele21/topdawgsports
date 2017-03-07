@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <!-- ViewController servlet -->
+    <servlet>
+        <servlet-name>viewcontrol</servlet-name>
+        <servlet-class>tds.main.control.ControllerView</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>viewcontrol</servlet-name>
+        <url-pattern>*.htm</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <description>Ajax Servlet</description>
+        <display-name>Ajax Servlet</display-name>
+        <servlet-name>AjaxServlet</servlet-name>
+        <servlet-class>tds.main.control.AjaxAction</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxServlet</servlet-name>
+        <url-pattern>*.ajax</url-pattern>
+    </servlet-mapping>
+    <!-- ActionController servlet -->
+    <servlet>
+        <servlet-name>actioncontrol</servlet-name>
+        <servlet-class>tds.main.control.ControllerAction</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>actioncontrol</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <!-- FileUpload servlet -->
+    <servlet>
+        <servlet-name>fileupload</servlet-name>
+        <servlet-class>tds.test.handleFileUpload</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>fileupload</servlet-name>
+        <url-pattern>*.gk</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>
+            index.jsp
+        </welcome-file>
+    </welcome-file-list>
+    <resource-ref>
+        <description>TopDawg jdbc connection</description>
+        <res-ref-name>jdbc/topdawg</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+</web-app>

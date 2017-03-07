@@ -1,0 +1,56 @@
+#menu_container {
+	font-family: verdana, "Microsoft Sans Serif", Times, serif;
+	font-size: 7pt;
+	background-color: #008227;
+	margin-top: 1px;
+	height: 23px;
+	position: relative;
+	z-index: 100;
+	border-width: 1px 0 1px 1px;
+}
+
+#pmenu {
+    list-style-type: none;
+}
+
+/* Set up the link size, color and borders */
+#pmenu a, #pmenu a:visited {
+    display: block;
+    width: 160px;
+    color: white;
+    height: 23px;
+    line-height: 22px;
+    text-decoration: none;
+    text-align: center;
+}
+
+/* Set up the list items */
+#pmenu li {
+    float: left;
+}
+
+/* For IE5.5 and IE6 give the hovered links a position relative and a change of background and foreground color. This is needed to trigger IE to show the sub levels */
+#pmenu a:hover {
+    position: relative;
+    background-color: #263142;
+    color: white;
+}
+
+/* For accessibility of the top level menu when tabbing */
+#pmenu a:active, #pmenu a:focus {
+    background-color: #008227;
+    color: white;
+}
+
+/* hide drop down levels at first load */
+#pmenu li ul {
+    visibility: hidden;
+    display: block;
+    position: absolute;
+}
+
+.mainHighlight {
+    background-color: #263142;
+    color: white;
+}
+
