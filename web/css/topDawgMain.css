@@ -1,0 +1,233 @@
+/* COLOR SCHEME
+        * Darkest Blue = #103B40 (16-59-64)
+        * Lighter Blue = #1C5953 (28-89-83)
+        * Cream = #F2BC57 (242-188-87)
+        * Brown = #BF8339 (191-131-57)
+        * Orange = #731702 (115-23-2) */
+
+/* GLOBAL STYLES */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+    background-color: black;
+    font-family: "Palatino Linotype";
+    font-size: 1em;
+}
+
+table {
+    width:100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+/* MAIN STRUCTURES*/
+#container {
+    background-color: white;
+    width: 990px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 990px;
+}
+
+#leftMenu {
+    background-color: #103B40;
+    float:left;
+    width: 150px;
+    min-height: 950px;
+}
+
+#content {
+    float:left;
+    width: 840px;
+}
+
+/* HEADER (BANNER and LOGIN) */
+#header {
+    float: left;
+    width: 100%;
+    background-color: #103B40;
+    color: white;
+}
+
+#banner {
+    float: left;
+    width: 83%;
+    min-height: 90px;
+    max-height: 90px;
+}
+
+#login {
+    float: left;
+    width: 17%;
+    min-height: 90px;
+    max-height: 90px;
+}
+
+#innerBanner img {
+    width: 95%;
+    margin: 5px 5px 0px 15px;
+}
+
+#innerLogin {
+    margin: 0px 5px 0px 5px;
+}
+
+#innerLogin input {
+    display: inline;
+}
+
+#innerLogin .loginButton {
+    padding-top: 5px;
+}
+/* -------- MAIN MENU ---------- */
+
+#mainMenu {
+    background-color: #731702;
+    width: 100%;
+    float:left;
+    border-top: 4px solid black;
+    border-bottom: 4px solid black;
+}
+
+#innerMainMenu {
+    font-size: .9em;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 25px;
+}
+
+#innerMainMenu a {
+    background-color: #731702;
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+#innerMainMenu ul {
+    list-style: none;
+    float:left;
+}
+
+#innerMainMenu li {
+    float:left;
+    position: relative;
+    width: 11em;
+}
+
+#innerMainMenu ul li ul {
+    position: absolute;
+    left: -1px;
+}
+
+#innerMainMenu li ul {
+    display:none;
+}
+
+#innerMainMenu ul li:hover ul {
+    display:block;
+    border-top: 3px solid black;
+}
+
+#innerMainMenu ul li ul li {
+    position: relative;
+}
+
+#innerMainMenu ul li ul li ul {
+    position: absolute;
+    visibility:hidden;
+    left: 100%;
+    top: 0;
+}
+
+#innerMainMenu li ul li ul {
+    display:none;
+}
+
+#innerMainMenu ul li ul li:hover ul {
+    visibility: visible;
+    border-top: none;
+}
+
+#innerMainMenu a:hover {
+    background-color: #BF8339;
+    color: white;
+}
+
+/* LEFT MENU */
+#innerLeftMenu {
+    color: white;
+    margin-top: 15px;
+}
+
+#innerLeftMenu a {
+    color: white;
+    text-decoration: none;
+}
+
+#innerLeftMenu a:hover {
+    color: #F2BC57;
+}
+
+#innerLeftMenu hr {
+    color: #F2F8FA;
+    margin-top: 15px;
+}
+
+#innerLeftMenu ul {
+    list-style-type: none;
+    line-height: 25px;
+}
+
+/* MY TEAMS */
+#myTeams {
+    font-size: .8em;
+    margin-top: 20px;
+}
+
+#myTeams label {
+    display: block;
+    color:  #BF8339;
+    text-transform: uppercase;
+}
+
+#myTeams a {
+    padding-left: 10px;
+    display: block;
+    color: white;
+}
+
+#myTeams a:hover {
+    color: #F2BC57;
+}
+
+#myTeams img, #gameMenu img {
+    width: 95%;
+}
+
+/* GAME MENU */
+#gameMenu {
+    font-size: .8em;
+    margin-top: 20px;
+}
+
+.menuSelection {
+    background-color: #1C5953;
+}
+
+.whatsNewLink {
+    display:block;
+    margin-bottom: 10px;
+}
+
+#innerLogin a {
+    display:block;
+    color: white;
+    text-align: right;
+}
+
+#innerLogin a:hover {
+    color: #F2BC57;
+}

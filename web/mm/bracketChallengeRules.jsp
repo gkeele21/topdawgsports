@@ -1,0 +1,93 @@
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>TopDawgSports - Bracket Challenge Rules</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
+  </head>
+
+  <body>
+    <div id="container">
+        <div id="header">
+            <jsp:include page="../inc_header.jsp" />
+        </div>
+
+        <div id="mainMenu">
+            <jsp:include page="../menu/mainMenu.jsp" />
+        </div>
+
+        <div id="leftMenu">
+
+            <div id="innerLeftMenu">
+                <jsp:include page="../menu/inc_leftMenu.jsp" />
+            </div>
+        </div>
+
+        <div id="content">
+            <div id="innerContent">
+
+                <div id="rules">
+
+                    <h1>Bracket Challenge Rules</h1>
+
+                    <h2>Game Play</h2>
+                        <h3>Overview :</h3>
+                            <label>In this game, a person fills out the entire NCAA bracket by predicting the winner of each matchup. Each correct pick scores points.  The person with the most accumulated points at the end of the tournament wins.</label><br />
+                        <h3>Leagues :</h3>
+                            <label>An owner can join or create their own leagues.  A General league will be created for a chance to become the Top Dawg of the bracket challenge.</label><br />
+                        <h3>Cost :</h3>
+                            <label>$2 per entry</label><br />
+
+                    <h2>Tournament</h2>
+                        <h3>Duration :</h3>
+                            <label>This game begins with Round 2 of the NCAA Tournament and lasts until the end of the NCAA Tournament.</label><br />
+                        <h3>Play-in Games :</h3>
+                            <label>The play-in games that are now part of Round 1 of the NCAA Tournament will not be part of this game.  Shortly after each of those 4 play-in games have finished, the appropriate team will be placed into the bracket.</label><br />
+                        <h3>Note :</h3>
+                            <label>Since the play-in games are not counted, there is an advantage in waiting for those games to finish before completely filling out the bracket.</label><br />
+                            
+                    <h2>Entries</h2>
+                        <h3>Deadline :</h3>
+                            <label>All entries/brackets must be entered into the system before the tip-off of the first Thursday morning Round 2 game.</label><br />
+                        <h3>Regulations :</h3>
+                            <ul>
+                                <li>All brackets must be completely filled out by the start of the tournament.</li>
+                                <li>There is no limit on the number of entries a person can have. </li>
+                                <li>Failure to pick a team on any game matchup will result in a miss.</li>
+                            </ul>
+
+                    <h2>Scoring</h2>
+                        <h3>Round 2 :</h3>
+                            <label>1 point awarded for each correct pick.</label><br />
+                        <h3>Round 3 :</h3>
+                            <label>2 points awarded for each correct pick.</label><br />
+                        <h3>Sweet 16 :</h3>
+                            <label>4 points awarded for each correct pick.</label><br />                            
+                        <h3>Elite 8 :</h3>
+                            <label>8 points awarded for each correct pick.</label><br />                            
+                        <h3>Final 4 :</h3>
+                            <label>16 points awarded for each correct pick.</label><br />                            
+                        <h3>Championship :</h3>
+                            <label>32 points awarded for picking the tournament winner.</label><br />
+
+                    <h2>Payoffs :</h2>
+                        <h3>Grand Prize :</h3>
+                            <label>Winner takes all. The champion(s) will receive a prize worth up to the total amount of all entry fees.</label><br />
+                        <h3>Tiebreaker :</h3>
+                            <label>There is no tiebreaker, the prize will be split equally among all tied winners.</label><br />
+
+                    <h2>Help</h2>
+                        <label>If you come across any problems or errors, please help out by sending us an email. We really appreciate any extra help we can get in adding to the quality of our product. Also, any feedback you can give us or ways to improve the site would sure be welcomed.</label><br />
+                    
+                </div> <!-- rules -->
+            </div> <!-- inner content -->
+        </div> <!-- content -->
+    </div> <!-- container -->
+
+  </body>
+</html>
