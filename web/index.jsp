@@ -130,19 +130,25 @@
         
         <div id="promoGame">
             <div id="innerPromoGame">
-                <h2>Fantasy Golf</h2>
-                <img src="images/mastersLogo.jpg"/>
-                    <a href="gameSignup.htm?fsGameId=12">Sign Up</a>                    
-                    <ul>
-                        <li>Pick 6 golfers each week</li>
-                        <li>Given $1,000,000 to buy your roster</li>
-                        <li>Season lasts for 12 consecutive tournaments</li>
-                        <li>Compete against everyone in the league</li>
-                        <li>Game points awarded based on total money earnings from picked players</li>
-                        <li>Create private leagues or compete for prizes in the General league</li>
-                    </ul>
+                <h2>March Madness</h2>
+                <img src="images/march_madness.jpg" alt=""/>
+                <h3>Bracket Challenge</h3>
+                <a href="gameSignup.htm?fsGameId=8">Sign Up!</a>                
+                <ul>
+                    <li>Fill out the entire tournament bracket</li>
+                    <li>Earn points for every correct pick</li>
+                    <li>Points increase with each round of the tournament</li>
+                </ul>
+
+                <h3>Seed Challenge</h3>
+                <a href="gameSignup.htm?fsGameId=9">Sign Up!</a>                
+                <ul>
+                    <li>Choose 8 different tournament teams</li>
+                    <li>Each team is represented in a range of seed groups</li>
+                    <li>Win by selecting the College tournament winner</li>
+                </ul>
             </div>
-        </div>
+        </div>   
         
         <div class="gameSeparation"></div>
 
@@ -215,6 +221,23 @@
 </html>
 
 <%--
+
+        <div id="promoGame">
+            <div id="innerPromoGame">
+                <h2>Fantasy Golf</h2>
+                <img src="images/mastersLogo.jpg"/>
+                    <a href="gameSignup.htm?fsGameId=12">Sign Up</a>                    
+                    <ul>
+                        <li>Pick 6 golfers each week</li>
+                        <li>Given $1,000,000 to buy your roster</li>
+                        <li>Season lasts for 12 consecutive tournaments</li>
+                        <li>Compete against everyone in the league</li>
+                        <li>Game points awarded based on total money earnings from picked players</li>
+                        <li>Create private leagues or compete for prizes in the General league</li>
+                    </ul>
+            </div>
+        </div>
+
         <div id="promoGame">
             <div id="innerPromoGame">
                 <h2>FF Playoff</h2>

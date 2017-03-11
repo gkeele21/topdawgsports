@@ -1,7 +1,7 @@
 package tds.commissioner.control;
 
 import bglib.util.FSUtils;
-//import com.google.gson.Gson;
+import com.google.gson.Gson;
 import java.util.Calendar;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -31,11 +31,11 @@ public class marchMadnessFieldView extends BaseView {
             MarchMadnessTournament tournament = MarchMadnessTournament.GetTournamentByYear(reqYear);
             List<MarchMadnessTeamSeed> teamSeeds =  MarchMadnessTeamSeed.GetTournamentTeams(tournament.getTournamentID());
             
-//            Gson gson = new Gson();        
-//  
-//            request.setAttribute("tournament",tournament);
-//            request.setAttribute("allTeamsJSON", gson.toJson(allTeams));
-//            request.setAttribute("teamSeeds",teamSeeds);
+            Gson gson = new Gson();        
+  
+            request.setAttribute("tournament",tournament);
+            request.setAttribute("allTeamsJSON", gson.toJson(allTeams));
+            request.setAttribute("teamSeeds",teamSeeds);
          
         } catch (Exception e) {
             CTApplication._CT_LOG.error(request, e);

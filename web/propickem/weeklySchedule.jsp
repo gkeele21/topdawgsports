@@ -201,7 +201,7 @@
                                     <td>
                                         <img id="helmet_${pick.game.visitorID}" 
                                              <c:if test="${pick.teamPickedID == pick.game.visitorID}"> class="pickedTeam" </c:if>
-                                             src="/topdawgsports/images/NFLImages/Color/${pick.game.visitorID}.gif" alt=""
+                                             src="/topdawgsports/images/Helmets/Color/${pick.game.visitorID}.gif" alt=""
                                              tp="${pick.game.visitorID}" opp="${pick.game.homeID}"                                              
                                         />
                                     </td>
@@ -304,7 +304,7 @@
                                     <td>
                                         <img id="helmet_${pick.game.homeID}" 
                                              <c:if test="${pick.teamPickedID == pick.game.homeID}"> class="pickedTeam" </c:if>
-                                             src="/topdawgsports/images/NFLImages/Color/${pick.game.homeID}.gif" alt=""
+                                             src="/topdawgsports/images/Helmets/Color/${pick.game.homeID}.gif" alt=""
                                              tp="${pick.game.homeID}" opp="${pick.game.visitorID}"
                                         />
                                     </td>
@@ -336,7 +336,7 @@
                         <table>                           
                             <tr>
                                 <c:forEach items="${byeTeams}" var="team">
-                                    <td><img src="/topdawgsports/images/NFLImages/Color/${team.homeID}.gif" alt="" /></td>
+                                    <td><img src="/topdawgsports/images/Helmets/Color/${team.homeID}.gif" alt="" /></td>
                                 </c:forEach>
                             </tr>
                         </table>

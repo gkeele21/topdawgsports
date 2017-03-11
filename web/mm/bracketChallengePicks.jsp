@@ -11,8 +11,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <style>                               
         h3 { text-align: center; }    
@@ -164,15 +164,15 @@
 
         $(document).ready(function(){
            
-            $("label[class=topTeam]").draggable( {
+            $("label[class=topTeam]").draggable({
                 revert: true
             });
             
-            $("label[class=bottomTeam]").draggable( {
+            $("label[class=bottomTeam]").draggable({
                 revert: true
             });
             
-            $("div[id^=tourneyRound]").droppable( {
+            $("div[id^=tourneyRound]").droppable({
                 drop : handleDrop
             });
             
@@ -186,8 +186,6 @@
                 var nextPosClass= '';
                  
                 while (begRd < endRd) {
-
-
                     if (gameId == 0) {
                         gameId = ui.draggable.parent().attr('id').toString().split('_')[1];
                         seasonWeekId = ui.draggable.parent().parent().attr('wk');                        
@@ -198,13 +196,8 @@
                         dataType: "xml",
                         type:"POST",
                         data:"method=SubmitBracketChallengePick&wk="+seasonWeekId+"&fst="+fsTeamId+"&gid="+gameId+"&tp="+teamSeedPickedId,
-                        success: function(data){
-                            if ($(data).text() != 'Success') {
-                                alert("Data Error, when saving to Round "+(begRd));
-                            }
-                        },
                         error: function(){
-                            alert("Data Error, please try again.");
+                            alert("Unknown error, please try again.");
                         }
 
                     })

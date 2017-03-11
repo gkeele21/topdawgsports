@@ -324,7 +324,7 @@
                             <c:forEach items="${picks}" var="pick">
                                     
                                 <%-- Game Date --%>
-                                <c:if test="${pick.game.gameDate != prevGameDate}">
+                                <c:if test="${pick.game.gameDate != prevGameDate || pick.game.gameInfo != null}">
                                     <tr>
                                         <td class="gameDate" colspan="8"><fmt:formatDate value="${pick.game.gameDate.time}" pattern="EEEE, MMM. d - h:mm a"/>
                                             <c:if test="${pick.game.gameInfo != null}">
@@ -363,7 +363,7 @@
                                     <td>
                                         <img id="helmet_${pick.game.visitorID}" 
                                              <c:if test="${pick.teamPickedID == pick.game.visitorID}"> class="pickedTeam" </c:if>
-                                             src="/topdawgsports/images/NCAAImages/Color/${pick.game.visitorID}.gif" alt=""
+                                             src="/topdawgsports/images/Helmets/Color/${pick.game.visitorID}.gif" alt=""
                                              tp="${pick.game.visitorID}" opp="${pick.game.homeID}"                                              
                                         />
                                     </td>
@@ -466,7 +466,7 @@
                                     <td>
                                         <img id="helmet_${pick.game.homeID}" 
                                              <c:if test="${pick.teamPickedID == pick.game.homeID}"> class="pickedTeam" </c:if>
-                                             src="/topdawgsports/images/NCAAImages/Color/${pick.game.homeID}.gif" alt=""
+                                             src="/topdawgsports/images/Helmets/Color/${pick.game.homeID}.gif" alt=""
                                              tp="${pick.game.homeID}" opp="${pick.game.visitorID}"
                                         />
                                     </td>
@@ -506,7 +506,7 @@
                         <table>                           
                             <tr>
                                 <c:forEach items="${byeTeams}" var="team">
-                                    <td><img src="/topdawgsports/images/NCAAImages/Color/${team.homeID}.gif" alt="" /></td>
+                                    <td><img src="/topdawgsports/images/Helmets/Color/${team.homeID}.gif" alt="" /></td>
                                 </c:forEach>
                             </tr>
                             <tr>

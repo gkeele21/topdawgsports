@@ -12,8 +12,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <style type="text/css" >
                 
         #availableTeams { float: left; width: 100%; }
@@ -262,15 +262,11 @@
                     type:"POST",
                     data:"method=SubmitSeedChallengePick&tsid="+teamSeedId+"&sgid="+seedGroupId+"&fst="+fsTeamId+"&tid="+tournamentId,
                     success: function(data){
-                        if ($(data).text() == 'Success') {
-                            $("#seedPickImage_" + seedGroupId).attr("src","/topdawgsports/images/CollegeTeams/"+teamId+".gif");
-                            $("#ncaaTeamDisplay_" + seedGroupId).html(teamName);
-                        } else {
-                            alert("Data Error, please try again.");
-                        }
+                        $("#seedPickImage_" + seedGroupId).attr("src","/topdawgsports/images/CollegeTeams/"+teamId+".gif");
+                        $("#ncaaTeamDisplay_" + seedGroupId).html(teamName);
                     },
                     error: function(){
-                        alert("Function Error.");
+                        alert("Unknown error, please try again.");
                     }
                 })
             }
