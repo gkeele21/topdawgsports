@@ -50,7 +50,7 @@ body {
                                  <td>
                                      <c:choose>
                                          <c:when test="${pick.teamPickedID > 0}">
-                                             <img src="/topdawgsports/images/NCAAImages/Color/${pick.teamPickedID}.gif" alt="" />
+                                             <img src="/topdawgsports/images/Helmets/Color/${pick.teamPickedID}.gif" alt="" />
                                          </c:when>
                                          <c:otherwise>
                                              -

@@ -97,7 +97,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <td class="ranking"></td>
-                                    <td><img src="/topdawgsports/images/NCAAImages/Color/${oppId}.gif" alt="" /></td>
+                                    <td><img src="/topdawgsports/images/Helmets/Color/${oppId}.gif" alt="" /></td>
                                     <td class="opponent">
                                         <a href="javascript:viewTeamSchedule('/topdawgsports/collegeTeamSchedule.htm?tid=${oppId}&year=${schedYear}')">${oppName}</a>
                                     </td>

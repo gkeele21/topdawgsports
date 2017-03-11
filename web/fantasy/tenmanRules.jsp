@@ -162,15 +162,15 @@
                             <label>Winners are determined by both Final Standings and Total Fantasy Points.</label><br />
                         <h3>Final Standings :</h3>
                             <ul>
-                                <li>1st Place &nbsp;&nbsp;&nbsp;&nbsp; 25% of remaining pot - ($50.00)</li>
-                                <li>2nd Place &nbsp;&nbsp; 17% of remaining pot - ($34.00)</li>
-                                <li>3rd Place &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8% of remaining pot - ($16.00)</li>
+                                <li>1st Place &nbsp;&nbsp;&nbsp;&nbsp; 25% of remaining pot - ($62.50)</li>
+                                <li>2nd Place &nbsp;&nbsp; 17% of remaining pot - ($42.50)</li>
+                                <li>3rd Place &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8% of remaining pot - ($20.00)</li>
                             </ul>
                         <h3>Total Points :</h3>
                             <ul>
-                                <li>1st Place &nbsp;&nbsp;&nbsp;&nbsp; 25% of remaining pot - ($50.00)</li>
-                                <li>2nd Place &nbsp;&nbsp; 17% of remaining pot - ($34.00)</li>
-                                <li>3rd Place &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8% of remaining pot - ($16.00)</li>
+                                <li>1st Place &nbsp;&nbsp;&nbsp;&nbsp; 25% of remaining pot - ($62.50)</li>
+                                <li>2nd Place &nbsp;&nbsp; 17% of remaining pot - ($42.50)</li>
+                                <li>3rd Place &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8% of remaining pot - ($20.00)</li>
                             </ul>
                         <h3>Ties :</h3>
                             <ul>

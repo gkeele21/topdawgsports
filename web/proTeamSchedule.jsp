@@ -95,7 +95,7 @@
                                 <td colspan="4">BYE</td>
                             </c:when>
                             <c:otherwise>
-                                <td><img src="/topdawgsports/images/NFLImages/Color/${oppId}.gif" alt="" /></td>
+                                <td><img src="/topdawgsports/images/Helmets/Color/${oppId}.gif" alt="" /></td>
                                 <td class="opponent">
                                     <a href="javascript:viewTeamSchedule('/topdawgsports/proTeamSchedule.htm?tid=${oppId}&year=${schedYear}')">${oppName}</a>
                                 </td>

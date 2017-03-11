@@ -156,7 +156,8 @@ public class Standings implements Serializable {
         sql.append(_Cols.getColumnList("Team", "t.", "Team$"));
         sql.append("FROM Standings s ");
         sql.append("JOIN Team t ON t.TeamID = s.TeamID ");
-        sql.append("WHERE s.SeasonWeekID = ").append(seasonWeekId).append(" AND s.OverallRanking BETWEEN 1 AND 25");
+        sql.append("WHERE s.SeasonWeekID = ").append(seasonWeekId).append(" AND s.OverallRanking BETWEEN 1 AND 25 ");
+        sql.append("ORDER BY s.OverallRanking");
 
         // Call QueryCreator
         try {

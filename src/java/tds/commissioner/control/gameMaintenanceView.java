@@ -24,7 +24,7 @@ public class gameMaintenanceView extends BaseView {
         nextPage = htmlPage;
 
         // Get request/session objects
-        int reqSportId = FSUtils.getIntRequestParameter(request, "spid", Sport.COLLEGE_BASKETBALL);
+        int reqSportId = FSUtils.getIntRequestParameter(request, "spid", Sport.COLLEGE_FOOTBALL);
         int reqSeasonWeekId = FSUtils.getIntRequestParameter(request, "swid", 0);
         int reqYear = FSUtils.getIntRequestParameter(request, "yr", Calendar.getInstance().get(Calendar.YEAR));        
 

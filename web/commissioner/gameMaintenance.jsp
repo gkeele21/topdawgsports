@@ -12,7 +12,7 @@
         <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
         <style>
             button { background-color: #103B40; border-color: #731702; color: white; margin-left: 10px;}
-            form[name*=finish] { display:inline; margin-left: 20px; }
+            form { display:inline; margin-left: 20px; }
             img { height: 40px; width: 50px; }
             input { text-align: center; }
             input[name*=Wins], input[name*=Losses] { background-color: lightgreen; width: 20px; }
@@ -62,6 +62,7 @@
                 $("button[id=recalculateStandings]").click(function() {
                     finalizeWeek($(this), 0);
                 });
+                
             });
             
             function finalizeWeek(me, finishOffWeek) {
@@ -181,10 +182,16 @@
         <br />
         <label id="weekHeading">Week #${displayWeek.weekNo} - ${displayWeek.status}</label>
         
+        <c:if test="${sportId == 1 || sportId == 2}">
+            <form action="updateTop25.htm">
+                <button name="sw" value="${displayWeek.seasonWeekID}">Update Top 25</button>
+            </form>
+        </c:if>        
+            
         <button id="recalculateStandings" sw="${displayWeek.seasonWeekID}" spid="${sportId}">Recalculate Standings</button>
         <c:if test="${displayWeek.status == 'CURRENT'}">
             <button id="finishWeek" sw="${displayWeek.seasonWeekID}" spid="${sportId}">Finish off the week</button>
-        </c:if>
+        </c:if>        
         <br />
         
         <%-- PRO/COLLEGE FOOTBALL --%>
@@ -192,10 +199,10 @@
             <%-- Initialize Varibales --%>
             <c:choose>
                 <c:when test="${sportId == 1}">
-                    <c:set var="path" value="/topdawgsports/images/NFLImages/Color/" />
+                    <c:set var="path" value="/topdawgsports/images/Helmets/Color/" />
                 </c:when>
                 <c:otherwise>
-                    <c:set var="path" value="/topdawgsports/images/NCAAImages/Color/" />
+                    <c:set var="path" value="/topdawgsports/images/Helmets/Color/" />
                 </c:otherwise>
             </c:choose>
 

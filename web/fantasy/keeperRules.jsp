@@ -137,10 +137,11 @@
                     <h2>Injured Reserve</h2>
                         <h3>Regulations :</h3>
                             <ul>
-                                <li>Players can only be placed on IR when they are on the NFL’s IR list.</li>
-                                <li>Players can be placed on IR any week during the fantasy season.</li>
+                                <li>A player that is injured can be placed on IR but must stay on IR for at least 8 weeks.</li>
+                                <li>As soon as a player plays in a game after the 8 weeks are up, the owner must make a decision the following week. The owner can take the player off of IR and drop somebody else OR he must drop that player completely off his team.</li>
                                 <li>There is no limit of how many players an owner can place on IR.</li>
                                 <li>An owner may not pick up a player that is already on IR.</li>
+                                <li>When a player gets dropped off of IR, he will not be available to be picked up until the following week</li>
                             </ul>
                     <h2>Weekly Lineup</h2>
                         <h3>Lineup Size :</h3>

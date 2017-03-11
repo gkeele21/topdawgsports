@@ -5,10 +5,10 @@
 <!doctype html>
 <html>
     <head>
-        <title>March Madness Field</title>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>        
+        <title>March Madness Field</title>        
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <script>
 
             $(document).ready(function () {
@@ -69,14 +69,8 @@
                         dataType: "xml",
                         type:"POST",
                         data:"method=UpdateTeamSeed&ts="+teamSeedId+"&tid="+$("#teamId_"+teamSeedId).text()+"&rec="+$("#record_"+teamSeedId).val(),
-                        success: function(data){
-                            if ($(data).text() == 'Success') {
-                            } else {
-                                alert("Data Error, please try again. - "+$(data).text());
-                            }
-                        },
                         error: function(){
-                            alert("Function error, please try again.");
+                            alert("Unknown error, please try again.");
                         }
                     })
                 }

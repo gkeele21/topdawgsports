@@ -4,7 +4,6 @@ import bglib.util.AuDate;
 import bglib.util.BGConstants;
 import bglib.util.FSUtils;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,20 +36,24 @@ public class AjaxAction extends HttpServlet {
         try {
             String method = request.getParameter("method");
 
-            if (method.equals("FinalizeWeek")) {
-                ret = FinalizeWeek(request, response);
+            if (method.equals("AssignTop25Ranking")) {
+                ret = AssignTop25Ranking(request);
+            }
+            
+            else if (method.equals("FinalizeWeek")) {
+                ret = FinalizeWeek(request);
             }
             
             else if (method.equals("SaveGameMatchup")) {
-                ret = SaveGameMatchup(request, response);
+                ret = SaveGameMatchup(request);
             }
             
             else if (method.equals("SavePickemConfidencePts")) {
-                ret = SavePickemConfidencePts(request, response);
+                ret = SavePickemConfidencePts(request);
             }
             
             else if (method.equals("SavePickemPick")) {
-                ret = SavePickemPick(request, response);
+                ret = SavePickemPick(request);
             }
             
             else if (method.equals("SubmitBracketChallengePick")) {
@@ -70,16 +73,29 @@ public class AjaxAction extends HttpServlet {
             }
             
         } 
-        catch (Exception e) { ret = "Error"; }
-        
-        response.setContentType("text/xml");
-        PrintWriter out = response.getWriter();
-        out.println(ret);
-        out.flush();
-        out.close();
+        catch (Exception e) { ret = e.getMessage(); }
+       
+
     }
     
-    public String FinalizeWeek(HttpServletRequest request, HttpServletResponse response) {
+    public String AssignTop25Ranking(HttpServletRequest request) {
+        try {
+            int seasonWeekId = FSUtils.getIntRequestParameter(request,"sw", 0);                
+            int teamId = FSUtils.getIntRequestParameter(request,"tid", 0);
+            int rank = FSUtils.getIntRequestParameter(request,"rk", 0);
+            
+            Standings standings = new Standings(teamId, seasonWeekId);
+            standings.setTeamID(teamId);
+            standings.setOverallRanking(rank);
+            standings.Save();            
+        } 
+        catch (Exception e) { return "<result>AssignTop25Ranking error : " + e.getMessage() + "</result>"; }
+
+        return "<result>Success</result>";
+ 
+    }
+    
+    public String FinalizeWeek(HttpServletRequest request) {
         try {
             int seasonWeekId = FSUtils.getIntRequestParameter(request,"sw", 0);                
             int finishOffWeek = FSUtils.getIntRequestParameter(request,"fw", 0);
@@ -119,17 +135,13 @@ public class AjaxAction extends HttpServlet {
             }
             
         } 
-        catch (Exception e) { 
-            CTApplication._CT_LOG.error(e);
-            System.out.println("FinalizeWeek error : "+e.getMessage());
-            return "<result>Error : " + e.getMessage() + "</result>"; 
-        }
+        catch (Exception e) { return "<result>FinalizeWeek error : " + e.getMessage() + "</result>"; }
 
         return "<result>Success</result>";
  
     }
 
-    public String SaveGameMatchup(HttpServletRequest request, HttpServletResponse response) {
+    public String SaveGameMatchup(HttpServletRequest request) {
  
         try {
             // Retrieve parameters
@@ -192,12 +204,12 @@ public class AjaxAction extends HttpServlet {
             homeStandings.Save();
 
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>SaveGameMatchup error : " + e.getMessage() + "</result>"; }
 
         return "<result>Success</result>";
     }
     
-    public String SavePickemConfidencePts(HttpServletRequest request, HttpServletResponse response) {
+    public String SavePickemConfidencePts(HttpServletRequest request) {
         
         int secondSaveSuccess = 1;
         
@@ -223,12 +235,12 @@ public class AjaxAction extends HttpServlet {
             }
 
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>SavePickemConfidencePts error : " + e.getMessage() + "</result>"; }
 
         return (secondSaveSuccess > 0) ? "<result>Success</result>" : "<result>Error</result>";
     }
     
-    public String SavePickemPick(HttpServletRequest request, HttpServletResponse response) {
+    public String SavePickemPick(HttpServletRequest request) {
               
         try {            
             // Retrieve parameters
@@ -249,7 +261,7 @@ public class AjaxAction extends HttpServlet {
             }
                         
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>SavePickemPick error : " + e.getMessage() + "</result>"; }
         
         return "<result>Success</result>";
     }
@@ -272,7 +284,7 @@ public class AjaxAction extends HttpServlet {
             bracketChallenge.Save();
             
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>SubmitBracketChallengePick error : " + e.getMessage() + "</result>"; }
         
         return "<result>Success</result>";
     }
@@ -294,7 +306,7 @@ public class AjaxAction extends HttpServlet {
             seedChallenge.Save();
  
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>SubmitSeedChallengePick error : " + e.getMessage() + "</result>"; }
         
         return "<result>Success</result>";
     }
@@ -314,7 +326,7 @@ public class AjaxAction extends HttpServlet {
             MarchMadnessGame.UpdateGameResult(tournamentId, gameId, seasonWeek, team1Pts, team2Pts);
  
         } 
-        catch (Exception e) { return "<result>Error : " + e.getMessage() + "</result>"; }
+        catch (Exception e) { return "<result>UpdateMarchMadnessGameResult error : " + e.getMessage() + "</result>"; }
         
         return "<result>Success</result>";
         

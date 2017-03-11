@@ -131,7 +131,7 @@
                                 <c:forEach items="${picks}" var="pick">
                                     <td>
                                         <c:if test="${pick.teamPickedID > 0 && (fsteam.FSTeamID == displayTeam.FSTeamID || pick.game.gameHasStarted)}">
-                                            <img src="/topdawgsports/images/NFLImages/Color/${pick.teamPickedID}.gif" alt="" />
+                                            <img src="/topdawgsports/images/Helmets/Color/${pick.teamPickedID}.gif" alt="" />
                                         </c:if>
                                         <c:if test="${pick.game.winnerID > 0}">
                                             <br />
@@ -205,10 +205,10 @@
                                         <%-- See if the helmet should be in color or grayscale --%>
                                         <c:choose>
                                             <c:when test="${empty expiredTeams[game.visitorID]}">
-                                                <c:set var="visitorTeamPath" value = "/topdawgsports/images/NFLImages/Color/${game.visitorID}" />
+                                                <c:set var="visitorTeamPath" value = "/topdawgsports/images/Helmets/Color/${game.visitorID}" />
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="visitorTeamPath" value = "/topdawgsports/images/NFLImages/Grayscale/${game.visitorID}" />
+                                                <c:set var="visitorTeamPath" value = "/topdawgsports/images/Helmets/Picked/${game.visitorID}" />
                                             </c:otherwise>
                                         </c:choose>
                                         
@@ -287,10 +287,10 @@
                                         <%-- See if the helmet should be in color or grayscale --%>
                                         <c:choose>
                                             <c:when test="${empty expiredTeams[game.homeID]}">
-                                                <c:set var="homeTeamPath" value = "/topdawgsports/images/NFLImages/Color/${game.homeID}" />
+                                                <c:set var="homeTeamPath" value = "/topdawgsports/images/Helmets/Color/${game.homeID}" />
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="homeTeamPath" value = "/topdawgsports/images/NFLImages/Grayscale/${game.homeID}" />
+                                                <c:set var="homeTeamPath" value = "/topdawgsports/images/Helmets/Picked/${game.homeID}" />
                                             </c:otherwise>
                                         </c:choose>
                                         
@@ -334,7 +334,7 @@
                         <table>                           
                             <tr>
                                 <c:forEach items="${byeTeams}" var="team">
-                                    <td><img src="/topdawgsports/images/NFLImages/Color/${team.homeID}.gif" alt="" /></td>
+                                    <td><img src="/topdawgsports/images/Helmets/Color/${team.homeID}.gif" alt="" /></td>
                                 </c:forEach>
                             </tr>
                         </table>
