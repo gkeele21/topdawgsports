@@ -74,14 +74,8 @@
                     type:"POST",
                     data:"method=FinalizeWeek&sw="+me.attr('sw')+"&fw="+finishOffWeek+"&spid="+me.attr('spid'),
                     async:false,
-                    success: function(data){
-                        if ($(data).text() == 'Success') {
-                        } else {
-                            alert("Data Error, please try again. - "+$(data).text());
-                        }
-                    },
                     error: function(){
-                        alert("Function error, please try again.");
+                        alert("Unknown error, please try again.");
                     }
                 })
 
@@ -114,14 +108,8 @@
                     dataType: "xml",
                     type:"POST",
                     data:"method=SaveGameMatchup&gid="+gid+"&gd="+gd+"&wk="+wk+"&vid="+vid+"&vr="+vr+"&vs="+vs+"&vw="+vw+"&vl="+vl+"&hid="+hid+"&hs="+hs+"&hw="+hw+"&hl="+hl+"&hr="+hr,
-                    success: function(data){
-                        if ($(data).text() == 'Success') {
-                        } else {
-                            alert("Data Error, please try again.");
-                        }
-                    },
                     error: function(){
-                        alert("Function error, please try again.");
+                        alert("Unknown error, please try again.");
                     }
                 })
 
@@ -140,14 +128,8 @@
                     type:"POST",
                     data:"method=UpdateMarchMadnessGameResult&tid="+me.attr('tid')+"&gid="+me.attr('gid')+"&sw="+me.attr('sw')+"&t1pts="+t1pts+"&t2pts="+t2pts,
                     async:false,
-                    success: function(data){
-                        if ($(data).text() == 'Success') {
-                        } else {
-                            alert("Data Error, please try again. - "+$(data).text());
-                        }
-                    },
                     error: function(){
-                        alert("Function error, please try again.");
+                        alert("Unknown error, please try again.");
                     }
                 })
 

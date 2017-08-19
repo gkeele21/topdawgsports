@@ -41,7 +41,7 @@
                         <h3>Leagues :</h3>
                             <label>An owner can join or create their own leagues.  A General league will be created for a chance to become the Top Dawg of the bracket challenge.</label><br />
                         <h3>Cost :</h3>
-                            <label>$2 per entry</label><br />
+                            <label>$5 per entry</label><br />
 
                     <h2>Tournament</h2>
                         <h3>Duration :</h3>
@@ -76,8 +76,8 @@
                             <label>32 points awarded for picking the tournament winner.</label><br />
 
                     <h2>Payoffs :</h2>
-                        <h3>Grand Prize :</h3>
-                            <label>Winner takes all. The champion(s) will receive a prize worth up to the total amount of all entry fees.</label><br />
+                        <h3>Top 2 :</h3>
+                            <label>1st place wins 70% and 2nd place wins 30% of the total amount of all entry fees.</label><br />
                         <h3>Tiebreaker :</h3>
                             <label>There is no tiebreaker, the prize will be split equally among all tied winners.</label><br />
 
