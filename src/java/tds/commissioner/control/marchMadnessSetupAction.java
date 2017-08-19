@@ -98,7 +98,7 @@ public class marchMadnessSetupAction extends BaseAction {
             FSLeague fsLeague = new FSLeague();
             fsLeague.setFSLeagueID(fsLeagueId + i);
             fsLeague.setFSSeasonID(fsSeasonId + i);
-            fsLeague.setLeagueName((fantasyGames[i] == FSGame.BRACKET_CHALLENGE) ? "Bracket Challenge" : (fantasyGames[i] == FSGame.SEED_CHALLENGE) ? "Seed Challenge" : null);
+            fsLeague.setLeagueName((fantasyGames[i] == FSGame.BRACKET_CHALLENGE) ? year + " Bracket Challenge" : (fantasyGames[i] == FSGame.SEED_CHALLENGE) ? year + " Seed Challenge" : null);
             fsLeague.setIsDefaultLeague(1);
             fsLeague.setStatus(FSLeague.Status.ACTIVE.toString());
             fsLeague.Save();

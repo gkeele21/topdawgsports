@@ -202,13 +202,13 @@
                             <%-- ONE TIME IN LOOP --%>
                             <c:if test="${pick.game.nextGameID == null}">
                                 
-                                <!-- CHAMPS LINE -->
+                                <%-- CHAMPS LINE --%>
                                 <label class="finalLine" style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2))}px; left: ${(currentLeft + horizontalLength)}px; width: ${horizontalLength}px;" ></label>
 
-                                <!-- #1 CHAMPS LABEL -->
+                                <%-- #1 CHAMPS LABEL --%>
                                 <label class="champsLabel" style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2)) + 15}px; left: ${(currentLeft + horizontalLength) + 5}px; width: ${horizontalLength}px;">#1 Champs</label>
 
-                                <!-- WINNER -->
+                                <%-- WINNER --%>
                                 <label style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2)) - 30}px; left: ${(currentLeft + horizontalLength)}px; width: ${horizontalLength}px;" 
                                 <c:choose>
                                     <c:when test="${pick.game.winnerID.equals(pick.teamSeedPickedID)}">
@@ -225,6 +225,9 @@
                                                     <c:when test="${!empty defeatedTeams[pick.teamSeedPicked.teamID]}">
                                                         class="incorrectPick">
                                                     </c:when>
+                                                    <c:otherwise>
+                                                        class="winner">
+                                                    </c:otherwise>
                                                 </c:choose>                                                
                                             </c:otherwise>
                                         </c:choose>
@@ -233,17 +236,17 @@
                                 ${pick.teamSeedPicked.team.displayName}
                                 </label>
 
-                                <!-- TEAM NAME TITLE -->
+                                <%-- TEAM NAME TITLE --%>
                                 <label class="teamNameTitle" style="top:${(initialBracketYCoord + (firstRoundHeight) - (firstRoundHeight / 2)) - 25}px; left:${(horizontalLength * 2) + 65}px;">
                                     ${displayTeam.teamName}
                                 </label>
                                 
-                                <!-- TOTAL GAME POINTS -->
+                                <%-- TOTAL GAME POINTS --%>
                                 <label class="totalGamePts" style="top:25px; left:${currentLeft + horizontalLength + 35}px; width:50px;">
                                     <fmt:formatNumber value="${roundStandings[TOTAL_PTS_KEY]}" maxFractionDigits="0" />
                                 </label>
                                 
-                                <!-- ALL TEAMS DROPDOWN -->
+                                <%-- ALL TEAMS DROPDOWN --%>
                                 <form action="bracketChallenge.htm">
                                     <select id="allTeams" name="dtid" style="top: ${(initialBracketYCoord + (firstRoundHeight) - (firstRoundHeight / 2)) - 13}px; left: ${currentLeft}px;  width: ${horizontalLength}px;" >
                                         <c:forEach items="${allLeagueTeams}" var="team">
