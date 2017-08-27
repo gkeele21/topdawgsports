@@ -61,7 +61,8 @@ public class createUserAction extends BaseAction {
                 return strNextPage;
             }
 
-            int id = FSUser.addNewUser(userName, password, fName, lName, email, cell, "", "", "", "", "", "", "", "", "", 0, "");
+            String authenticationKey = FSUser.generateAuthenticationKey();
+            int id = FSUser.addNewUser(userName, password, fName, lName, email, cell, "", "", "", "", "", "", "", "", "", 0, authenticationKey);
  
             FSUser user = new FSUser(id);
             
