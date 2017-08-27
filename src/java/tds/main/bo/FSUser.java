@@ -70,6 +70,28 @@ public class FSUser implements Serializable {
 
     }
 
+    public FSUser(String username) throws Exception {
+        CachedRowSet crs = null;
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT").append(_Cols.getColumnList("FSUser", "u.", ""));           
+            sql.append("FROM FSUser u ");
+            sql.append("WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
+
+            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            if (crs.next()) {
+                initFromCRS(crs, "");
+            } else {
+                throw new Exception("Invalid username combination - Username [" + username + "]");
+            }
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+            throw new Exception(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+        }
+    }
+
     public FSUser(String username,String password) throws Exception {
         CachedRowSet crs = null;
         try {
@@ -331,7 +353,7 @@ public class FSUser implements Serializable {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSUser", "u.", ""));
             sql.append(" FROM FSUser u ");
-            sql.append(" WHERE u.Username = '").append(sql).append("'");
+            sql.append(" WHERE u.Username = '").append(username).append("'");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
             

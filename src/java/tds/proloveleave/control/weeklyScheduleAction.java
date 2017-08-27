@@ -22,7 +22,7 @@ public class weeklyScheduleAction extends BaseAction {
         // If nextPage something that means an error happened
         if (nextPage != null) { return nextPage; }
 
-        nextPage = "weeklySchedule.htm";
+        nextPage = "weeklySchedule";
         
         fsSeasonWeekId = FSUtils.getIntRequestParameter(request,"wk", 0);
         fsTeamId = FSUtils.getIntRequestParameter(request,"fst", 0);

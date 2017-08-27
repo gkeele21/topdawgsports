@@ -1,13 +1,13 @@
 package tds.main.control;
 
 import bglib.util.FSUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import static tds.main.bo.CTApplication._CT_LOG;
 import tds.main.bo.FSLeague;
 import tds.main.bo.FSSeason;
 import tds.main.bo.FSUser;
 import tds.main.bo.UserSession;
-import static tds.main.bo.CTApplication._CT_LOG;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 public class registerGamesAction extends BaseAction {

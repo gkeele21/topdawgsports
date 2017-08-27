@@ -4,15 +4,14 @@ import bglib.util.ErrorMessage;
 import bglib.util.FormError;
 import bglib.util.FormField;
 import bglib.util.FormFieldType;
-import tds.main.bo.FSUser;
-import tds.main.bo.UserSession;
-import static tds.main.bo.CTApplication._CT_LOG;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.List;
-import java.util.Arrays;
-import java.util.Map;
+import static tds.main.bo.CTApplication._CT_LOG;
+import tds.main.bo.FSUser;
+import tds.main.bo.UserSession;
 
 public class registerAction extends BaseAction {
 
