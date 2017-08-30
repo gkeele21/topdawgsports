@@ -194,7 +194,7 @@
                                         <img src="images/march_madness.jpg"/>
                                         <h1>Bracket Challenge</h1>
                                         <ul>
-                                            <li>$2 entry fee (General League only)</li>
+                                            <li>$5 entry fee (General League only)</li>
                                             <li>Create as many entries as you want</li>
                                             <li>Entries must be completed by the start of the tournament</li>
                                             <li>Create your own league</li>
@@ -203,14 +203,14 @@
                                             <li>Points increase with each round of the tournament</li>
                                             <li>Most total accumulated points at tournament's end wins</li>
                                             <li>Winner takes all (General League only)</li>
-                                            <a href="mm/bcRules.htm">Click HERE to learn more</a>
+                                            <a href="mm/bracketChallengeRules.htm">Click HERE to learn more</a>
                                         </ul>
                                     </c:when>
                                     <c:when test="${gameSignupFSSeason.FSGameID == 9}">
                                         <img src="images/march_madness.jpg"/>
                                         <h1>Seed Challenge</h1>
                                         <ul>
-                                            <li>$2 entry fee (General League only)</li>
+                                            <li>$5 entry fee (General League only)</li>
                                             <li>Create as many entries as you want</li>
                                             <li>Entries must be completed by the start of the tournament</li>
                                             <li>Create your own league</li>
@@ -218,7 +218,7 @@
                                             <li>Win by selecting the college tournament winner</li>
                                             <li>If multiple people have the tournament winner, comparisons are made with their teams that went the next furthest in the tournament</li>
                                             <li>Winner takes all (General League only)</li>
-                                            <a href="mm/scRules.htm">Click HERE to learn more</a>
+                                            <a href="mm/seedChallengeRules.htm">Click HERE to learn more</a>
                                         </ul>
                                     </c:when>
                                     <c:when test="${gameSignupFSSeason.FSGameID == 10}">
