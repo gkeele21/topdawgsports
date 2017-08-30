@@ -59,6 +59,9 @@ public class ControllerAction extends HttpServlet {
                     if (AuUtil.isEmpty(forwardString))
                     {
                         forwardString = basePackageName + forwardPage;
+                    } else
+                    {
+                        forwardString = basePackageName + forwardString;
                     }
                     
                     forwardString = forwardString.replace(".","/");
