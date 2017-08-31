@@ -7,6 +7,7 @@ package tds.fantasy.scripts;
 
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
+import bglib.util.Application;
 import bglib.util.FSUtils;
 import java.io.File;
 import java.sql.Connection;
@@ -26,6 +27,9 @@ import tds.main.bo.CTApplication;
  */
 public class FootballPlayersJson implements Harnessable {
 
+    public static final String PLAYERS_FILE_PROP = "tds.Football.playersFile";
+    public static String _PLAYERS_FILE = Application._GLOBAL_SETTINGS.getProperty(PLAYERS_FILE_PROP);
+    
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -63,13 +67,11 @@ public class FootballPlayersJson implements Harnessable {
 
     public void importPlayers() throws Exception {
 
-        final String playersFilePath = "C:/Python27/Lib/site-packages/nflgame/players.json";
-
         Connection con = null;
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 
-            File playersFile = new File(playersFilePath);
+            File playersFile = new File(_PLAYERS_FILE);
             String playerData = FileUtils.readFileToString(playersFile);
             
             // clear out the temp table

@@ -37,7 +37,7 @@ public class FootballStatsJson implements Harnessable {
     public static String _STATS_DIR = Application._GLOBAL_SETTINGS.getProperty(STATS_DIR_PROP);
 //    private static final int _FSSeasonID = 20;
 //    private static final int _SeasonID = 8;
-    public static final String _Year = "2016";
+    public static final String _Year = "2017";
     private static final int _NumColumns = 60;
     
     Logger _Logger;
