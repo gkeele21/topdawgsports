@@ -29,8 +29,8 @@ public class FootballSalaries implements Harnessable {
     private static final double _Multiplier = 10000;
     public static final double MIN_SALARY = 20000;
     public static final double MAX_SALARY = 450000;
-    private static final int _FSSeasonID = 70;
-    private static final int _SeasonID = 27;
+    private static final int _FSSeasonID = 81;
+    private static final int _SeasonID = 32;
 
     public FootballSalaries() {
         _Logger = Logger.global;

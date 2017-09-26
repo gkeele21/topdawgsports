@@ -48,6 +48,7 @@ public class FootballDraft {
             FSSeason currentFSSeason = new FSSeason(currentFSSeasonID);
             FSSeasonWeek currentFSSeasonWeek = currentFSSeason.getCurrentFSSeasonWeek();
             int fsSeasonWeekID = currentFSSeasonWeek.getFSSeasonWeekID();
+            System.out.println("Current FSSeasonWeekID : " + fsSeasonWeekID);
             
             // grab all leagues for this fsSeason
             List<FSLeague> fsLeagues = currentFSSeason.GetLeagues();

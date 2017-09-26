@@ -11,7 +11,7 @@ import static tds.data.CTColumnLists._Cols;
 
 public class Season implements Serializable {
     
-    public static final int _CurrentSeasonID = 27;
+    public static final int _CurrentSeasonID = 32;
         
     // DB FIELDS
     private Integer _SeasonID;

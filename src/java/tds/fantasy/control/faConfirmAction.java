@@ -32,7 +32,7 @@ public class faConfirmAction extends BaseAction {
         }
 
         System.out.println("After parent call.");
-        nextPage = "yourPlayers.htm";
+        nextPage = "yourPlayers";
         UserSession session = UserSession.getUserSession(request, response);
 
         // check to see if they hit cancel or accept
@@ -44,7 +44,7 @@ public class faConfirmAction extends BaseAction {
             session.getHttpSession().removeAttribute("puPlayer");
             session.getHttpSession().removeAttribute("faTransaction");
             
-            return "faAcquirePlayer.htm";
+            return "faAcquirePlayer";
         }
         
         FSFootballTransaction transaction = (FSFootballTransaction)session.getHttpSession().getAttribute("faTransaction");
@@ -186,7 +186,8 @@ public class faConfirmAction extends BaseAction {
                         session.getHttpSession().removeAttribute("dropRoster");
                         session.getHttpSession().removeAttribute("dropType");
                         session.getHttpSession().removeAttribute("faTransaction");
-                        session.getHttpSession().removeAttribute("puPlayer");                        nextPage = "transactionRequests.htm";
+                        session.getHttpSession().removeAttribute("puPlayer");
+                        nextPage = "transactionRequests";
                     } else {
                         errorMsg = "Error : could not insert your transaction request.  Please try again.";
                     }
@@ -243,7 +244,7 @@ public class faConfirmAction extends BaseAction {
         
         if (!errorMsg.equals("")) {
             session.setErrorMessage(errorMsg);
-            return "faConfirm.htm";
+            return "faConfirm";
         }
 
         return nextPage;

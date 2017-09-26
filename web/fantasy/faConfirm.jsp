@@ -15,7 +15,8 @@
     <script type="text/javascript" src="../js/script.js" ></script>
   </head>
   <body>
-
+ 
+      
     <div id="container">
         <div id="header">
             <jsp:include page="../inc_header.jsp" />
