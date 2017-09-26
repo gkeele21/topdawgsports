@@ -20,7 +20,7 @@ public class transactionRequestsAction extends BaseAction {
             return nextPage;
         }
 
-        nextPage = "transactionRequests.htm";
+        nextPage = "transactionRequests";
         UserSession session = UserSession.getUserSession(request, response);
 
         // Create FSTeam obj

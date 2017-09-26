@@ -45,6 +45,9 @@
                         <tr>
                             <td><a href="footballSeasonSetup.htm">Football Season Setup</a></td>
                         </tr>
+                        <tr>
+                            <td><a href="gameMaintenance.htm">Game Maintenance</a></td>
+                        </tr>
                     </table>
 
                 </div> <!-- main -->

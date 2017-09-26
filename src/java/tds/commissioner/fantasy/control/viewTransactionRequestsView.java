@@ -43,14 +43,13 @@ public class viewTransactionRequestsView extends BaseView {
         if (fsLeague != null)
         {
             FSSeason fsSeason = new FSSeason(fsLeague.getFSSeasonID());
-            int fsSeasonWeekId = fsSeason.getCurrentFSSeasonWeekID();
-            FSSeasonWeek fsSeasonWeek = new FSSeasonWeek(fsSeasonWeekId);
+            FSSeasonWeek fsseasonweek = fsSeason.getCurrentFSSeasonWeek();
             
             // get TransactionRequests
-            List<FSFootballTransactionRequest> requests = FSFootballTransactionRequest.getLeagueRequests(fsLeague.getFSLeagueID(), fsSeasonWeekId);
+            List<FSFootballTransactionRequest> requests = FSFootballTransactionRequest.getLeagueRequests(fsLeague.getFSLeagueID(), fsseasonweek.getFSSeasonWeekID());
             session.setAttribute("requests", requests);
-            session.setAttribute("commFSSeasonWeekID", fsSeasonWeekId);
-            session.setAttribute("commFSSeasonWeek", fsSeasonWeek);
+            session.setAttribute("commFSSeasonWeekID", fsseasonweek.getFSSeasonWeekID());
+            session.setAttribute("commFSSeasonWeek", fsseasonweek);
         }
 
         return page;

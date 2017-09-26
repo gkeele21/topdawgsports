@@ -22,7 +22,7 @@ import tds.util.CTReturnCode;
  */
 public class FootballResults  {
 
-    private static final int _FSSeasonID = 70;
+    private static final int _FSSeasonID = 81;
     
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
@@ -45,7 +45,7 @@ public class FootballResults  {
         try {
             FootballResults results = new FootballResults();
             
-            int fsseasonweekid = 931;
+            int fsseasonweekid = 0;
             if (args != null && args.length > 0)
             {
                 try {
