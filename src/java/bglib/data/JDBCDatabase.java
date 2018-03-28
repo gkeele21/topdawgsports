@@ -29,7 +29,7 @@ public class JDBCDatabase {
         if (AuUtil.isEmpty(connectionString)) {
 //            _ConnectionString = "jdbc:mysql://localhost:3307/topdawg?user=topdawg&password=laker$&autoReconnect=true";
             _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
-//            _ConnectionString = "jdbc:mysql://10.5.0.174:3306/topdawg?user=webuser&password=b0tt0mcat&autoReconnect=true";
+//            _ConnectionString = "jdbc:mysql://10.5.0.174:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
         } else {
             _ConnectionString = connectionString;
         }

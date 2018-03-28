@@ -33,6 +33,9 @@
     <li ${pageClass}><a href="/topdawgsports/fantasy/transactions.htm">Transactions</a></li>
     <c:set var="pageClass" value="" />
 
+    <li ${pageClass}><a href="/topdawgsports/fantasy/irPlayers.htm">IR Players</a></li>
+    <c:set var="pageClass" value="" />
+
     <c:if test="${pageName == 'draftResults'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>

@@ -156,7 +156,7 @@ public class FootballTransactionRequests implements Harnessable {
                                 newRoster.Save();
 
                                 FSRoster roster = FSRoster.getRosterByPlayerID(con, teamid, request.getFSSeasonWeekID(), request.getDropPlayerID());
-                                if (roster == null)
+                                if (roster == null || roster.getID() == 0)
                                 {
                                     System.out.println("Problem getting roster player : teamid [" + teamid + "] fsseasonweekid [" + request.getFSSeasonWeekID() + "] playerid [" + request.getDropPlayerID() + "]");
                                 } else
