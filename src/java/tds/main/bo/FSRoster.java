@@ -257,7 +257,7 @@ public class FSRoster {
             }
             crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
-            roster = new FSRoster(crs, "FSRoster");
+            roster = new FSRoster(crs, "FSRoster$");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
