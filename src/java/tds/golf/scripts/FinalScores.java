@@ -81,7 +81,7 @@ public class FinalScores implements Harnessable {
                 return;
             }
             
-            final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2016/leaderboard.xml";
+            final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2018/leaderboard.xml";
             // www.pgatour.com/data/r/475/2015/money.xml
             // scores : leaderboard.xml
             // field : field.xml

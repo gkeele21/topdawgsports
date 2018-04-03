@@ -9,9 +9,11 @@ import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.logging.Level;
@@ -67,7 +69,7 @@ public class GolfPlayers implements Harnessable {
 
     public void importPlayers() throws Exception {
 
-        final String playersFilePath = "http://www.pgatour.com/data/players/player.json";
+        final String playersFilePath = "https://www.pgatour.com/data/players/player.json";
 //        final String playersFilePath = "http://202.78.83.137/data/players/player.json";
         StringBuilder sb = new StringBuilder();
         Connection con = null;
@@ -76,20 +78,40 @@ public class GolfPlayers implements Harnessable {
             String s;
 
             URL url = new URL(playersFilePath);
-            InputStream istream = url.openStream();
-            DataInputStream dis = new DataInputStream(new BufferedInputStream(istream));
             
-            while ((s = dis.readLine()) != null) {
-                sb.append(s);
+            HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+            int responseCode = urlcon.getResponseCode();
+            System.out.println("\nSending 'GET' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlcon.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
+            in.close();
+            //print in String
+//            System.out.println(response.toString());
             
-            JSONObject objs = (JSONObject) JSONValue.parse(sb.toString());
+//            InputStream istream = url.openStream();
+////            DataInputStream dis = new DataInputStream(new BufferedInputStream(istream));
+////            BufferedInputStream bis = new BufferedInputStream(istream);
+////            InputStream is = new URL(url).openStream();
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(istream, Charset.forName("UTF-8")));
+//            
+//            String tempText = readAll(rd);            
+//            while ((s = dis.readUTF()) != null) {
+//                sb.append(s);
+//            }
             
             // clear out the temp table
             StringBuilder clear = new StringBuilder();
             clear.append("delete from TempProPlayer");
 
             CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
+
+            JSONObject objs = (JSONObject) JSONValue.parse(response.toString());
 
             JSONArray playersArr = (JSONArray)objs.get("plrs");
 
@@ -108,7 +130,7 @@ public class GolfPlayers implements Harnessable {
                 boolean active = false;
                 for (Object yearObj : yearsArr)
                 {
-                    if ("2015".equals(yearObj) || "2016".equals(yearObj))
+                    if ("2016".equals(yearObj) || "2017".equals(yearObj) || "2018".equals(yearObj))
                     {
                         active = true;
                     }
@@ -149,7 +171,7 @@ public class GolfPlayers implements Harnessable {
             con.commit();
             System.out.println("Players updated.");
         } catch (Exception e) {
-            _Logger.log(Level.SEVERE, "FootballPlayers Update Error : {0}", e.getMessage());
+            _Logger.log(Level.SEVERE, "Golfers Update Error : {0}", e.getMessage());
             e.printStackTrace();
         } finally {
             con.close();
@@ -163,7 +185,7 @@ public class GolfPlayers implements Harnessable {
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0");
+            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0 where PositionID = 12");
 
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempProPlayer order by PlayerId");
@@ -184,7 +206,10 @@ public class GolfPlayers implements Harnessable {
                 _Logger.info(tempSql2.toString());
                 CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql2.toString());
                 if (crs2.next() && playerid > 0) {
-                      // no need to update currently
+                    // no need to update currently
+                    StringBuilder updateSql = new StringBuilder();
+                    updateSql.append("update Player set isActive = 1 where PlayerId = " + playerid);
+                    CTApplication._CT_QUICK_DB.executeUpdate(con,updateSql.toString());
                 } else {
 
                     // get the countryId based on the country
@@ -247,6 +272,15 @@ public class GolfPlayers implements Harnessable {
         }
     }
 
+    public static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+    
     public static void main(String[] args) {
         try {
             GolfPlayers players = new GolfPlayers();

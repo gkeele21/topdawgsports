@@ -24,7 +24,7 @@ public class golfTournamentWeekFieldEditAction extends BaseAction {
         String prefix = "";
         if ("local".equals(this.host))
         {
-            prefix = "commissioner/golf/";
+//            prefix = "commissioner/golf/";
         }
         
         nextPage = prefix + "golfTournamentWeek";

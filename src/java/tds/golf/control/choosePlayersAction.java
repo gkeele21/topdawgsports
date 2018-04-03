@@ -20,10 +20,10 @@ public class choosePlayersAction extends BaseAction {
         }
 
         String prefix = "";
-        if ("local".equals(choosePlayersAction.host))
-        {
-            prefix = "golf/";
-        }
+//        if ("local".equals(choosePlayersAction.host))
+//        {
+//            prefix = "golf/";
+//        }
         
         nextPage = prefix + "choosePlayers";
 

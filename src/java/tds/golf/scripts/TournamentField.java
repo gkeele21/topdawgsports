@@ -81,11 +81,11 @@ public class TournamentField implements Harnessable {
                 return;
             }
             
-            final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2016/field.xml";
+            final String filePath = "https://www.pgatour.com/data/r/" + extId + "/2018/field.xml";
             // www.pgatour.com/data/r/475/2015/money.xml
             // scores : leaderboard.xml
             // field : field.json
-            
+            System.out.println("Grabbing data from : " + filePath);
             URL url = new URL(filePath);
 
             InputStream uin = url.openStream();

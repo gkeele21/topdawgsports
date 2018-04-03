@@ -136,8 +136,8 @@
                 <ul>
                     <li>Pick up to 6 golfers each week</li>
                     <li>Given $1,000,000 to buy your roster</li>
-                    <li>Season lasts for 12 consecutive tournaments</li>
-                    <li>Compete against everyone in the league</li>
+                    <li>New game every week - no more season running totals</li>
+                    <li>Compete against everyone in the league every week</li>
                     <li>Game points awarded based on total money earnings from picked players</li>
                     <li>Create private leagues or compete for prizes in the General league</li>
                 </ul>

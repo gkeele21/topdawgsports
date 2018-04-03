@@ -1123,7 +1123,7 @@ public class FSUtils
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
 
@@ -1138,7 +1138,7 @@ public class FSUtils
         
         StringBuilder sql = new StringBuilder();
         if (needsQuotes == true) { sql.append("'"); } 
-        sql.append(value.toString());
+        sql.append(StringEscapeUtils.escapeSql(value.toString()));
         if (needsQuotes == true) { sql.append("'"); } 
         sql.append(",");
         return sql.toString();

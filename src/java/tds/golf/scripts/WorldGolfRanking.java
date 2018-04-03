@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
@@ -64,43 +65,69 @@ public class WorldGolfRanking implements Harnessable {
 
     public void importWGR(int pgaTournamentId, int fsSeasonWeekId) throws Exception {
 
-        final String filePath = "http://www.pgatour.com/stats/stat.186.html";
+        final String filePath = "https://www.pgatour.com/stats/stat.186.html";
         StringBuilder sb = new StringBuilder();
         Connection con = null;
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
             
             URL url = new URL(filePath);
-
-            InputStream uin = url.openStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(uin));
-            StringBuilder file = new StringBuilder();
-            // this web page uses nbsp, so add a line at the beginning to convert those
-            file.append("<?xml version=\"1.0\"?>\n\r");
-            file.append("<!DOCTYPE some_name [\n\r");
-            file.append("<!ENTITY nbsp \" \">\n\r");
-            file.append("]>\n\r"); 
-            String line;
+//
+//            InputStream uin = url.openStream();
+//            BufferedReader in = new BufferedReader(new InputStreamReader(uin));
+//            StringBuilder file = new StringBuilder();
+//            // this web page uses nbsp, so add a line at the beginning to convert those
+//            file.append("<?xml version=\"1.0\"?>\n\r");
+//            file.append("<!DOCTYPE some_name [\n\r");
+//            file.append("<!ENTITY nbsp \" \">\n\r");
+//            file.append("]>\n\r"); 
+//            String line;
             boolean ok = false;
-            while ((line = in.readLine()) != null) {
-                if (line.indexOf("<table class=\"table-styled\" id=\"statsTable\">") >= 0) {
+//            while ((line = in.readLine()) != null) {
+//                if (line.indexOf("<table class=\"table-styled\" id=\"statsTable\">") >= 0) {
+//                    ok = true;
+//                } else if (ok && line.indexOf("</table>") >= 0) {
+//                    ok = false;
+//                }
+//
+//                if (ok) {
+////                    if (line.indexOf("colspan=\"8\"") < 0) {
+//                        file.append(line);
+////                    }
+//                }
+//            }
+//
+//            file.append("</table>");
+
+            HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+            int responseCode = urlcon.getResponseCode();
+            System.out.println("\nSending 'GET' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(urlcon.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                if (inputLine.indexOf("<table class=\"table-styled\" id=\"statsTable\">") >= 0) {
                     ok = true;
-                } else if (ok && line.indexOf("</table>") >= 0) {
+                } else if (ok && inputLine.indexOf("</table>") >= 0) {
                     ok = false;
                 }
 
                 if (ok) {
 //                    if (line.indexOf("colspan=\"8\"") < 0) {
-                        file.append(line);
+                        response.append(inputLine);
 //                    }
                 }
             }
-
-            file.append("</table>");
+            response.append("</table>");
+            in.close();
             
+            String responseStr = response.toString();
+
             SAXBuilder jdomBuilder = new SAXBuilder();
             
-            Document jdomDocument = jdomBuilder.build(new StringReader(file.toString()));
+            Document jdomDocument = jdomBuilder.build(new StringReader(responseStr));
             
 //            System.out.println(jdomDocument.getRootElement().getName());
             Element table = jdomDocument.getRootElement();
