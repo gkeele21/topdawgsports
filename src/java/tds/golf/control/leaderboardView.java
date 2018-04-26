@@ -10,7 +10,6 @@
 package tds.golf.control;
 
 import bglib.util.AuDate;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +64,7 @@ public class leaderboardView extends BaseTeamView {
             }
             
             // get the list of players for this week
-            List<PGATournamentWeekPlayer> weekPlayers = tournamentWeek.GetField(null, "SortOrder", includeOwners, _FSTeam.getFSLeagueID());
+            List<PGATournamentWeekPlayer> weekPlayers = tournamentWeek.GetField(null, "SortOrder asc, RelativeToPar asc", includeOwners, _FSTeam.getFSLeagueID());
             request.setAttribute("weekPlayers", weekPlayers);
             
             List<FSGolfStandings> leagueStandings = FSGolfStandings.getLeagueStandingsInProgress(_FSTeam.getFSLeagueID(), tournamentWeek.getFSSeasonWeekID());

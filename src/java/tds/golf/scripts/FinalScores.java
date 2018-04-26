@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.constants.Team;
 import tds.main.bo.*;
@@ -54,7 +57,7 @@ public class FinalScores implements Harnessable {
         try {
 
             _Logger.info("Starting to retrieve Final Scores...");
-            importFinalScores(pgaTournamentId, fsSeasonWeekId);
+            importFinalScoresJson(pgaTournamentId, fsSeasonWeekId);
             _Logger.info("Done.");
 
             _ResultCode = ResultCode.RC_SUCCESS;
@@ -82,6 +85,7 @@ public class FinalScores implements Harnessable {
             }
             
             final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2018/leaderboard.xml";
+            
             // www.pgatour.com/data/r/475/2015/money.xml
             // scores : leaderboard.xml
             // field : field.xml
@@ -245,6 +249,173 @@ public class FinalScores implements Harnessable {
                 }
             }
             
+        } catch (Exception e) {
+            _Logger.log(Level.SEVERE, "FinalEarnings Creation Error : {0}", e.getMessage());
+            e.printStackTrace();
+        } finally {
+
+        }
+
+    }
+
+    public void importFinalScoresJson(int pgaTournamentId, int fsSeasonWeekId) throws Exception {
+
+        StringBuilder sb = new StringBuilder();
+        Connection con = null;
+        try {
+            con = CTApplication._CT_QUICK_DB.getConn(false);
+            
+            // get Tournament external id
+            PGATournamentWeek tournamentWeek = new PGATournamentWeek(pgaTournamentId, fsSeasonWeekId);
+            
+            String extId = tournamentWeek.getPGATournament().getExternalTournamentID();
+            
+            if (AuUtil.isEmpty(extId))
+            {
+                _Logger.log(Level.SEVERE, "Error: ExternalId is not set for this tournament.");
+                return;
+            }
+            
+            final String filePath = "https://statdata.pgatour.com/r/" + extId + "/2018/leaderboard-v2mini.json";
+            
+            // www.pgatour.com/data/r/475/2015/money.xml
+            // scores : leaderboard.xml
+            // field : field.xml
+           
+            URL url = new URL(filePath);
+
+            InputStream uin = url.openStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(uin));
+            StringBuilder file = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                file.append(line);
+            }
+
+            JSONObject objs = (JSONObject) JSONValue.parse(file.toString());
+
+            JSONObject leaderboardObj = (JSONObject)objs.get("leaderboard");
+            JSONArray playersArr = (JSONArray)leaderboardObj.get("players");
+
+            playerLoop: for (Object p : playersArr)
+            {
+                JSONObject player = (JSONObject) p;
+                String statsPlayerId = player.get("player_id").toString();
+                
+                if (statsPlayerId == null)
+                {
+                    continue;
+                }
+                
+                System.out.print("   StatsId  : " + statsPlayerId);
+
+                // retrieve PGATournamentWeekPlayer record for this week
+                
+                int playerId = 0;
+                StringBuilder query = new StringBuilder();
+                query.append("select * from Player where StatsPlayerId = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
+                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+//                    _Logger.info(query.toString());
+                if (crs3.next()) {
+                    playerId = crs3.getInt("PlayerID");
+                }
+
+                if (playerId > 0)
+                {
+                    
+                    PGATournamentWeekPlayer weekPlayer = new PGATournamentWeekPlayer(pgaTournamentId, fsSeasonWeekId, playerId);
+                        
+                    if (weekPlayer != null && weekPlayer.getID() > 0) {
+                        
+                        String status = player.get("status").toString();
+                        String rank = player.get("current_position").toString();
+                        boolean active = true;
+                        if ("cut".equals(status))
+                        {
+                            rank = "CUT";
+                            active = false;
+                        }
+                                                
+                        if (!AuUtil.isEmpty(rank)) {
+                            weekPlayer.setTournamentRank(rank);
+                        }
+                        
+                        if (active)
+                        {
+                            String relStr = player.get("total").toString();
+                            if (!AuUtil.isEmpty(relStr)) {
+                                weekPlayer.setRelativeToPar(Integer.parseInt(relStr));
+                            }    
+                        }
+                        
+                        String scStr = player.get("total_strokes").toString();
+                        if (!AuUtil.isEmpty(scStr)) {
+                            weekPlayer.setFinalScore(scStr);
+                        }
+                        
+                        Object thruObj = player.get("thru");
+                        
+                        if (thruObj != null) {
+                            String thruStr = thruObj.toString();
+                            weekPlayer.setThru(Integer.parseInt(thruStr));
+                        }
+                        
+                        Object todayObj = player.get("today");
+                        if (todayObj != null) {
+                            String todayStr = todayObj.toString();
+                            weekPlayer.setTodayRound(Integer.parseInt(todayStr));
+                        }
+                        
+                        // get round scores
+                        JSONArray roundsArr = (JSONArray)player.get("rounds");
+                        for (Object r : roundsArr) {
+                            JSONObject round = (JSONObject) r;
+                            String roundNumberStr = round.get("round_number").toString();
+                            Object roundScoreObj = round.get("strokes");
+                            if (roundScoreObj == null)
+                            {
+                                continue;
+                            }
+                            String roundScore = roundScoreObj.toString();
+                            int roundNumber = Integer.parseInt(roundNumberStr);
+                            
+                            switch (roundNumber) {
+                                case 1 :
+                                    weekPlayer.setRound1(roundScore);
+                                    break;
+                                case 2 :
+                                    weekPlayer.setRound2(roundScore);
+                                    break;
+                                case 3 :
+                                    weekPlayer.setRound3(roundScore);
+                                    break;
+                                case 4 :
+                                    weekPlayer.setRound4(roundScore);
+                                    break;
+                                case 5 :
+                                    weekPlayer.setRound5(roundScore);
+                                    break;
+                            } 
+                        }
+
+                        // Get Money Earnings
+                        JSONObject rankingsObj = (JSONObject)player.get("rankings");                            
+                        String moneyEarned = rankingsObj.get("projected_money_event").toString();
+                        if (!AuUtil.isEmpty(moneyEarned)) {
+                        weekPlayer.setMoneyEarned(Double.parseDouble(moneyEarned)); 
+                        }
+
+                        weekPlayer.Save();
+                        System.out.println(" : SUCCESS!");
+                    } else {
+                        System.out.println(" : SKIPPED - player not in field.");
+                    }
+
+                } else
+                {
+                    System.out.println(" : SKIPPED - player does not exist.");
+                }                
+            }
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "FinalEarnings Creation Error : {0}", e.getMessage());
             e.printStackTrace();

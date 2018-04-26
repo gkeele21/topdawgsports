@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.constants.Team;
 import tds.main.bo.*;
@@ -54,7 +57,7 @@ public class TournamentField implements Harnessable {
         try {
 
             _Logger.info("Starting to retrieve Tournament Field...");
-            importField(pgaTournamentId, fsSeasonWeekId);
+            importFieldJSON(pgaTournamentId, fsSeasonWeekId);
             _Logger.info("Done.");
 
             _ResultCode = ResultCode.RC_SUCCESS;
@@ -157,6 +160,106 @@ public class TournamentField implements Harnessable {
                 } else
                 {
                     String playerName = playerElement.getAttributeValue("PlayerName");
+                    
+                    System.out.println(" : SKIPPED - player does not exist [" + playerName + "]");
+                }
+            }
+            
+        } catch (Exception e) {
+            _Logger.log(Level.SEVERE, "TournamentField Creation Error : {0}", e.getMessage());
+            e.printStackTrace();
+        } finally {
+
+        }
+
+    }
+
+    public void importFieldJSON(int pgaTournamentId, int fsSeasonWeekId) throws Exception {
+
+        StringBuilder sb = new StringBuilder();
+        Connection con = null;
+        try {
+            con = CTApplication._CT_QUICK_DB.getConn(false);
+            
+            // get Tournament external id
+            PGATournamentWeek tournamentWeek = new PGATournamentWeek(pgaTournamentId, fsSeasonWeekId);
+            
+            String extId = tournamentWeek.getPGATournament().getExternalTournamentID();
+            
+            if (AuUtil.isEmpty(extId))
+            {
+                _Logger.log(Level.SEVERE, "Error: ExternalId is not set for this tournament.");
+                return;
+            }
+            
+            final String filePath = "https://statdata.pgatour.com/r/" + extId + "/field.json";
+            // www.pgatour.com/data/r/475/2015/money.xml
+            // scores : leaderboard.xml
+            // field : field.json
+            System.out.println("Grabbing data from : " + filePath);
+            URL url = new URL(filePath);
+
+            InputStream uin = url.openStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(uin));
+            StringBuilder file = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                file.append(line);
+            }
+
+            JSONObject objs = (JSONObject) JSONValue.parse(file.toString());
+
+            JSONObject tournamentObj = (JSONObject)objs.get("Tournament");
+            JSONArray playersArr = (JSONArray)tournamentObj.get("Players");
+
+            playerLoop: for (Object p : playersArr)
+            {
+                JSONObject player = (JSONObject) p;
+                String statsPlayerId = player.get("TournamentPlayerId").toString();                
+//                System.out.println("ID : " + fullId);
+                
+                if (statsPlayerId == null)
+                {
+                    continue;
+                }
+                
+                System.out.print("   StatsId  : " + statsPlayerId);
+                String isAlternate = player.get("isAlternate").toString();
+                if ("Yes".equals(isAlternate))
+                {
+                    System.out.println(" : SKIPPED - player is alternate.");
+                    continue;
+                }
+                
+                // create PGATournamentWeekPlayer record for this week
+                int playerId = 0;
+                StringBuilder query = new StringBuilder();
+                query.append("select * from Player where StatsPlayerId = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
+                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+//                    _Logger.info(query.toString());
+                if (crs3.next()) {
+                    playerId = crs3.getInt("PlayerID");
+                }
+
+                if (playerId > 0)
+                {
+                    PGATournamentWeekPlayer weekPlayer = new PGATournamentWeekPlayer(pgaTournamentId, fsSeasonWeekId, playerId);
+
+                    if (weekPlayer == null || weekPlayer.getID() < 1) {
+                        weekPlayer.setPGATournamentID(pgaTournamentId);
+                        weekPlayer.setFSSeasonWeekID(fsSeasonWeekId);
+                        weekPlayer.setPlayerID(playerId);
+                        weekPlayer.setWorldGolfRanking(1000);
+                        
+                        weekPlayer.Save();
+                        System.out.println(" : SUCCESS!");
+                    } else {
+                        System.out.println(" : SKIPPED - already in field.");
+                    }
+
+                } else
+                {
+                    String playerName = player.get("PlayerName").toString();
                     
                     System.out.println(" : SKIPPED - player does not exist [" + playerName + "]");
                 }

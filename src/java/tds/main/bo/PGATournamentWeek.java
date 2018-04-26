@@ -22,6 +22,7 @@ public class PGATournamentWeek implements Serializable {
     private Integer _FSSeasonWeekID;
     private AuDate _StartDate;    
     private AuDate _EndDate;
+    private double _TeamFee;
     
     // OBJECTS
     private FSSeasonWeek _FSSeasonWeek;
@@ -29,6 +30,10 @@ public class PGATournamentWeek implements Serializable {
     
     // CONSTRUCTORS
     public PGATournamentWeek() {
+    }
+
+    public PGATournamentWeek(int fsSeasonWeekID) {
+        this(null, 0, fsSeasonWeekID);
     }
 
     public PGATournamentWeek(int tournamentID, int fsSeasonWeekID) {
@@ -49,8 +54,10 @@ public class PGATournamentWeek implements Serializable {
             sql.append(" JOIN SeasonWeek w ON w.SeasonWeekID = fsw.SeasonWeekID ");
             sql.append(" JOIN Season s ON s.SeasonID = w.SeasonID ");
             sql.append(" JOIN PGATournament t ON t.PGATournamentID = tw.PGATournamentID ");
-            sql.append(" WHERE tw.PGATournamentID = ").append(tournamentID);
-            sql.append(" AND tw.FSSeasonWeekID = ").append(fsSeasonWeekID);
+            sql.append(" WHERE tw.FSSeasonWeekID = ").append(fsSeasonWeekID);
+            if (tournamentID > 0) {
+                sql.append(" AND tw.PGATournamentID = ").append(tournamentID);
+            }
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
             if (crs.next()) {
@@ -77,6 +84,7 @@ public class PGATournamentWeek implements Serializable {
     public Integer getFSSeasonWeekID() {return _FSSeasonWeekID;}    
     public AuDate getStartDate() {return _StartDate;}
     public AuDate getEndDate() { return _EndDate; }
+    public double getTeamFee() { return _TeamFee; }
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public PGATournament getPGATournament() {if (_PGATournament == null && _PGATournamentID > 0) {_PGATournament = new PGATournament(_PGATournamentID);}return _PGATournament;}
 
@@ -85,6 +93,7 @@ public class PGATournamentWeek implements Serializable {
     public void setFSSeasonWeekID(Integer FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
     public void setStartDate(AuDate StartDate) {_StartDate = StartDate;}
     public void setEndDate(AuDate EndDate) {_EndDate = EndDate;}
+    public void setTeamFee(double teamFee) {_TeamFee = teamFee;}
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
     public void setPGATournament(PGATournament PGATournament) {_PGATournament = PGATournament;}
     
@@ -283,7 +292,52 @@ public class PGATournamentWeek implements Serializable {
 
         return players;
     }
-    
+
+    public List<FSTeam> GetLeagueTeamsEntered(int fsLeagueID, String orderBy) {
+
+        List<FSTeam> teams = new ArrayList<FSTeam>();
+
+        if (orderBy == null)
+        {
+            orderBy = "twp.SalaryValue desc, p.lastName";
+        }
+        
+        StringBuilder sql = new StringBuilder();
+        sql.append(" SELECT").append(_Cols.getColumnList("PGATournamentWeek", "tw.", "PGATournamentWeek$")).append(", ");
+        sql.append(_Cols.getColumnList("PGATournament", "t.", "PGATournament$"));
+        sql.append(_Cols.getColumnList("FSGolfStandings", "gs.", "FSGolfStandings$"));
+        sql.append(" FROM PGATournamentWeek tw ");
+        sql.append(" JOIN FSGolfStandings gs ON gs.PGATournamentID = twp.PlayerID ");
+        sql.append(" LEFT JOIN Country cnt on cnt.CountryID = p.CountryID ");
+        sql.append(" JOIN PGATournament t ON t.PGATournamentID = tw.PGATournamentID");
+        sql.append(" WHERE twp.FSSeasonWeekID = ").append(getFSSeasonWeekID());
+        sql.append(" AND twp.PGATournamentID = ").append(getPGATournamentID());
+//        sql.append(" AND p.PlayerID not in (").append(excludeStr).append(")");
+        sql.append(" ORDER BY ").append(orderBy);
+
+        // Call QueryCreator
+        CachedRowSet crs = null;
+        try {
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
+            while (crs.next()) {
+                PGATournamentWeekPlayer player = new PGATournamentWeekPlayer(crs,"PGATournamentWeekPlayer$");
+//                if (includeOwners)
+//                {
+//                    player.populateOwners(fsLeagueID);
+//                }
+//                
+//                players.add(player);
+            }
+
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+        }
+
+        return teams;
+    }
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PGATournamentWeek", "PGATournamentID", getPGATournamentID(), "FSSeasonWeekID", getFSSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -297,6 +351,7 @@ public class PGATournamentWeek implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) { _FSSeasonWeekID = crs.getInt(prefix + "FSSeasonWeekID"); }
             if (FSUtils.fieldExists(crs, prefix, "StartDate")) { _StartDate = new AuDate(crs.getDate(prefix + "StartDate")); }
             if (FSUtils.fieldExists(crs, prefix, "EndDate")) { _EndDate = new AuDate(crs.getDate(prefix + "EndDate")); }
+            if (FSUtils.fieldExists(crs, prefix, "TeamFee")) { setTeamFee(crs.getDouble(prefix + "TeamFee")); }
             
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) { _FSSeasonWeek = new FSSeasonWeek(crs, "FSSeasonWeek$"); }
@@ -311,12 +366,13 @@ public class PGATournamentWeek implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO PGATournamentWeek ");
-        sql.append("(PGATournamentID, FSSeasonWeekID, StartDate, EndDate) ");
+        sql.append("(PGATournamentID, FSSeasonWeekID, StartDate, EndDate, TeamFee) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getPGATournamentID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue((getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATE_PATTERN), true));
         sql.append(FSUtils.InsertDBFieldValue((getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATE_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue(getTeamFee()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -334,6 +390,7 @@ public class PGATournamentWeek implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("FSSeasonWeekID", getFSSeasonWeekID()));
         sql.append(FSUtils.UpdateDBFieldValue("StartDate", (getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATE_PATTERN), true));
         sql.append(FSUtils.UpdateDBFieldValue("EndDate", (getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATE_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("TeamFee", getTeamFee()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append(" WHERE PGATournamentID = ").append(getPGATournamentID());
         sql.append(" AND FSSeasonWeekID = ").append(getFSSeasonWeekID());

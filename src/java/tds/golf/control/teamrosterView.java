@@ -1,14 +1,9 @@
 package tds.golf.control;
 
 import bglib.util.FSUtils;
-import java.util.ArrayList;
-import tds.main.bo.FSRoster;
-import tds.main.bo.FSSeasonWeek;
-import tds.main.bo.FSTeam;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import tds.main.bo.*;
 import tds.main.control.BaseTeamView;
 
@@ -53,7 +48,6 @@ public class teamrosterView extends BaseTeamView {
 //                curPlayerValues.add(temp);
                 
                 roster.setPGATournamentWeekPlayer(temp);
-                System.out.println("Hello");
             }            
 
             request.setAttribute("tournamentWeek", tournamentWeek);

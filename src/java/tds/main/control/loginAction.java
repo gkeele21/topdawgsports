@@ -3,15 +3,12 @@ package tds.main.control;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
 import bglib.util.FormField;
-import tds.main.bo.FSSeason;
-import tds.main.bo.FSTeam;
-import tds.main.bo.FSUser;
-import tds.main.bo.UserSession;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.List;
-import java.util.Arrays;
+import tds.main.bo.FSUser;
+import tds.main.bo.UserSession;
 
 public class loginAction extends BaseAction {
 
@@ -55,6 +52,7 @@ public class loginAction extends BaseAction {
             session.getHttpSession().setMaxInactiveInterval(SESSION_TIMEOUT);
             UserSession._UserCache.put(session.getHttpSession().getId(), user);
             session.getHttpSession().setAttribute("validUser", user);
+            session.getHttpSession().setAttribute("validUserId", user.getFSUserID());
             
             // set last login to current timestamp
             user.setLastLogin();

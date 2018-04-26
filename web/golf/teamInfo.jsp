@@ -72,25 +72,67 @@
                                 </tds:tableRows>
 
                         </table>
-                           <br /><br />
+                           
                        </c:if>
+                           <br /><br />
+                        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
+                            <tds:tableRows items="${weekGolfResults}" var="ls" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
+                                <jsp:attribute name="rowTitle">
+                                    <tr align="center" class="rowTitle">
+                                        <td colspan="8">
+                                            <strong><h2>Results for <c:out value="${lastWeekTournament.PGATournament.tournamentName}" /> </h2></strong>
+                                        </td>
+                                    </tr>
+                                </jsp:attribute>
+                                <jsp:attribute name="rowHeader">
+                                    <tr class="rowHeader">
+                                        <th width="5%">Rank</th>
+                                        <th width="20%">Team</th>
+                                        <th width="15%">User</th>
+                                        <th width="15%">Total $</th>
+                                        <th width="12%">Winnings</th>
+                                    </tr>
+                                </jsp:attribute>
+                                <jsp:attribute name="rowData">
+                                    <tr ${highlightRow1} class="rowData">
+                                        <td><c:out value="${ls.rank}" /></td>
+                                        <td><tds:team teamObj="${ls.FSTeam}" displayRosterLink="true" weekID="${displayWeek.FSSeasonWeekID}" /></td>
+                                        <td><c:out value="${ls.FSTeam.FSUser.firstName} ${ls.FSTeam.FSUser.lastName}" /></td>
+                                        <td><fmt:formatNumber type="currency" value="${ls.weekMoneyEarned}" maxFractionDigits="0" /></td>
+                                        <td><c:if test="${ls.weekWinnings > 0}">
+                                                <fmt:formatNumber type="currency" value="${ls.weekWinnings}" maxFractionDigits="0" />
+                                            </c:if>
+                                            </td>
+                                    </tr>
+                                </jsp:attribute>
+                                <jsp:attribute name="rowEmpty">
+                                    <tr>
+                                        <td colspan="10">There are no teams to display.</td>
+                                    </tr>
+                                </jsp:attribute>
+                            </tds:tableRows>
+
+                       </table>
+                       <br /><br />
                        <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                             <tds:tableRows items="${golfleagueStandings}" var="ls" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                                 <jsp:attribute name="rowTitle">
                                     <tr align="center" class="rowTitle">
                                         <td colspan="8">
-                                            <strong><h2>Standings</h2></strong>
+                                            <strong><h2>YEAR Standings</h2></strong>
                                         </td>
                                     </tr>
                                     <c:set value="0" var="rankNum" />
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
-                                        <th width="10%">Rank</th>
-                                        <th width="30%">Team</th>
-                                        <th width="20%">User</th>
-                                        <th width="20%">Total $</th>
-                                        <th width="20%">Last Week $</th>
+                                        <th width="5%">Rank</th>
+                                        <th width="20%">Team</th>
+                                        <th width="15%">User</th>
+                                        <th width="7%"># Events</th>
+                                        <th width="10%">Total Fees</th>
+                                        <th width="12%">Total Winnings</th>
+                                        <th width="15%">Total $</th>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -98,9 +140,13 @@
                                     <tr ${highlightRow1} class="rowData">
                                         <td>${rankNum}</td>
                                         <td><tds:team teamObj="${ls.FSTeam}" displayRosterLink="true" weekID="${displayWeek.FSSeasonWeekID}" /></td>
-                                        <td><c:out value="${ls.FSTeam.FSUser.firstName} ${ls.FSTeam.FSUser.lastName}" />
+                                        <td><c:out value="${ls.FSTeam.FSUser.firstName} ${ls.FSTeam.FSUser.lastName}" /></td>
+                                        <td><c:out value="${ls.totalEventsEntered}" /></td>
+                                        <td><fmt:formatNumber type="currency" value="${ls.totalFees}" maxFractionDigits="0" /></td>
+                                        <td><c:if test="${ls.totalWinnings > 0}">
+                                                <fmt:formatNumber type="currency" value="${ls.totalWinnings}" maxFractionDigits="0" />
+                                            </c:if></td>
                                         <td><fmt:formatNumber type="currency" value="${ls.totalMoneyEarned}" maxFractionDigits="0" /></td>
-                                        <td><fmt:formatNumber type="currency" value="${ls.weekMoneyEarned}" maxFractionDigits="0" /></tdf>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -134,17 +180,23 @@
                             <jsp:attribute name="rowHeader">
                                 <tr class="rowHeader">
                                     <td width="10%" valign="bottom" class="GTW10" >WK</td>
-                                    <td width="60%" valign="bottom" class="GTW10" ><strong>TOURNAMENT</strong></td>
-                                    <td width="30%" valign="bottom" align="center" class="GTW10" ><b>DATES</b></td>
-                                    <td width="20%" valign="bottom" align="center" class="GTW10" ><b>$</b></td>
+                                    <td width="30%" valign="bottom" class="GTW10" ><strong>TOURNAMENT</strong></td>
+                                    <td width="20%" valign="bottom" align="center" class="GTW10" ><b>DATES</b></td>
+                                    <td width="10%" valign="bottom" align="center" class="GTW10" ><b>Fee</b></td>
+                                    <td width="10%" valign="bottom" align="center" class="GTW10" ><b>Rank</b></td>
+                                    <td width="10%" valign="bottom" align="center" class="GTW10" ><b>Winnings</b></td>
+                                    <td width="10%" valign="bottom" align="center" class="GTW10" ><b>$</b></td>
                                 </tr>
                             </jsp:attribute>
                             <jsp:attribute name="rowData">
                                 <tr ${highlightRow1} class="rowData">
+                                    <c:set var="standingsRec" value="${tds:getStandingsRecord(fsTeam.FSTeamID,tournamentWeek.FSSeasonWeek.FSSeasonWeekID)}" />
                                     <td align="center"><c:out value="${tournamentWeek.FSSeasonWeek.FSSeasonWeekNo}" /></td>
                                     <td align="center"><c:out value="${tournamentWeek.PGATournament.tournamentName}" /></td>
                                     <td align="center"><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
-                                    <c:set var="standingsRec" value="${tds:getStandingsRecord(fsTeam.FSTeamID,tournamentWeek.FSSeasonWeek.FSSeasonWeekID)}" />
+                                    <td align="center"><fmt:formatNumber type="currency" value="${tournamentWeek.teamFee}" maxFractionDigits="0" /></td>
+                                    <td align="center"><c:out value="${standingsRec.rank}" /></td>
+                                    <td align="center"><fmt:formatNumber type="currency" value="${standingsRec.weekWinnings}" maxFractionDigits="0" /></td>
                                     
                                     <td align="center">
                                         <c:if test="${standingsRec != null}">

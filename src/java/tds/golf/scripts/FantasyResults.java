@@ -94,8 +94,13 @@ public class FantasyResults  {
                 {
                     double moneyEarned = 0;
                     int numPlayers = 0;
+                    boolean teamEntered = false;
                     // get team roster
                     List<FSRoster> rosterPlayers = team.getRoster(con, fsseasonweekid);
+                    
+                    if (rosterPlayers.size() >= 1) {
+                        teamEntered = true;
+                    }
                     
                     for (FSRoster rosterPlayer : rosterPlayers)
                     {
@@ -129,11 +134,17 @@ public class FantasyResults  {
                     
                     StringBuilder sql2 = new StringBuilder();
                     sql2.append("INSERT INTO FSGolfStandings ");
-                    sql2.append(" (FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned)");
+                    sql2.append(" (FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned, WeekEventEntered)");
                     sql2.append(" VALUES(").append(team.getFSTeamID());
                     sql2.append(", ").append(fsseasonweekid);
                     sql2.append(", ").append(moneyEarned);
                     sql2.append(", ").append(totalMoneyEarned);
+                    sql2.append(", ");
+                    if (teamEntered) {
+                        sql2.append("1");
+                    } else {
+                        sql2.append("0");
+                    }
                     sql2.append(" )");
                     
                     CTApplication._CT_QUICK_DB.executeUpdate(con, sql2.toString());
@@ -143,6 +154,17 @@ public class FantasyResults  {
             
             con.commit();
             
+            // Figure out who won
+            for (FSLeague league : leagues) {
+                int numTeamsEntered = 0;
+                List<FSTeam> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID());
+                
+                for (FSTeam team : teams)
+                {
+                    
+                }
+            }
+
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
             _Logger.log(Level.SEVERE, "Exception in FantasyResults.run()", e);

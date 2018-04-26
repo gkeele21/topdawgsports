@@ -16,6 +16,12 @@ public class FSGolfStandings implements Serializable {
     private double _WeekMoneyEarned;
     private double _TotalMoneyEarned;
     private int _Rank;
+    private double _WeekWinnings;
+    private double _TotalWinnings;
+    private double _WeekFees;
+    private double _TotalFees;
+    private boolean _WeekEventEntered;
+    private int _TotalEventsEntered;
 
     // OBJECTS
     private FSTeam _FSTeam;
@@ -39,6 +45,12 @@ public class FSGolfStandings implements Serializable {
     public double getWeekMoneyEarned() {return _WeekMoneyEarned;}
     public double getTotalMoneyEarned() {return _TotalMoneyEarned;}
     public int getRank() {return _Rank;}
+    public double getWeekWinnings() {return _WeekWinnings;}
+    public double getTotalWinnings() {return _TotalWinnings;}
+    public double getWeekFees() {return _WeekFees;}
+    public double getTotalFees() {return _TotalFees;}
+    public boolean getWeekEventEntered() {return _WeekEventEntered;}
+    public int getTotalEventsEntered() {return _TotalEventsEntered;}
     public FSTeam getFSTeam() {if (_FSTeam == null && _FSTeamID > 0) {_FSTeam = new FSTeam(_FSTeamID);}return _FSTeam;}
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
 
@@ -48,6 +60,12 @@ public class FSGolfStandings implements Serializable {
     public void setWeekMoneyEarned(double money) {_WeekMoneyEarned = money;}
     public void setTotalMoneyEarned(double money) {_TotalMoneyEarned = money;}
     public void setRank(int Rank) {_Rank = Rank;}
+    public void setWeekWinnings(double money) {_WeekWinnings = money;}
+    public void setTotalWinnings(double money) {_TotalWinnings = money;}
+    public void setWeekFees(double money) {_WeekFees = money;}
+    public void setTotalFees(double money) {_TotalFees = money;}
+    public void setWeekEventEntered(boolean entered) {_WeekEventEntered = entered;}
+    public void setTotalEventsEntered(int entered) {_TotalEventsEntered = entered;}
     public void setFSTeam(FSTeam FSTeam) {_FSTeam = FSTeam;}
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
 
@@ -58,10 +76,10 @@ public class FSGolfStandings implements Serializable {
     }
     
     public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort) {
-        return getLeagueStandings(leagueID, fsseasonweekID, sort, true);
+        return getLeagueStandings(leagueID, fsseasonweekID, sort, true, false);
     }
     
-    public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort, boolean requireStandingsRecords) {
+    public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort, boolean requireStandingsRecords, boolean requireParticipation) {
 
         List<FSGolfStandings> standings = new ArrayList<FSGolfStandings>();
         if (sort == null || sort.equals("")) {
@@ -87,8 +105,10 @@ public class FSGolfStandings implements Serializable {
             sql.append(" LEFT JOIN FSSeasonWeek w ON w.FSSeasonWeekID = s.FSSeasonWeekID ");
         }
         sql.append(" WHERE l.FSLeagueID = ").append(leagueID);
+        if (requireParticipation) {
+            sql.append(" AND s.WeekEventEntered = 1");
+        }
         sql.append(" ORDER BY ").append(sort);
-
         CachedRowSet crs = null;
         try {
             crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
@@ -220,6 +240,12 @@ public class FSGolfStandings implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "WeekMoneyEarned")) { setWeekMoneyEarned(crs.getDouble(prefix + "WeekMoneyEarned")); }
             if (FSUtils.fieldExists(crs, prefix, "TotalMoneyEarned")) { setTotalMoneyEarned(crs.getDouble(prefix + "TotalMoneyEarned")); }
             if (FSUtils.fieldExists(crs, prefix, "Rank")) { setRank(crs.getInt(prefix + "Rank")); }
+            if (FSUtils.fieldExists(crs, prefix, "WeekWinnings")) { setWeekWinnings(crs.getDouble(prefix + "WeekWinnings")); }
+            if (FSUtils.fieldExists(crs, prefix, "TotalWinnings")) { setTotalWinnings(crs.getDouble(prefix + "TotalWinnings")); }
+            if (FSUtils.fieldExists(crs, prefix, "WeekFees")) { setWeekFees(crs.getDouble(prefix + "WeekFees")); }
+            if (FSUtils.fieldExists(crs, prefix, "TotalFees")) { setTotalFees(crs.getDouble(prefix + "TotalFees")); }
+            if (FSUtils.fieldExists(crs, prefix, "WeekEventEntered")) { setWeekEventEntered(crs.getBoolean(prefix + "WeekEventEntered")); }
+            if (FSUtils.fieldExists(crs, prefix, "TotalEventsEntered")) { setTotalEventsEntered(crs.getInt(prefix + "TotalEventsEntered")); }
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) { setFSTeam(new FSTeam(crs, "FSTeam$")); }
@@ -235,13 +261,19 @@ public class FSGolfStandings implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO FSGolfStandings ");
-        sql.append("(FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned,Rank) ");
+        sql.append("(FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned, Rank, WeekWinnings, TotalWinnings, WeekFees, TotalFees, WeekEventEntered, TotalEventsEntered) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getFSTeamID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue(getWeekMoneyEarned()));
         sql.append(FSUtils.InsertDBFieldValue(getTotalMoneyEarned()));
         sql.append(FSUtils.InsertDBFieldValue(getRank()));
+        sql.append(FSUtils.InsertDBFieldValue(getWeekWinnings()));
+        sql.append(FSUtils.InsertDBFieldValue(getTotalWinnings()));
+        sql.append(FSUtils.InsertDBFieldValue(getWeekFees()));
+        sql.append(FSUtils.InsertDBFieldValue(getTotalFees()));
+        sql.append(FSUtils.InsertDBFieldValue(getWeekEventEntered()));
+        sql.append(FSUtils.InsertDBFieldValue(getTotalEventsEntered()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -258,6 +290,12 @@ public class FSGolfStandings implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("WeekMoneyEarned", getWeekMoneyEarned()));
         sql.append(FSUtils.UpdateDBFieldValue("TotalMoneyEarned", getTotalMoneyEarned()));
         sql.append(FSUtils.UpdateDBFieldValue("Rank", getRank()));
+        sql.append(FSUtils.UpdateDBFieldValue("WeekWinnings", getWeekWinnings()));
+        sql.append(FSUtils.UpdateDBFieldValue("TotalWinnings", getTotalWinnings()));
+        sql.append(FSUtils.UpdateDBFieldValue("WeekFees", getWeekFees()));
+        sql.append(FSUtils.UpdateDBFieldValue("TotalFees", getTotalFees()));
+        sql.append(FSUtils.UpdateDBFieldValue("WeekEventEntered", getWeekEventEntered()));
+        sql.append(FSUtils.UpdateDBFieldValue("TotalEventsEntered", getTotalEventsEntered()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSTeamID = ").append(getFSTeamID()).append(" AND FSSeasonWeekID = ").append(getFSSeasonWeekID());
 

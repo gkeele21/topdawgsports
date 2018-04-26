@@ -25,6 +25,20 @@ public class userProfileView extends BaseView {
         
         // Get request/session objects
         FSUser user = (FSUser)session.getHttpSession().getAttribute("validUser");
+        if (user == null) {
+            System.out.println("User not found in session.");
+            Integer userId = (Integer)session.getHttpSession().getAttribute("validUserId");
+            if (userId > 0) {
+                user = new FSUser(userId);
+            } else {
+                user = UserSession._UserCache.get(session.getHttpSession().getId());
+            }
+            
+            if (user == null) {
+                System.out.println("Problem : user obj still null");
+            }
+            
+        }
         List<Integer> allYears = (List<Integer>)session.getHttpSession().getAttribute("allYears");
         Integer sportYear = (Integer)session.getHttpSession().getAttribute("sportYear");
         Integer reqYear = FSUtils.getIntRequestParameter(request, "reqYear", 0);

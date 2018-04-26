@@ -99,8 +99,8 @@
                                     <jsp:attribute name="rowData">
                                         <tr ${highlightRow1} class="rowData">
                                             <td>
-                                                <%--<c:if test="${deadlinePassed != true}">--%>
-                                                <c:if test="${roster.PGATournamentWeekPlayer.finalScore < 1}">
+                                                <c:if test="${deadlinePassed != true}">
+                                                <%--<c:if test="${roster.PGATournamentWeekPlayer.finalScore < 1}">--%>
                                                     <input type="checkbox" name="drop" value="${roster.ID}_${roster.PGATournamentWeekPlayer.salaryValue}"/>
                                                 </c:if>
                                             </td>
@@ -140,8 +140,12 @@
                                     </jsp:attribute>
                                     <jsp:attribute name="rowTotal">
                                         <tr class="rowHeader">
-                                            <td colspan="2">TOTALS</td>
+                                            <td colspan="2">USED</td>
                                             <td><fmt:formatNumber type="currency" maxFractionDigits="0" value="${teamSalary.total}"/></td>
+                                        </tr>
+                                        <tr class="rowHeader">
+                                            <td colspan="2">REMAINING</td>
+                                            <td>(<fmt:formatNumber type="currency" maxFractionDigits="0" value="${1000000-teamSalary.total}"/>)</td>
                                         </tr>
                                     </jsp:attribute>
                                     <jsp:attribute name="rowEmpty">
@@ -175,8 +179,8 @@
                                     <jsp:attribute name="rowData">
                                         <tr ${highlightRow1} class="rowData">
                                             <td>
-                                                <%--<c:if test="${deadlinePassed != true}">--%>
-                                                <c:if test="${puPlayer.finalScore < 1}">
+                                                <c:if test="${deadlinePassed != true}">
+                                                <%--<c:if test="${puPlayer.finalScore < 1}">--%>
                                                     <input type="checkbox" name="pickup" value="${puPlayer.playerID}_${puPlayer.salaryValue}" />
                                                 </c:if>
                                             </td>                                                    

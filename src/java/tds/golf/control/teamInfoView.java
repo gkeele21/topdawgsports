@@ -81,14 +81,21 @@ public class teamInfoView extends BaseTeamView {
                     displayWeek = week;
                 }
             }
-            
-            // Grab the league standings
-            List<FSGolfStandings> leagueStandings = FSGolfStandings.getLeagueStandings(league.getFSLeagueID(), displayWeek.getFSSeasonWeekID(), "s.TotalMoneyEarned desc, t.teamName");
 
+            // Grab the league standings
+            List<FSGolfStandings> weekResults = FSGolfStandings.getLeagueStandings(league.getFSLeagueID(), displayWeek.getFSSeasonWeekID(), "s.Rank asc, s.WeekWinnings desc, s.WeekMoneyEarned desc, t.teamName", true, true);
+
+            // Grab the league standings
+            List<FSGolfStandings> leagueStandings = FSGolfStandings.getLeagueStandings(league.getFSLeagueID(), displayWeek.getFSSeasonWeekID(), "s.TotalWinnings desc, s.TotalMoneyEarned desc, t.teamName");
+
+            PGATournamentWeek lastWeekTournament = new PGATournamentWeek(displayWeek.getFSSeasonWeekID());
+            
             request.setAttribute("golfallLeagueTeams",allLeagueTeams);
             request.setAttribute("golfdisplayWeek", displayWeek);
             request.setAttribute("golfstandingsWeeks",standingsWeeks);
             request.setAttribute("golfleagueStandings",leagueStandings);
+            request.setAttribute("weekGolfResults", weekResults);
+            request.setAttribute("lastWeekTournament", lastWeekTournament);
             request.setAttribute("fsTeam", _FSTeam);
             _Session.getHttpSession().setAttribute("fantasyCurrentWeek",_CurrentFSSeasonWeek);
             _Session.getHttpSession().setAttribute("golfdisplayfsseasonweek",displayWeek);
