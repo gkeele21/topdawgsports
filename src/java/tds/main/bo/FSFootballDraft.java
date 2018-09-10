@@ -15,7 +15,8 @@ public class FSFootballDraft implements Serializable {
     private int _Round;
     private int _Place;
     private int _FSTeamID;    
-    private int _PlayerID;    
+    private int _PlayerID;
+    private int _AuctionValue;
     
     // OBJECTS
     private FSLeague _FSLeague;
@@ -75,6 +76,7 @@ public class FSFootballDraft implements Serializable {
     public int getPlace() {return _Place;}
     public int getFSTeamID() {return _FSTeamID;}
     public int getPlayerID() {return _PlayerID;}
+    public int getAuctionValue() {return _AuctionValue;}
     public FSLeague getFSLeague() {if (_FSLeague == null && getFSLeagueID() > 0) {_FSLeague = new FSLeague(getFSLeagueID());}return _FSLeague;}
     public FSTeam getFSTeam() {if (_FSTeam == null && _FSTeamID > 0) {_FSTeam = new FSTeam(_FSTeamID);}return _FSTeam;}
     public Player getPlayer() {if (_Player == null && _PlayerID > 0) {_Player = new Player(_PlayerID);}return _Player;}
@@ -85,6 +87,7 @@ public class FSFootballDraft implements Serializable {
     public void setPlace(int Place) {_Place = Place;}
     public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}
     public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
+    public void setAuctionValue(int AuctionValue) {_AuctionValue = AuctionValue;}
     public void setFSLeague(FSLeague FSLeague) {_FSLeague = FSLeague;}
     public void setFSTeam(FSTeam FSTeam) {_FSTeam = FSTeam;}
     public void setPlayer(Player Player) {_Player = Player;}
@@ -128,11 +131,15 @@ public class FSFootballDraft implements Serializable {
     }
 
     public static int insertPick(int round, int place, int fsTeamId, int playerId, int fsLeagueId) {
+        return insertPick(round, place, fsTeamId, playerId, fsLeagueId, 0);
+    }
+    
+    public static int insertPick(int round, int place, int fsTeamId, int playerId, int fsLeagueId, int auctionValue) {
         int retVal = 0;
 
         String sql = "INSERT INTO FSFootballDraft " +
-                "(Round, Place, FSTeamID, PlayerID, FSLeagueID) " +
-                "VALUES (" + round + ", " + place + ", " + fsTeamId + ", " + playerId + ", " + fsLeagueId + ")";
+                "(Round, Place, FSTeamID, PlayerID, FSLeagueID, AuctionValue) " +
+                "VALUES (" + round + ", " + place + ", " + fsTeamId + ", " + playerId + ", " + fsLeagueId + "," + auctionValue + ")";
 
         // Call QueryCreator
         try {
@@ -191,6 +198,10 @@ public class FSFootballDraft implements Serializable {
             
             if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
                 setPlayerID(crs.getInt(prefix + "PlayerID"));
+            }
+            
+            if (FSUtils.fieldExists(crs, prefix, "AuctionValue")) {
+                setAuctionValue(crs.getInt(prefix + "AuctionValue"));
             }
 
             // OBJECTS

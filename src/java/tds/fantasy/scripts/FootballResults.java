@@ -147,9 +147,9 @@ public class FootballResults  {
                 System.out.println("Team 1 : " + team1.getTeamName() + ", Team 2 : " + team2.getTeamName());
                 if (figurebeststarters) {
                     //boolean includeTEasWR = league.getFSLeagueID() == _TenmanID ? false : true;
-                    boolean includeTEasWR = true;
-                    team1.figureBestStarters(con,fsseasonweekid,includeTEasWR);
-                    team2.figureBestStarters(con,fsseasonweekid,includeTEasWR);
+                    boolean includeTEasWR = (league.getIncludeTEasWR() != 0);
+                    team1.figureBestStarters(con,fsseasonweekid,includeTEasWR, league.getFSLeagueID());
+                    team2.figureBestStarters(con,fsseasonweekid,includeTEasWR, league.getFSLeagueID());
                 }
                 
                 con.commit();

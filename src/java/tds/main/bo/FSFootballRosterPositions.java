@@ -11,6 +11,7 @@ public class FSFootballRosterPositions {
     // DB FIELDS
     private int _FSSeasonID;
     private int _PositionID;
+    private int _FSLeagueID;
     private int _MaxStart;
     private int _MinStart;
     private int _MaxNum;
@@ -27,6 +28,10 @@ public class FSFootballRosterPositions {
     }
 
     public FSFootballRosterPositions(Connection con, int fsseasonID, int positionID) {
+        this(con, fsseasonID, positionID, 0);
+    }
+
+    public FSFootballRosterPositions(Connection con, int fsseasonID, int positionID, int fsleagueID) {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
@@ -34,6 +39,7 @@ public class FSFootballRosterPositions {
             sql.append(" FROM FSFootballRosterPositions rp ");
             sql.append(" WHERE rp.FSSeasonID = ").append(fsseasonID);
             sql.append(" AND rp.PositionID = ").append(positionID);
+            sql.append(" AND rp.FSLeagueID = ").append(fsleagueID);
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
             if (crs.next()) {
@@ -57,6 +63,7 @@ public class FSFootballRosterPositions {
     // GETTERS
     public int getFSSeasonID() {return _FSSeasonID;}
     public int getPositionID() {return _PositionID;}
+    public int getFSLeagueID() {return _FSLeagueID;}
     public int getMaxStart() {return _MaxStart;}
     public int getMinStart() {return _MinStart;}
     public int getMaxNum() {return _MaxNum;}
@@ -67,6 +74,7 @@ public class FSFootballRosterPositions {
     // SETTERS
     public void setFSSeasonID(int FSSeasonID) {_FSSeasonID = FSSeasonID;}
     public void setPositionID(int PositionID) {_PositionID = PositionID;}
+    public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
     public void setMaxStart(int MaxStart) {_MaxStart = MaxStart;}
     public void setMinStart(int MinStart) {_MinStart = MinStart;}
     public void setMaxNum(int MaxNum) {_MaxNum = MaxNum;}
@@ -88,6 +96,10 @@ public class FSFootballRosterPositions {
             
             if (FSUtils.fieldExists(crs, prefix, "PositionID")) {
                 setPositionID(crs.getInt(prefix + "PositionID"));
+            }
+            
+            if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
+                setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
             }
             
             if (FSUtils.fieldExists(crs, prefix, "MaxStart")) {
@@ -128,10 +140,11 @@ public class FSFootballRosterPositions {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO FSFootballRosterPositions ");
-        sql.append("(FSSeasonID, PositionID, MaxStart, MinStart, MaxNum, MinNum, DraftNum, MinActive)");
+        sql.append("(FSSeasonID, PositionID, FSLeagueID, MaxStart, MinStart, MaxNum, MinNum, DraftNum, MinActive)");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonID()));
         sql.append(FSUtils.InsertDBFieldValue(getPositionID()));
+        sql.append(FSUtils.InsertDBFieldValue(getFSLeagueID()));
         sql.append(FSUtils.InsertDBFieldValue(getMaxStart()));
         sql.append(FSUtils.InsertDBFieldValue(getMinStart()));
         sql.append(FSUtils.InsertDBFieldValue(getMaxNum()));
@@ -160,6 +173,7 @@ public class FSFootballRosterPositions {
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSSeasonID = ").append(getFSSeasonID());
         sql.append(" AND PositionID = ").append(getPositionID());
+        sql.append(" AND FSLeagueID = ").append(getFSLeagueID());
 
         try {
             CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());

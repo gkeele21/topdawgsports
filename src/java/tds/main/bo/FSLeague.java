@@ -41,6 +41,7 @@ public class FSLeague implements Serializable {
     private Integer _IsDefaultLeague;
     private String _SignupType;
     private String _Status;
+    private Integer _IncludeTEasWR;
     
     // OBJECTS
     private FSSeason _FSSeason;
@@ -109,6 +110,7 @@ public class FSLeague implements Serializable {
     public Integer getIsDefaultLeague() {return _IsDefaultLeague;}
     public String getSignupType() {return _SignupType;}
     public String getStatus() {return _Status;}
+    public Integer getIncludeTEasWR() {return _IncludeTEasWR;}
     public FSSeason getFSSeason() {if (_FSSeason == null && _FSSeasonID > 0) {_FSSeason = new FSSeason(_FSSeasonID);}return _FSSeason;}
     
     // SETTERS
@@ -133,6 +135,7 @@ public class FSLeague implements Serializable {
     public void setIsDefaultLeague(Integer IsDefaultLeague) {_IsDefaultLeague = IsDefaultLeague;}
     public void setSignupType(String SignupType) {_SignupType = SignupType;}
     public void setStatus(String Status) {_Status = Status;}
+    public void setIncludeTEasWR(Integer IncludeTEasWR) {_IncludeTEasWR = IncludeTEasWR;}
     public void setFSSeason(FSSeason FSSeason) {_FSSeason = FSSeason;}
     
     // PUBLIC METHODS
@@ -516,7 +519,8 @@ public class FSLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "ScheduleName")) { setScheduleName(crs.getString(prefix + "ScheduleName")); }
             if (FSUtils.fieldExists(crs, prefix, "IsDefaultLeague")) { setIsDefaultLeague(crs.getInt(prefix + "IsDefaultLeague")); }
             if (FSUtils.fieldExists(crs, prefix, "SignupType")) { setSignupType(crs.getString(prefix + "SignupType")); }
-            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }  
+            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); } 
+            if (FSUtils.fieldExists(crs, prefix, "IncludeTEasWR")) { setIncludeTEasWR(crs.getInt(prefix + "IncludeTEasWR")); } 
             
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeason$", "FSSeasonID")) { setFSSeason(new FSSeason(crs, "FSSeason$")); }
@@ -531,7 +535,7 @@ public class FSLeague implements Serializable {
 
         sql.append("INSERT INTO FSLeague ");
         sql.append("(FSLeagueID, FSSeasonID, LeagueName, LeaguePassword, IsFull, IsPublic, NumTeams, Description, IsGeneral, StartFSSeasonWeekID, VendorID, DraftType, DraftDate, ");
-        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status) ");
+        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status, IncludeTEasWR) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getFSLeagueID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonID()));
@@ -554,6 +558,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getIsDefaultLeague()));
         sql.append(FSUtils.InsertDBFieldValue(getSignupType()));
         sql.append(FSUtils.InsertDBFieldValue(getStatus(), true));
+        sql.append(FSUtils.InsertDBFieldValue(getIncludeTEasWR()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -587,6 +592,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("IsDefaultLeague", getIsDefaultLeague()));
         sql.append(FSUtils.UpdateDBFieldValue("SignupType", getSignupType()));
         sql.append(FSUtils.UpdateDBFieldValue("Status", getStatus(), true));
+        sql.append(FSUtils.UpdateDBFieldValue("InclueTEasWR", getIncludeTEasWR()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSLeagueID = ").append(getFSLeagueID());
 

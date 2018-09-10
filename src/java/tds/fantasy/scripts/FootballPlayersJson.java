@@ -124,6 +124,12 @@ public class FootballPlayersJson implements Harnessable {
                         status = value;
                     } else if ("team".equals(fieldName))
                     {
+                        if (value.equals("SD")) {
+                            value = "LAC";
+                        }
+                        if (value.equals("LA")) {
+                            value = "LAR";
+                        }
                         team = value;
                     } else if ("years_pro".equals(fieldName))
                     {

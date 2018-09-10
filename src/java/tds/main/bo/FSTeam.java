@@ -212,7 +212,7 @@ public class FSTeam implements Serializable {
         return totalpts;
     }
 
-    public void figureBestStarters(Connection con, int fsseasonweekid, boolean includeTEasWR) throws Exception {
+    public void figureBestStarters(Connection con, int fsseasonweekid, boolean includeTEasWR, int fsleagueid) throws Exception {
 
         // Positions
         List list = includeTEasWR ? Arrays.asList(new String[]{"1","2","3,4","5"}) : Arrays.asList(new String[]{"1","2","3","4","5"});
@@ -231,7 +231,7 @@ public class FSTeam implements Serializable {
 
             int posid = pos.startsWith("3") ? 3 : Integer.parseInt(pos);
             
-            FSFootballRosterPositions rosterPositions = new FSFootballRosterPositions(con, fsseasonid, posid);
+            FSFootballRosterPositions rosterPositions = new FSFootballRosterPositions(con, fsseasonid, posid, fsleagueid);
             int maxstarters = rosterPositions.getMaxStart();
 
             StringBuilder sql = new StringBuilder();
