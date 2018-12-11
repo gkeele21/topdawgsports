@@ -35,24 +35,23 @@ public class FSSeason implements Serializable {
     }
 
     public FSSeason(int seasonID) {
-        this(null, seasonID);
-    }
-
-    public FSSeason(Connection con, int seasonID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSSeason", "s.", ""));
             sql.append(" FROM FSSeason s ");
             sql.append(" WHERE s.FSSeasonID = ").append(seasonID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
     
@@ -122,6 +121,7 @@ public class FSSeason implements Serializable {
             setCurrentFSSeasonWeeks(new HashMap<Integer, FSSeasonWeek>());
 
             CachedRowSet crs = null;
+            Connection con = null;
             try {
                 StringBuilder sql = new StringBuilder();
                 sql.append(" SELECT ").append(_Cols.getColumnList("FSSeasonWeek", "w.", "FSSeasonWeek$"));
@@ -130,7 +130,8 @@ public class FSSeason implements Serializable {
                 sql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = w.SeasonWeekID ");
                 sql.append(" where w.FSSeasonID = ").append(getFSSeasonID());
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                con = CTApplication._CT_DB.getConn(false);
+                crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
                 while (crs.next()) {
                     FSSeasonWeek week = new FSSeasonWeek(crs, "FSSeasonWeek$");
                     _CurrentFSSeasonWeeks.put(week.getFSSeasonWeekNo(),week);
@@ -139,6 +140,7 @@ public class FSSeason implements Serializable {
                 CTApplication._CT_LOG.error(e);
             } finally {
                 JDBCDatabase.closeCRS(crs);
+                JDBCDatabase.close(con);
             }
         }
         
@@ -151,6 +153,7 @@ public class FSSeason implements Serializable {
             setFSFootballRosterPositions(new HashMap<Integer, FSFootballRosterPositions>());
 
             CachedRowSet crs = null;
+            Connection con = null;
             Collection<Position> allPositions = Position.getAllPositions();
 
             for (Position pos : allPositions) {
@@ -161,7 +164,8 @@ public class FSSeason implements Serializable {
                     sql.append(" WHERE rp.FSSeasonID = ").append(getFSSeasonID());
                     sql.append(" AND rp.PositionID = ").append(pos.getPositionID());
 
-                    crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                    con = CTApplication._CT_DB.getConn(false);
+                    crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
                     while (crs.next()) {
                         FSFootballRosterPositions position = new FSFootballRosterPositions(crs, "");
                         _FSFootballRosterPositions.put(pos.getPositionID(),position);
@@ -170,6 +174,7 @@ public class FSSeason implements Serializable {
                     CTApplication._CT_LOG.error(e);
                 } finally {
                     JDBCDatabase.closeCRS(crs);
+                    JDBCDatabase.close(con);
                 }
                 
             }
@@ -180,20 +185,18 @@ public class FSSeason implements Serializable {
     }
 
     public List<FSLeague> GetLeagues() {    
-        return GetLeagues(null);
-    }
-    
-    public List<FSLeague> GetLeagues(Connection con) {
         List<FSLeague> leagues = new ArrayList<FSLeague>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSLeague", "l.", ""));
             sql.append(" FROM FSLeague l ");
             sql.append(" WHERE l.FSSeasonID = ").append(getFSSeasonID());
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 leagues.add(new FSLeague(crs));
             }
@@ -201,19 +204,17 @@ public class FSSeason implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return leagues;
     }
 
     public static List<FSSeason> GetFSSeasons(int fsGameID) {
-        return GetFSSeasons(null,fsGameID);
-    }
-    
-    public static List<FSSeason> GetFSSeasons(Connection con,int fsGameID) {
         List<FSSeason> fsseasons = new ArrayList<FSSeason>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             
@@ -226,7 +227,8 @@ public class FSSeason implements Serializable {
                 sql.append(" FROM FSSeason s");
             }
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 fsseasons.add(new FSSeason(crs));
             }
@@ -234,6 +236,7 @@ public class FSSeason implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return fsseasons;
@@ -289,7 +292,7 @@ public class FSSeason implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -309,8 +312,7 @@ public class FSSeason implements Serializable {
         sql.append("WHERE FSSeasonID = ").append(getFSSeasonID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
-
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

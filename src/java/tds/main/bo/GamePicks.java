@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
 import static tds.data.CTColumnLists._Cols;
-import tds.mm.bo.BracketChallenge;
 
 public class GamePicks implements Serializable {
 
@@ -81,7 +80,7 @@ public class GamePicks implements Serializable {
 	sql.append("WHERE GamePicksID = ").append(gamePicksId);
 
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
@@ -632,7 +631,7 @@ public class GamePicks implements Serializable {
             }
 
             // Execute Query
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 retVal = crs.getInt("GamePicksID");
             }
@@ -660,7 +659,7 @@ public class GamePicks implements Serializable {
             sql.append("WHERE FSSeasonWeekID = ").append(fsSeasonWeekId).append(" AND FSTeamID = ").append(fsTeamId);
 
             // Execute Query
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 retVal = crs.getInt("NumPicks");
             }
@@ -760,7 +759,7 @@ public class GamePicks implements Serializable {
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -781,7 +780,7 @@ public class GamePicks implements Serializable {
 
         // Execute Query
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             retVal = gamesPickedId;
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

@@ -36,6 +36,7 @@ public class draftResultsView extends BaseTeamView {
         System.out.println("Page : " + page);
 
         // Retrieve current week info
+        System.out.println("FSTeamID : " + _FSTeam.getFSTeamID());
         FSLeague league = _FSTeam.getFSLeague();
         FSSeason fsseason = league.getFSSeason();
         

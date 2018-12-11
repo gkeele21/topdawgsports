@@ -123,7 +123,7 @@ public class FootballResults  {
                     double team2pts = 0;
                     if (team1Id != _AverageJoeTeamID) {
                         // Figure out team's points
-                        team1pts = team1.getWeekFantasyPoints(null, fsseasonweekid, "s.SalFantasyPts", _FSSeasonID);
+                        team1pts = team1.getWeekFantasyPoints(fsseasonweekid, "s.SalFantasyPts", _FSSeasonID);
                         team1pts = Double.valueOf(twoDForm.format(team1pts));
 
                         teamPoints += team1pts;
@@ -134,7 +134,7 @@ public class FootballResults  {
                     
                     if (team2Id != _AverageJoeTeamID) {
                         // Figure out team's points
-                        team2pts = team2.getWeekFantasyPoints(null, fsseasonweekid, "s.SalFantasyPts", _FSSeasonID);
+                        team2pts = team2.getWeekFantasyPoints(fsseasonweekid, "s.SalFantasyPts", _FSSeasonID);
                         team2pts = Double.valueOf(twoDForm.format(team2pts));
                         teamPoints += team2pts;
                         numTeams++;

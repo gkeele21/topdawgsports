@@ -96,7 +96,7 @@ public class FantasyResults  {
                     int numPlayers = 0;
                     boolean teamEntered = false;
                     // get team roster
-                    List<FSRoster> rosterPlayers = team.getRoster(con, fsseasonweekid);
+                    List<FSRoster> rosterPlayers = team.getRoster(fsseasonweekid);
                     
                     if (rosterPlayers.size() >= 1) {
                         teamEntered = true;
@@ -157,7 +157,7 @@ public class FantasyResults  {
             // Figure out who won
             for (FSLeague league : leagues) {
                 int numTeamsEntered = 0;
-                List<FSTeam> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID());
+                List<FSTeam> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID(),null);
                 
                 for (FSTeam team : teams)
                 {

@@ -39,10 +39,6 @@ public class FSSeasonWeek implements Serializable {
     }
     
     public FSSeasonWeek(int fsSeasonWeekID) {
-        this(null, fsSeasonWeekID);
-    }
-
-    public FSSeasonWeek(Connection con, int fsSeasonWeekID) {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
@@ -68,7 +64,7 @@ public class FSSeasonWeek implements Serializable {
         }
     }
     
-    public FSSeasonWeek(Connection con, int fsSeasonId, int weekNo) {
+    public FSSeasonWeek(int fsSeasonId, int weekNo) {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();

@@ -75,7 +75,7 @@ public class Player implements Serializable {
             sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
             sql.append(" WHERE p.PlayerID = ").append(playerID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {
@@ -153,7 +153,7 @@ public class Player implements Serializable {
             sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
             sql.append(" WHERE p.NFLGameStatsID = ").append(statsID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             player.initFromCRS(crs, "");
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public class Player implements Serializable {
                 sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
                 sql.append(" WHERE p.PlayerID = ").append(playerID);
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 if (crs.next()) {
                     player = new Player(crs);
                     getPlayerCache().put(player.getPlayerID(), player);
@@ -282,7 +282,7 @@ public class Player implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FSPlayerValue pv = new FSPlayerValue(crs, "PlayerValue$");
                 players.add(pv);
@@ -382,7 +382,7 @@ public class Player implements Serializable {
             sql.append(" LEFT JOIN Country c on c.CountryID = p.CountryID ");
             sql.append(" WHERE p.IsActive = 1");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 Player player = new Player(crs);
                 System.out.println("Player ID " + player.getPlayerID() + " created.");
@@ -420,7 +420,7 @@ public class Player implements Serializable {
             sql.append(" AND st.SeasonID = ").append(Season._CurrentSeasonID);
             sql.append(" ORDER BY st.SeasonWeekID");
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FootballStats stats = new FootballStats(crs,"FootballStats$");
                 getWeeklyStats().put(stats.getSeasonWeekID(),stats);
@@ -453,7 +453,7 @@ public class Player implements Serializable {
                 sql.append(" AND st.SeasonID = ").append(Season._CurrentSeasonID);
                 sql.append(" ORDER BY st.SeasonWeekID");
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 while (crs.next()) {
                     FootballStats stats = new FootballStats(crs,"FootballStats$");
                     if (stats.getSeasonWeekID() == seasonWeekID) {
@@ -525,7 +525,7 @@ public class Player implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 Player player = new Player(crs, "Player$");
                 players.add(player);
@@ -572,7 +572,7 @@ public class Player implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 Player player = new Player(crs, "Player$");
                 players.add(player);
@@ -605,7 +605,7 @@ public class Player implements Serializable {
         CachedRowSet crs = null;
         try {           
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 FSTeam team = new FSTeam(crs,"FSTeam$");
@@ -736,7 +736,7 @@ public class Player implements Serializable {
         sql.append("WHERE PlayerID = ").append(getPlayerID());
 
         try {
-            res = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            res = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -764,7 +764,7 @@ public class Player implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            newId = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            newId = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error Inserting new Player", e);
@@ -793,7 +793,7 @@ public class Player implements Serializable {
         sql.append("WHERE PlayerID = ").append(getPlayerID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             success = 0;
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

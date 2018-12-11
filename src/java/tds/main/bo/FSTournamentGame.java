@@ -3,10 +3,11 @@ package tds.main.bo;
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import static tds.data.CTColumnLists._Cols;
 import sun.jdbc.rowset.CachedRowSet;
+import static tds.data.CTColumnLists._Cols;
 
 public class FSTournamentGame implements Serializable {
 
@@ -45,13 +46,15 @@ public class FSTournamentGame implements Serializable {
     
     public FSTournamentGame(int gameId) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT").append(_Cols.getColumnList("FSTournamentGame", "g.", ""));
             sql.append("FROM FSTournamentGame g ");
             sql.append("WHERE g.GameID = ").append(gameId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -177,6 +180,7 @@ public class FSTournamentGame implements Serializable {
         List<FSTournamentGame> games = new ArrayList<FSTournamentGame>();
         StringBuilder sql = new StringBuilder();
 
+        Connection con = null;
         try {
             sql.append("SELECT").append(_Cols.getColumnList("FSTournamentGame", "g.", "")).append(", ");
             sql.append(_Cols.getColumnList("FSTournamentRegion", "r.", "FSTournamentRegion$")).append(", ");
@@ -199,7 +203,8 @@ public class FSTournamentGame implements Serializable {
             sql.append("WHERE rd.RoundNumber BETWEEN ").append(begRoundNum).append(" AND ").append(endRoundNum).append(" ");
             sql.append("ORDER BY GameID");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 games.add(new FSTournamentGame(crs, ""));
             }
@@ -208,6 +213,7 @@ public class FSTournamentGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return games;
@@ -217,6 +223,7 @@ public class FSTournamentGame implements Serializable {
     public static List<FSTournamentGame> GetTournamentGames(int tournamentId, int begRoundNum, int endRoundNum, boolean isNCAATourney) {
 
         CachedRowSet crs = null;
+        Connection con = null;
         List<FSTournamentGame> games = new ArrayList<FSTournamentGame>();
         StringBuilder sql = new StringBuilder();
         String table = "";
@@ -258,7 +265,8 @@ public class FSTournamentGame implements Serializable {
             sql.append("WHERE rd.RoundNumber BETWEEN ").append(begRoundNum).append(" AND ").append(endRoundNum).append(" ");
             sql.append("ORDER BY GameID");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 FSTournamentGame gameObj = new FSTournamentGame(crs, "");
                 games.add(gameObj);
@@ -268,6 +276,7 @@ public class FSTournamentGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return games;
@@ -278,7 +287,6 @@ public class FSTournamentGame implements Serializable {
 
         CachedRowSet crs = null;
         int currentGame = 0;
-
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT GameID ");
@@ -287,7 +295,7 @@ public class FSTournamentGame implements Serializable {
             sql.append("INNER JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append("WHERE fssw.FSSeasonWeekNo = ").append(roundNum).append(" AND g.FSTeam1ID = ").append(fsTeamId).append(" OR g.FSTeam2ID = ").append(fsTeamId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 currentGame = crs.getInt("GameID");
             }
@@ -333,7 +341,7 @@ public class FSTournamentGame implements Serializable {
             sql.append("FROM FSTournamentGame ");
             sql.append("WHERE GameID = ").append(gameId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 doesExist = true;
             }
@@ -485,7 +493,7 @@ public class FSTournamentGame implements Serializable {
 
         // Call QueryCreator
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -521,7 +529,7 @@ public class FSTournamentGame implements Serializable {
 
         // Call QueryCreator
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

@@ -148,8 +148,8 @@ public class FootballResults  {
                 if (figurebeststarters) {
                     //boolean includeTEasWR = league.getFSLeagueID() == _TenmanID ? false : true;
                     boolean includeTEasWR = (league.getIncludeTEasWR() != 0);
-                    team1.figureBestStarters(con,fsseasonweekid,includeTEasWR, league.getFSLeagueID());
-                    team2.figureBestStarters(con,fsseasonweekid,includeTEasWR, league.getFSLeagueID());
+                    team1.figureBestStarters(fsseasonweekid,includeTEasWR, league.getFSLeagueID());
+                    team2.figureBestStarters(fsseasonweekid,includeTEasWR, league.getFSLeagueID());
                 }
                 
                 con.commit();
@@ -161,8 +161,8 @@ public class FootballResults  {
                 //String custom = lg.getCustomLeague();
                 String custom = "n";
                 if (custom.equals("n")) {
-                    tm1pts = team1.getWeekFantasyPoints(con,fsseasonweekid,fsseason.getSeasonID());
-                    tm2pts = team2.getWeekFantasyPoints(con,fsseasonweekid,fsseason.getSeasonID());
+                    tm1pts = team1.getWeekFantasyPoints(fsseasonweekid,fsseason.getSeasonID());
+                    tm2pts = team2.getWeekFantasyPoints(fsseasonweekid,fsseason.getSeasonID());
                 } else {
                     //tm1pts = FootballTeam.getTeamWeekCustomPoints(lgid,team1ID,weekno);
                     //tm2pts = FootballTeam.getTeamWeekCustomPoints(lgid,team2ID,weekno);

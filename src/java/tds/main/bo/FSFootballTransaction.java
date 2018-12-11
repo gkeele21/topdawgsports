@@ -36,11 +36,8 @@ public class FSFootballTransaction {
     }
    
     public FSFootballTransaction(int transactionID) {
-        this(null, transactionID);
-    }
-
-    public FSFootballTransaction(Connection con, int transactionID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballTransaction", "t.", ""));
@@ -65,7 +62,8 @@ public class FSFootballTransaction {
             sql.append(" INNER JOIN Team pt ON pt.TeamID = pp.TeamID ");
             sql.append(" WHERE t.FSTransactionID = ").append(transactionID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -73,6 +71,7 @@ public class FSFootballTransaction {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
 
@@ -122,6 +121,7 @@ public class FSFootballTransaction {
         List<FSFootballTransaction> transactions = new ArrayList<FSFootballTransaction>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             
             StringBuilder sql = new StringBuilder();
@@ -148,7 +148,8 @@ public class FSFootballTransaction {
             sql.append(" WHERE t.FSLeagueID = ").append(leagueID);
             sql.append(" AND t.FSSeasonWeekID = ").append(fsseasonweekID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 transactions.add(new FSFootballTransaction(crs));
             }
@@ -156,6 +157,7 @@ public class FSFootballTransaction {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return transactions;
@@ -171,12 +173,8 @@ public class FSFootballTransaction {
     }
 
     public static CTReturnCode insert(FSFootballTransactionRequest request) throws Exception {
-        return insert(null,request);
-    }
-    
-    public static CTReturnCode insert(Connection con, FSFootballTransactionRequest request) throws Exception {
 
-        int id = CTApplication._CT_DB.updateDataSet(con,CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, request.getFSTeam().getFSLeagueID(), request.getFSTeamID(),
+        int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, request.getFSTeam().getFSLeagueID(), request.getFSTeamID(),
                 request.getFSSeasonWeekID(), new java.sql.Timestamp(new AuDate().getDateInMillis()), request.getDropPlayerID(),
                 request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU");
         
@@ -186,13 +184,10 @@ public class FSFootballTransaction {
     }
 
     public static List<FSTeam> getTransactionOrder(int fsleagueID, int fsseasonweekID) {
-        return getTransactionOrder(null,fsleagueID,fsseasonweekID);
-    }
-    
-    public static List<FSTeam> getTransactionOrder(Connection con, int fsleagueID, int fsseasonweekID) {
         List<FSTeam> order = new ArrayList<FSTeam>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -203,7 +198,8 @@ public class FSFootballTransaction {
             sql.append(" AND t.FSSeasonWeekID = ").append(fsseasonweekID);
             sql.append(" ORDER BY t.OrderNumber");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 order.add(new FSTeam(crs,"FSTeam$"));
             }
@@ -212,6 +208,7 @@ public class FSFootballTransaction {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return order;
@@ -291,6 +288,7 @@ public class FSFootballTransaction {
         FSSeasonWeek week = null;
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballTransaction", "t.", ""));
@@ -302,7 +300,8 @@ public class FSFootballTransaction {
             sql.append(" AND t.DropPlayerID = ").append(playerID);
             sql.append(" AND t.DropType = 'ONIR'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 week = new FSSeasonWeek(crs,"FSSeasonWeek$");
             }
@@ -311,6 +310,7 @@ public class FSFootballTransaction {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return week;

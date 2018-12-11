@@ -297,7 +297,7 @@ public class FootballStats implements Serializable {
 
 //        System.out.println("Top Performers : " + sql);
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 //            data = FSUtils.crsToList(crs);
 
         } catch (Exception e) {

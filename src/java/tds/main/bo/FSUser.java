@@ -4,6 +4,7 @@ import bglib.data.JDBCDatabase;
 import bglib.util.AuDate;
 import bglib.util.FSUtils;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,7 +60,7 @@ public class FSUser implements Serializable {
             sql.append(" FROM FSUser u ");
             sql.append(" WHERE u.FSUserID = ").append(userID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {
@@ -78,7 +79,7 @@ public class FSUser implements Serializable {
             sql.append("FROM FSUser u ");
             sql.append("WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             } else {
@@ -101,7 +102,7 @@ public class FSUser implements Serializable {
             sql.append("WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
             sql.append("AND Password='").append(StringEscapeUtils.escapeSql(password)).append("'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             } else {
@@ -229,34 +230,37 @@ public class FSUser implements Serializable {
     }
 
     public List<FSTeam> getTeams(int sportYear) {
-            setFSTeams(new ArrayList<FSTeam>());
-            CachedRowSet crs = null;
-            try {
-                StringBuilder sql = new StringBuilder();
-                sql.append("SELECT").append(_Cols.getColumnList("FSTeam", "t.", ""));
-                sql.append(",").append(_Cols.getColumnList("FSLeague", "l.", "FSLeague$"));
-                sql.append(",").append(_Cols.getColumnList("FSSeason", "fss.", "FSSeason$"));
-                sql.append(",").append(_Cols.getColumnList("FSGame", "g.", "FSGame$"));
-                sql.append(",").append(_Cols.getColumnList("Season", "s.", "Season$"));
-                sql.append(",").append(_Cols.getColumnList("FSUser", "u.", "FSUser$"));
-                sql.append("FROM FSTeam t ");
-                sql.append("JOIN FSLeague l ON l.FSLeagueID = t.FSLeagueID ");
-                sql.append("LEFT JOIN FSSeason fss ON fss.FSSeasonID = l.FSSeasonID ");
-                sql.append("LEFT JOIN FSGame g ON g.FSGameID = fss.FSGameID ");
-                sql.append("LEFT JOIN Season s ON s.SeasonID = fss.SeasonID ");
-                sql.append("LEFT JOIN FSUser u ON u.FSUserID = t.FSUserID ");
-                sql.append("WHERE t.FSUserID = ").append(getFSUserID()).append(" AND (s.SportYear = ").append(sportYear).append(" OR s.SportYear IS NULL) ");
-                sql.append("ORDER BY fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
+        setFSTeams(new ArrayList<FSTeam>());
+        CachedRowSet crs = null;
+        Connection con = null;
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT").append(_Cols.getColumnList("FSTeam", "t.", ""));
+            sql.append(",").append(_Cols.getColumnList("FSLeague", "l.", "FSLeague$"));
+            sql.append(",").append(_Cols.getColumnList("FSSeason", "fss.", "FSSeason$"));
+            sql.append(",").append(_Cols.getColumnList("FSGame", "g.", "FSGame$"));
+            sql.append(",").append(_Cols.getColumnList("Season", "s.", "Season$"));
+            sql.append(",").append(_Cols.getColumnList("FSUser", "u.", "FSUser$"));
+            sql.append("FROM FSTeam t ");
+            sql.append("JOIN FSLeague l ON l.FSLeagueID = t.FSLeagueID ");
+            sql.append("LEFT JOIN FSSeason fss ON fss.FSSeasonID = l.FSSeasonID ");
+            sql.append("LEFT JOIN FSGame g ON g.FSGameID = fss.FSGameID ");
+            sql.append("LEFT JOIN Season s ON s.SeasonID = fss.SeasonID ");
+            sql.append("LEFT JOIN FSUser u ON u.FSUserID = t.FSUserID ");
+            sql.append("WHERE t.FSUserID = ").append(getFSUserID()).append(" AND (s.SportYear = ").append(sportYear).append(" OR s.SportYear IS NULL) ");
+            sql.append("ORDER BY fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
-                while (crs.next()) {
-                    getFSTeams().add(new FSTeam(crs));
-                }
-            } catch (Exception e) {
-                CTApplication._CT_LOG.error(e);
-            } finally {
-                JDBCDatabase.closeCRS(crs);
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            while (crs.next()) {
+                getFSTeams().add(new FSTeam(crs));
             }
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
+        }
             
         return getFSTeams();
     }   
@@ -274,7 +278,7 @@ public class FSUser implements Serializable {
             sql.append(" WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
             sql.append(" AND Password='").append(StringEscapeUtils.escapeSql(password)).append("'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 try {
                     FSUser user = new FSUser(crs);
@@ -355,7 +359,7 @@ public class FSUser implements Serializable {
             sql.append(" FROM FSUser u ");
             sql.append(" WHERE u.Username = '").append(username).append("'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             
             if (crs.size() > 0) {
                 exists = true;

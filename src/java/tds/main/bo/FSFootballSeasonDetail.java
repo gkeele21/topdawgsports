@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import sun.jdbc.rowset.CachedRowSet;
 import static tds.data.CTColumnLists._Cols;
-import tds.util.CTReturnCode;
 
 public class FSFootballSeasonDetail implements Serializable{
     
@@ -30,25 +29,23 @@ public class FSFootballSeasonDetail implements Serializable{
     }
     
     public FSFootballSeasonDetail(int seasonID) {
-        this(null, seasonID);
-    }
-
-    public FSFootballSeasonDetail(Connection con, int seasonID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballSeasonDetail", "sd.", ""));
             sql.append(" FROM FSFootballSeasonDetail sd ");
             sql.append(" WHERE sd.FSSeasonID = ").append(seasonID);
 
-
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
     }
@@ -176,7 +173,7 @@ public class FSFootballSeasonDetail implements Serializable{
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -201,7 +198,7 @@ public class FSFootballSeasonDetail implements Serializable{
         sql.append("WHERE FSSeasonID = ").append(getFSSeasonID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

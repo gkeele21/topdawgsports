@@ -97,7 +97,7 @@ public class ProPickem implements Serializable {
                     priorStandings = new ArrayList<FSFootballStandings>();
                 }
                 else {
-                    priorFSSeasonWeekId = new FSSeasonWeek(null,week.getFSSeasonID(),week.getFSSeasonWeekNo() - 1).getFSSeasonWeekID();
+                    priorFSSeasonWeekId = new FSSeasonWeek(week.getFSSeasonID(),week.getFSSeasonWeekNo() - 1).getFSSeasonWeekID();
                     priorStandings = FSFootballStandings.GetWeeklyStandings(priorFSSeasonWeekId);
                 }                
 

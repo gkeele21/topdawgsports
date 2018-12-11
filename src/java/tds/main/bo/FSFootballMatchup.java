@@ -34,12 +34,8 @@ public class FSFootballMatchup {
     }
 
     public FSFootballMatchup(int matchupID) {
-        this(null,matchupID);
-    }
-
-    public FSFootballMatchup(Connection con, int matchupID) {
-        
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballMatchup", "m.", ""));
@@ -54,7 +50,8 @@ public class FSFootballMatchup {
             sql.append(" INNER JOIN FSSeasonWeek w ON w.FSSeasonWeekID = m.FSSeasonWeekID ");
             sql.append(" WHERE m.ID = ").append(matchupID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 //            System.out.println("Matchup : " + sql);
             if (crs.next()) {
                 initFromCRS(crs, "");
@@ -63,15 +60,13 @@ public class FSFootballMatchup {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
 
     public FSFootballMatchup( int fsleagueid, int fsseasonweekid, int gameNo) {
-        this(null, fsleagueid, fsseasonweekid, gameNo);
-    }
-
-    public FSFootballMatchup(Connection con, int fsleagueid, int fsseasonweekid, int gameNo) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballMatchup", "m.", ""));
@@ -88,7 +83,8 @@ public class FSFootballMatchup {
             sql.append(" AND m.FSSeasonWeekID = ").append(fsseasonweekid);
             sql.append(" AND m.GameNo = ").append(gameNo);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -96,6 +92,7 @@ public class FSFootballMatchup {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
 
@@ -141,6 +138,7 @@ public class FSFootballMatchup {
         List<FSFootballMatchup> matchups = new ArrayList<FSFootballMatchup>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballMatchup", "m.", ""));
@@ -155,7 +153,8 @@ public class FSFootballMatchup {
             sql.append(" INNER JOIN FSSeasonWeek w ON w.FSSeasonWeekID = m.FSSeasonWeekID ");
             sql.append(" WHERE m.FSLeagueID = ").append(leagueID).append(" and m.FSSeasonWeekID = ").append(fsseasonweekID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             
             while (crs.next()) {
                 FSFootballMatchup match = new FSFootballMatchup(crs);
@@ -165,6 +164,7 @@ public class FSFootballMatchup {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return matchups;

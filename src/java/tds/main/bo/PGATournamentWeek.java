@@ -292,8 +292,8 @@ public class PGATournamentWeek implements Serializable {
 
         return players;
     }
-
-    public List<FSTeam> GetLeagueTeamsEntered(int fsLeagueID, String orderBy) {
+    
+    public List<FSTeam> GetLeagueTeamsEntered(Integer fsLeagueID, String orderBy) {
 
         List<FSTeam> teams = new ArrayList<FSTeam>();
 
@@ -304,7 +304,7 @@ public class PGATournamentWeek implements Serializable {
         
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT").append(_Cols.getColumnList("PGATournamentWeek", "tw.", "PGATournamentWeek$")).append(", ");
-        sql.append(_Cols.getColumnList("PGATournament", "t.", "PGATournament$"));
+        sql.append(_Cols.getColumnList("PGATournament", "t.", "PGATournament$")).append(", ");
         sql.append(_Cols.getColumnList("FSGolfStandings", "gs.", "FSGolfStandings$"));
         sql.append(" FROM PGATournamentWeek tw ");
         sql.append(" JOIN FSGolfStandings gs ON gs.PGATournamentID = twp.PlayerID ");

@@ -3,6 +3,7 @@ package tds.main.bo;
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import java.io.Serializable;
+import java.sql.Connection;
 import sun.jdbc.rowset.CachedRowSet;
 import static tds.data.CTColumnLists._Cols;
 
@@ -56,13 +57,15 @@ public class FSTournament implements Serializable {
         FSTournament tournamentObj = null;
         CachedRowSet crs = null;
 
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTournament", "", ""));
             sql.append("FROM FSTournament ");
             sql.append("WHERE FSLeagueID = ").append(fsLeagueId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 tournamentObj = new FSTournament(crs, "");
             }
@@ -70,6 +73,7 @@ public class FSTournament implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return tournamentObj;

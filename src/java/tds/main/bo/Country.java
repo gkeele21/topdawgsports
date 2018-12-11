@@ -6,8 +6,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import tds.data.CTDataSetDef;
 import static tds.data.CTColumnLists._Cols;
+import tds.data.CTDataSetDef;
 
 public class Country {
     
@@ -86,8 +86,10 @@ public class Country {
         sql.append(" ORDER BY ").append(orderby);
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 Country country = new Country(crs, "Country$");
                 countries.add(country);
@@ -96,6 +98,7 @@ public class Country {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
         
         return countries;

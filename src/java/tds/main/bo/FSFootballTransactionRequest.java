@@ -37,11 +37,8 @@ public class FSFootballTransactionRequest {
     }
 
     public FSFootballTransactionRequest(int transactionID) {
-        this(null, transactionID);
-    }
-
-    public FSFootballTransactionRequest(Connection con, int transactionID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -54,7 +51,8 @@ public class FSFootballTransactionRequest {
             sql.append(" INNER JOIN FSSeasonWeek fsw ON fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append(" WHERE r.RequestID = ").append(transactionID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "FSFootballTransactionRequest$");
             }
@@ -62,16 +60,14 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
     }
 
     public FSFootballTransactionRequest(int fsTeamID, int fsSeasonWeekID, int rank) {
-        this(null, fsTeamID, fsSeasonWeekID, rank);
-    }
-
-    public FSFootballTransactionRequest(Connection con, int fsTeamID, int fsSeasonWeekID, int rank) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -147,10 +143,6 @@ public class FSFootballTransactionRequest {
     }
 
     public static List<FSFootballTransactionRequest> getTransactionRequests(int fsteamID, int fsseasonweekID, int processed) {
-        return getTransactionRequests(null,fsteamID,fsseasonweekID,processed);
-    }
-
-    public static List<FSFootballTransactionRequest> getTransactionRequests(Connection con, int fsteamID, int fsseasonweekID, int processed) {
         List<FSFootballTransactionRequest> requests = new ArrayList<FSFootballTransactionRequest>();
 
         StringBuilder sql = new StringBuilder();
@@ -170,8 +162,10 @@ public class FSFootballTransactionRequest {
         sql.append(" ORDER BY r.Rank");
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
-            crs = con == null ? CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString()) : CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 requests.add(new FSFootballTransactionRequest(crs,"FSFootballTransactionRequest$"));
             }
@@ -180,6 +174,7 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return requests;
@@ -204,8 +199,10 @@ public class FSFootballTransactionRequest {
         sql.append(" ORDER BY fto.OrderNumber, r.Rank");
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 requests.add(new FSFootballTransactionRequest(crs,"FSFootballTransactionRequest$"));
             }
@@ -214,6 +211,7 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return requests;

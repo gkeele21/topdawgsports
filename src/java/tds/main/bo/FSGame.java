@@ -44,24 +44,23 @@ public class FSGame implements Serializable {
     }
 
     public FSGame(int gameID) {
-        this(null, gameID);
-    }
-
-    public FSGame(Connection con, int gameID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSGame", "g.", ""));
             sql.append(" FROM FSGame g ");
             sql.append(" WHERE g.FSGameID = ").append(gameID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
     
@@ -135,6 +134,7 @@ public class FSGame implements Serializable {
         List<FSGame> fsgames = new ArrayList<FSGame>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             
@@ -146,7 +146,8 @@ public class FSGame implements Serializable {
                 sql.append(" WHERE SportID = ").append(sportID);
             }
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 fsgames.add(new FSGame(crs));
             }
@@ -154,6 +155,7 @@ public class FSGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return fsgames;
@@ -208,7 +210,7 @@ public class FSGame implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -231,7 +233,7 @@ public class FSGame implements Serializable {
         sql.append("WHERE FSGameID = ").append(getFSGameID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

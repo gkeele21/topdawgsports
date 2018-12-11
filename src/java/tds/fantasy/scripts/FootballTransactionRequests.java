@@ -85,8 +85,8 @@ public class FootballTransactionRequests implements Harnessable {
 
         try {
 
-            FSSeason fsseason = new FSSeason(con,fsseasonid);
-            List<FSLeague> leagues = fsseason.GetLeagues(con);
+            FSSeason fsseason = new FSSeason(fsseasonid);
+            List<FSLeague> leagues = fsseason.GetLeagues();
 
             FSSeasonWeek fsSeasonWeek = fsseason.getCurrentFSSeasonWeek();
             for (FSLeague league : leagues) {
@@ -111,7 +111,7 @@ public class FootballTransactionRequests implements Harnessable {
         try {
 
             // Grab Transaction Order
-            List<FSTeam> tOrder = league.GetTransactionOrder(con,fsseasonweekid);
+            List<FSTeam> tOrder = league.GetTransactionOrder(fsseasonweekid);
             List<Integer> newOrder = new ArrayList<Integer>();
             for (FSTeam team : tOrder)
             {
@@ -127,7 +127,7 @@ public class FootballTransactionRequests implements Harnessable {
                     System.out.println("TeamID : " + teamid);
 
                     // Check to see if this team has a transaction
-                    List<FSFootballTransactionRequest> teamRequests = team.getTransactionRequests(con,fsseasonweekid,0);
+                    List<FSFootballTransactionRequest> teamRequests = team.getTransactionRequests(fsseasonweekid,0);
                     int size = teamRequests.size();
                     _Logger.info("Team " + teamid + " : size : " + size);
 
@@ -136,7 +136,7 @@ public class FootballTransactionRequests implements Harnessable {
                         
                         alldone = false;
                         
-                        CTReturnCode rc = FSFootballTransaction.insert(con,request);
+                        CTReturnCode rc = FSFootballTransaction.insert(request);
                         if (rc.isSuccess()) {
                             // mark this request as granted
                             request.setProcessed(1);
@@ -155,7 +155,7 @@ public class FootballTransactionRequests implements Harnessable {
                                 newRoster.setStarterState("bench");
                                 newRoster.Save();
 
-                                FSRoster roster = FSRoster.getRosterByPlayerID(con, teamid, request.getFSSeasonWeekID(), request.getDropPlayerID());
+                                FSRoster roster = FSRoster.getRosterByPlayerID(teamid, request.getFSSeasonWeekID(), request.getDropPlayerID());
                                 if (roster == null || roster.getID() == 0)
                                 {
                                     System.out.println("Problem getting roster player : teamid [" + teamid + "] fsseasonweekid [" + request.getFSSeasonWeekID() + "] playerid [" + request.getDropPlayerID() + "]");

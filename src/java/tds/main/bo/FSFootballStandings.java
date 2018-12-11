@@ -3,6 +3,7 @@ package tds.main.bo;
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
@@ -170,8 +171,10 @@ public class FSFootballStandings implements Serializable {
         sql.append(" ORDER BY ").append(sort);
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 FSFootballStandings stand = new FSFootballStandings(crs);
                 standings.add(stand);
@@ -180,6 +183,7 @@ public class FSFootballStandings implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
         
         return standings;
@@ -322,7 +326,7 @@ public class FSFootballStandings implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -357,7 +361,7 @@ public class FSFootballStandings implements Serializable {
         sql.append("WHERE FSTeamID = ").append(getFSTeamID()).append(" AND FSSeasonWeekID = ").append(getFSSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

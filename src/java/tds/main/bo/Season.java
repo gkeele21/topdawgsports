@@ -39,7 +39,7 @@ public class Season implements Serializable {
             sql.append(" FROM Season s ");
             sql.append(" WHERE s.SeasonID = ").append(seasonID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -78,6 +78,7 @@ public class Season implements Serializable {
     public static List<Integer> GetAllSportYears() {
         List<Integer> years = new ArrayList<Integer>();        
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT distinct SportYear ");
@@ -85,7 +86,7 @@ public class Season implements Serializable {
             sql.append("WHERE SportYear IS NOT NULL ");
             sql.append("ORDER BY SportYear desc");
 
-            Connection con = CTApplication._CT_DB.getConn(false);
+            con = CTApplication._CT_DB.getConn(false);
             crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());            
             while (crs.next()) {
                 years.add(crs.getInt("SportYear"));
@@ -94,6 +95,7 @@ public class Season implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
         return years;
     }
@@ -137,7 +139,7 @@ public class Season implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -155,7 +157,7 @@ public class Season implements Serializable {
         sql.append("WHERE SeasonID = ").append(getSeasonID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

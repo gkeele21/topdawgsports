@@ -43,7 +43,7 @@ public class Team implements Serializable {
                 sql.append(" SELECT ").append(_Cols.getColumnList("Team", "", ""));
                 sql.append(" FROM Team");
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 while (crs.next()) {
                     Team team = new Team(crs);
                     if (team != null) {
@@ -77,7 +77,7 @@ public class Team implements Serializable {
             sql.append(" FROM Team t ");
             sql.append(" WHERE TeamID = ").append(teamID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -179,7 +179,7 @@ public class Team implements Serializable {
             sql.append(" FROM Team ");
             sql.append(" WHERE DisplayName = '").append(displayName).append("'");
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 id = crs.getInt("teamid");
             }
@@ -204,7 +204,7 @@ public class Team implements Serializable {
             sql.append("WHERE SportID = ").append(sportId).append(" ");
             sql.append("ORDER BY FullName");
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 teams.add(new Team(crs, ""));
             }
@@ -262,7 +262,7 @@ public class Team implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -283,7 +283,7 @@ public class Team implements Serializable {
         sql.append("WHERE TeamID = ").append(getTeamID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

@@ -5,7 +5,6 @@ import bglib.util.AuDate;
 import bglib.util.BGConstants;
 import bglib.util.FSUtils;
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,10 +42,6 @@ public class FSTeam implements Serializable {
     }
 
     public FSTeam(int teamID) {
-        this(null, teamID);
-    }
-
-    public FSTeam(Connection con, int teamID) {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
@@ -66,7 +61,7 @@ public class FSTeam implements Serializable {
             sql.append(" INNER JOIN FSUser u ON u.FSUserID = t.FSUserID");
             sql.append(" WHERE t.FSTeamID = ").append(teamID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -118,14 +113,10 @@ public class FSTeam implements Serializable {
     
     // PUBLIC METHODS
     
-    public List<FSRoster> getRoster(Connection con,int fsseasonweekID) {
-        return FSRoster.getRoster(con,_FSTeamID,fsseasonweekID);
-    }
-    
     public List<FSRoster> getRoster(int fsseasonweekID) {
         return FSRoster.getRoster(_FSTeamID,fsseasonweekID);
     }
-
+    
     public List<FSRoster> getRoster(int fsseasonweekID,String activeState) {
         return FSRoster.getRoster(_FSTeamID,fsseasonweekID,activeState);
     }
@@ -151,9 +142,8 @@ public class FSTeam implements Serializable {
         return id;
     }
 
-    public CTReturnCode insertOrUpdateRoster( Connection con, int fsseasonweekID, List<FSRoster> players) throws Exception {
+    public CTReturnCode insertOrUpdateRoster(int fsseasonweekID, List<FSRoster> players) throws Exception {
 
-        if (con==null) { con = CTApplication._CT_QUICK_DB.getConn(); }
         try {
             int id = _CT_DB.updateDataSet(CTDataSetDef.DELETE_FSROSTER_BY_FSTEAMID_FSSEASONWEEKID, _FSTeamID, fsseasonweekID);
 
@@ -165,21 +155,18 @@ public class FSTeam implements Serializable {
             CTApplication._CT_LOG.error(e);
             return RC_DB_ERROR;
         } finally {
-            if (con != null) {
-                con.close();
-            }
         }
         
         return new CTReturnCode(SUCCESS);
     }
 
-    public double getWeekFantasyPoints( Connection con,int fsseasonweekid,int seasonid) {
-        return getWeekFantasyPoints(con,fsseasonweekid,"s.FantasyPts",seasonid);
+    public double getWeekFantasyPoints(int fsseasonweekid,int seasonid) {
+        return getWeekFantasyPoints(fsseasonweekid,"s.FantasyPts",seasonid);
     }
-    public double getWeekFantasyPoints(Connection con,int fsseasonweekid,String fantptscolname,int seasonid) {
+    public double getWeekFantasyPoints(int fsseasonweekid,String fantptscolname,int seasonid) {
         double totalpts = 0;
         try {
-            List<FSRoster> rosters = getRoster(con, fsseasonweekid);
+            List<FSRoster> rosters = getRoster(fsseasonweekid);
             for (FSRoster roster : rosters) {
                 StringBuilder ptssql = new StringBuilder();
                 ptssql.append("select " + fantptscolname + " as totalfantasypts ");
@@ -194,7 +181,7 @@ public class FSTeam implements Serializable {
                 ptssql.append(" and r.StarterState = 'starter' ");
                 ptssql.append(" and p.PlayerID = ").append(roster.getPlayerID());
 
-                CachedRowSet ptscrs = CTApplication._CT_QUICK_DB.executeQuery(con, ptssql.toString());
+                CachedRowSet ptscrs = CTApplication._CT_QUICK_DB.executeQuery(ptssql.toString());
                 double pts = 0;
                 if (ptscrs.next()) {
                     pts = ptscrs.getDouble("totalfantasypts");
@@ -212,12 +199,12 @@ public class FSTeam implements Serializable {
         return totalpts;
     }
 
-    public void figureBestStarters(Connection con, int fsseasonweekid, boolean includeTEasWR, int fsleagueid) throws Exception {
+    public void figureBestStarters(int fsseasonweekid, boolean includeTEasWR, int fsleagueid) throws Exception {
 
         // Positions
         List list = includeTEasWR ? Arrays.asList(new String[]{"1","2","3,4","5"}) : Arrays.asList(new String[]{"1","2","3","4","5"});
 
-        CTApplication._CT_QUICK_DB.executeUpdate(con,"update FSRoster " +
+        CTApplication._CT_QUICK_DB.executeUpdate("update FSRoster " +
                             " set StarterState = 'bench' " +
                             " where FSTeamID = " + _FSTeamID +
                             " and FSSeasonWeekID = " + fsseasonweekid);
@@ -231,7 +218,7 @@ public class FSTeam implements Serializable {
 
             int posid = pos.startsWith("3") ? 3 : Integer.parseInt(pos);
             
-            FSFootballRosterPositions rosterPositions = new FSFootballRosterPositions(con, fsseasonid, posid, fsleagueid);
+            FSFootballRosterPositions rosterPositions = new FSFootballRosterPositions(fsseasonid, posid, fsleagueid);
             int maxstarters = rosterPositions.getMaxStart();
 
             StringBuilder sql = new StringBuilder();
@@ -250,7 +237,7 @@ public class FSTeam implements Serializable {
             sql.append(" order by st.FantasyPts desc");
 
             //System.out.println(sql);
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             int numstarters = 0;
             while (crs.next()) {
@@ -264,7 +251,7 @@ public class FSTeam implements Serializable {
                                 " where PlayerID = " + playerid +
                                 " and FSSeasonWeekID = " + fsseasonweekid +
                                 " and FSTeamID = " + _FSTeamID);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                 }
             }
             crs.close();
@@ -278,10 +265,6 @@ public class FSTeam implements Serializable {
 
     public List<FSFootballTransactionRequest> getTransactionRequests(int fsseasonweekid,int processed) {
         return FSFootballTransactionRequest.getTransactionRequests(_FSTeamID, fsseasonweekid, processed);
-    }
-
-    public List<FSFootballTransactionRequest> getTransactionRequests(Connection con, int fsseasonweekid,int processed) {
-        return FSFootballTransactionRequest.getTransactionRequests(con, _FSTeamID, fsseasonweekid, processed);
     }
 
     public void updateMaxRequests(int fsseasonweekid, int num) {
@@ -298,7 +281,7 @@ public class FSTeam implements Serializable {
             sql.append(" WHERE r.FSTeamID = ").append(getFSTeamID());
             sql.append(" AND r.FSSeasonWeekID = ").append(fsseasonweekID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 num = crs.getInt("MaxRequests");
             }
@@ -321,7 +304,7 @@ public class FSTeam implements Serializable {
             sql.append("FROM FSTeam ");
             sql.append("WHERE FSTeamID = ").append(fsTeamId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 teamName = crs.getString("teamName");
             }
@@ -466,7 +449,7 @@ public class FSTeam implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -491,7 +474,7 @@ public class FSTeam implements Serializable {
         sql.append("WHERE FSTeamID = ").append(getFSTeamID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

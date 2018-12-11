@@ -82,7 +82,7 @@ public class SeedChallengeStandings implements Serializable {
 
         // If the prior standings for the week is empty than try and get the prior standing for the last fsSeasonWeek
         if (allTeamsPriorStandings.isEmpty()) {
-            FSSeasonWeek priorWeek = new FSSeasonWeek(null, week.getFSSeasonID(), week.getFSSeasonWeekNo() - 1);
+            FSSeasonWeek priorWeek = new FSSeasonWeek(week.getFSSeasonID(), week.getFSSeasonWeekNo() - 1);
             allTeamsPriorStandings = (priorWeek.getFSSeasonWeekID() == null) ?  null : SeedChallengeStandings.GetStandings(priorWeek.getFSSeasonWeekID());
         }
 
@@ -146,7 +146,7 @@ public class SeedChallengeStandings implements Serializable {
     public static void CalculateStandingsByRound(FSSeasonWeek week) {
         
         // Grab all of the standings records for the prior week
-        FSSeasonWeek priorWeek = new FSSeasonWeek(null, week.getFSSeasonID(), week.getFSSeasonWeekNo() - 1);
+        FSSeasonWeek priorWeek = new FSSeasonWeek(week.getFSSeasonID(), week.getFSSeasonWeekNo() - 1);
         List<SeedChallengeStandings> priorStandings = (priorWeek.getFSSeasonWeekID() == null) ?  null : SeedChallengeStandings.GetStandings(priorWeek.getFSSeasonWeekID());
         
         // Grab all the active leagues for the seed challenge season

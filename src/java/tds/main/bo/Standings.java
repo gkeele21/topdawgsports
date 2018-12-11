@@ -48,7 +48,7 @@ public class Standings implements Serializable {
             sql.append("FROM Standings s ");
             sql.append("WHERE s.TeamID = ").append(teamID).append(" AND s.SeasonWeekID = ").append(seasonWeekID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -257,7 +257,7 @@ public class Standings implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -290,7 +290,7 @@ public class Standings implements Serializable {
         sql.append("WHERE TeamID = ").append(getTeamID()).append(" AND SeasonWeekID = ").append(getSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

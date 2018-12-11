@@ -34,11 +34,8 @@ public class FSRoster {
     }
 
     public FSRoster(int id) {
-        this(null, id);
-    }
-
-    public FSRoster(Connection con, int id) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSRoster", "r.", ""));
@@ -54,7 +51,8 @@ public class FSRoster {
             sql.append(" WHERE r.ID = ").append(id);
             sql.append(" ORDER BY r.ActiveState, r.StarterState DESC, p.PositionID");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -62,15 +60,13 @@ public class FSRoster {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
 
     public FSRoster(int teamID, int fsseasonweekID, int seasonID) {
-        this(null, teamID, fsseasonweekID, seasonID);
-    }
-
-    public FSRoster(Connection con, int teamID, int fsseasonweekID, int seasonID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSRoster", "r.", ""));
@@ -95,7 +91,8 @@ public class FSRoster {
             sql.append("  AND r.FSSeasonWeekID = ").append(fsseasonweekID);
             sql.append(" ORDER BY r.ActiveState, r.StarterState DESC, p.PositionID");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             while (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -103,6 +100,7 @@ public class FSRoster {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
     
@@ -146,30 +144,18 @@ public class FSRoster {
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID) {
         String activeState = "";
-        return getRoster(null,teamID,fsseasonweekID, activeState, true);
-    }
-
-    public static List<FSRoster> getRoster(Connection con, int teamID, int fsseasonweekID) {
-        String activeState = "";
-        return getRoster(con,teamID,fsseasonweekID, activeState, true);
-    }
-
-    public static FSRoster getRosterByPlayerID(int teamID, int fsseasonweekID, int playerID) {
-        return getRosterByPlayerID(null,teamID,fsseasonweekID, playerID);
+        return getRoster(teamID,fsseasonweekID, activeState, true);
     }
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID, String activeState) {
-        return getRoster(null,teamID,fsseasonweekID, activeState, true);
+        return getRoster(teamID,fsseasonweekID, activeState, true);
     }
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID, String activeState, boolean sortByStarterState) {
-        return getRoster(null,teamID,fsseasonweekID, activeState, sortByStarterState);
-    }
-
-     public static List<FSRoster> getRoster(Connection con, int teamID, int fsseasonweekID, String activeState, boolean sortByStarterState) {
         List<FSRoster> roster = new ArrayList<FSRoster>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("select ").append(_Cols.getColumnList("FSRoster", "r.", ""));
@@ -204,9 +190,7 @@ public class FSRoster {
             }
             sql.append("p.PositionID, r.ID");
 
-            if (con == null) {
-                con = CTApplication._CT_DB.getConn(false);
-            }
+            con = CTApplication._CT_DB.getConn(false);
             crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
             while (crs.next()) {
@@ -216,15 +200,17 @@ public class FSRoster {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return roster;
     }
 
-    public static FSRoster getRosterByPlayerID(Connection con, int teamID, int fsseasonweekID, int playerID) {
+    public static FSRoster getRosterByPlayerID(int teamID, int fsseasonweekID, int playerID) {
 
         FSRoster roster = null;
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("select ").append(_Cols.getColumnList("FSRoster", "r.", "FSRoster$"));
@@ -252,9 +238,7 @@ public class FSRoster {
             sql.append(" and r.PlayerID = ").append(playerID);
             sql.append(" order by r.ActiveState, r.StarterState desc, p.PositionID, r.ID");
 
-            if (con == null) {
-                con = CTApplication._CT_DB.getConn(false);
-            }
+            con = CTApplication._CT_DB.getConn(false);
             crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
             roster = new FSRoster(crs, "FSRoster$");
@@ -262,6 +246,7 @@ public class FSRoster {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
 
         return roster;
@@ -280,7 +265,7 @@ public class FSRoster {
         sql.append("WHERE ID = ").append(getID());
 
         try {
-            res = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            res = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -374,7 +359,7 @@ public class FSRoster {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            res = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            res = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -396,7 +381,7 @@ public class FSRoster {
         sql.append("WHERE ID = ").append(getID());
 
         try {
-            res = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            res = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

@@ -20,7 +20,7 @@ import tds.main.control.BaseTeamView;
  *
  * @author grant.keele
  */
-public class leagueViewView extends BaseTeamView {
+public class oldTimersVsPeeWeeHomeView extends BaseTeamView {
     
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
@@ -35,12 +35,6 @@ public class leagueViewView extends BaseTeamView {
         System.out.println("Page : " + page);
 
         FSLeague league = _FSTeam.getFSLeague();
-        // redirect to temporary playoffs page
-        int fsleagueId = league.getFSLeagueID();
-        if (fsleagueId == 124 || fsleagueId == 125) {
-            return "oldTimersVsPeeWeeHome.htm";
-        }
-        
         FSSeason fsseason = league.getFSSeason();
         
 //        int currentFSSeasonWeekID = fsseason.getCurrentFSSeasonWeekID();

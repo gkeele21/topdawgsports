@@ -36,7 +36,7 @@ public class SeasonSchedule {
             sql.append(" INNER JOIN Team ht ON ht.StatsTeamID = g.HomeID ");
             sql.append(" WHERE s.SeasonID = ").append(seasonid);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 Game game = Game.getInstance(crs);
                 int seasonweekID = crs.getInt("SeasonWeekID");

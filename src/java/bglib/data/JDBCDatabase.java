@@ -12,6 +12,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
 
 
 public class JDBCDatabase {
@@ -29,7 +30,7 @@ public class JDBCDatabase {
         if (AuUtil.isEmpty(connectionString)) {
 //            _ConnectionString = "jdbc:mysql://localhost:3307/topdawg?user=topdawg&password=laker$&autoReconnect=true";
             _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
-//            _ConnectionString = "jdbc:mysql://10.5.0.174:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
+//            _ConnectionString = "jdbc:mysql://topdawg.circlepix.com:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
         } else {
             _ConnectionString = connectionString;
         }
@@ -162,7 +163,7 @@ public class JDBCDatabase {
             }
             if (stmt!=null) {
                 stmt.close();
-            }
+            } 
         }
 
         return id;
@@ -428,7 +429,7 @@ public class JDBCDatabase {
         }
     }
 
-    public void close(Connection con) {
+    public static void close(Connection con) {
         try {
             if (con!=null) {
                 con.close();

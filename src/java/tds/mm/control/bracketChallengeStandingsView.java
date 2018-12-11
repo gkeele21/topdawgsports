@@ -69,7 +69,7 @@ public class bracketChallengeStandingsView extends BaseTeamView {
             
             // Grab the league standings
             List<BracketChallengeStandings> standings = BracketChallengeStandings.GetStandings(displayWeek.getFSSeasonWeekID());
-            if (standings.isEmpty()) { standings = BracketChallengeStandings.GetStandings(new FSSeasonWeek(null,displayWeek.getFSSeasonID(),displayWeek.getFSSeasonWeekNo() - 1).getFSSeasonWeekID()); }
+            if (standings.isEmpty()) { standings = BracketChallengeStandings.GetStandings(new FSSeasonWeek(displayWeek.getFSSeasonID(),displayWeek.getFSSeasonWeekNo() - 1).getFSSeasonWeekID()); }
             
             List<MarchMadnessRegion> regions = MarchMadnessRegion.GetRegions(leagueTournament.getTournamentID());
             

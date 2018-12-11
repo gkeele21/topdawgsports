@@ -22,7 +22,7 @@ import tds.util.CTReturnCode;
  */
 public class FootballResults  {
 
-    private static final int _FSSeasonID = 81;
+    private static final int _FSSeasonID = 92;
     
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
@@ -189,7 +189,7 @@ public class FootballResults  {
                 int teamid = crs.getInt("FSTeamID");
                 FSTeam team = new FSTeam(teamid);
                 
-                double teampts = team.getWeekFantasyPoints(con, fsseasonweekid,"s.SalFantasyPts",thisWeek.getFSSeason().getSeasonID());
+                double teampts = team.getWeekFantasyPoints(fsseasonweekid,"s.SalFantasyPts",thisWeek.getFSSeason().getSeasonID());
                 
                 // grab last week's standings info for this team
                 double totfpts = 0.0;
@@ -260,7 +260,7 @@ public class FootballResults  {
                 // TODO: check to see if the players are under this week's salary cap.
                 // if not, remove the most costly player
 
-                team.insertOrUpdateRoster(con,fsseasonweekid,players);
+                team.insertOrUpdateRoster(fsseasonweekid,players);
 
                 logger.info("Created Roster from last week for Team ID #" + teamid + " ('" + team.getTeamName() + "') ");
                 count++;
@@ -289,7 +289,7 @@ public class FootballResults  {
             int thisweekNo = thisWeek.getFSSeasonWeekNo();
             FSSeasonWeek lastWeek = thisweekNo == 1 ? thisWeek : thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo-1));
 
-            FSLeague league = new FSLeague(con,fsleagueid);
+            FSLeague league = new FSLeague(fsleagueid);
             int numteams = league.getNumTeams();
                     
 //            String sql = "select count(1) as cnt " +

@@ -24,15 +24,12 @@ public class FSFootballRosterPositions {
     }
     
     public FSFootballRosterPositions(int fsseasonID, int positionID) {
-        this(null, fsseasonID, positionID);
+        this(fsseasonID, positionID, 0);
     }
 
-    public FSFootballRosterPositions(Connection con, int fsseasonID, int positionID) {
-        this(con, fsseasonID, positionID, 0);
-    }
-
-    public FSFootballRosterPositions(Connection con, int fsseasonID, int positionID, int fsleagueID) {
+    public FSFootballRosterPositions(int fsseasonID, int positionID, int fsleagueID) {
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballRosterPositions", "rp.", ""));
@@ -41,14 +38,29 @@ public class FSFootballRosterPositions {
             sql.append(" AND rp.PositionID = ").append(positionID);
             sql.append(" AND rp.FSLeagueID = ").append(fsleagueID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
+            } else {
+                // grab the record where the FSLeagueID is 0
+                sql = new StringBuilder();
+                sql.append("SELECT ").append(_Cols.getColumnList("FSFootballRosterPositions", "rp.", ""));
+                sql.append(" FROM FSFootballRosterPositions rp ");
+                sql.append(" WHERE rp.FSSeasonID = ").append(fsseasonID);
+                sql.append(" AND rp.PositionID = ").append(positionID);
+                sql.append(" AND rp.FSLeagueID = 0");
+
+                crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                if (crs.next()) {
+                    initFromCRS(crs, "");
+                }
             }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
     }
     
@@ -154,7 +166,7 @@ public class FSFootballRosterPositions {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -176,7 +188,7 @@ public class FSFootballRosterPositions {
         sql.append(" AND FSLeagueID = ").append(getFSLeagueID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

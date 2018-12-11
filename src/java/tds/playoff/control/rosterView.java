@@ -225,7 +225,7 @@ public class rosterView extends BaseTeamView {
                 temproster.setPlayerID(tempplayerValue.getPlayerID());
                 roster.add(temproster);
             }
-            rc = team.insertOrUpdateRoster(null,currFSSeasonWeek.getFSSeasonWeekID(), roster);
+            rc = team.insertOrUpdateRoster(currFSSeasonWeek.getFSSeasonWeekID(), roster);
             team = new FSTeam(team.getFSTeamID());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(session.getHttpSession(), e);

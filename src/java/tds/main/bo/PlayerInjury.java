@@ -43,7 +43,7 @@ public class PlayerInjury implements Serializable {
             sql.append(" INNER JOIN Country c on c.CountryID = p.CountryID ");
             sql.append(" WHERE p.PlayerID = ").append(playerID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {

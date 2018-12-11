@@ -50,7 +50,7 @@ public class Position implements Serializable {
                 sql.append(" SELECT ").append(_Cols.getColumnList("Position", "", ""));
                 sql.append(" FROM Position");
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 while (crs.next()) {
                     Position pos = new Position(crs);
                     getPositionCache().put(crs.getInt("PositionID"), pos);
@@ -87,7 +87,7 @@ public class Position implements Serializable {
             sql.append(" INNER JOIN Sport s on s.SportID = p.PositionID ");
             sql.append(" WHERE p.PositionID = ").append(positionID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             }

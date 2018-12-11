@@ -44,7 +44,7 @@ public class SeasonWeek implements Serializable {
             sql.append("FROM SeasonWeek w ");
             sql.append("WHERE w.SeasonWeekID = ").append(seasonWeekID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class SeasonWeek implements Serializable {
             sql.append("FROM SeasonWeek ");
             sql.append("WHERE SeasonID = ").append(seasonWeek.getSeasonID()).append(" AND WeekNo = ").append(seasonWeek.getWeekNo() + 1);
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) { 
                 nextSeasonWeekId = crs.getInt("SeasonWeekID"); 
             }            
@@ -126,7 +126,7 @@ public class SeasonWeek implements Serializable {
             sql.append("FROM SeasonWeek ");
             sql.append("WHERE SeasonID = ").append(seasonWeek.getSeasonID()).append(" AND WeekNo = ").append(priorWeekNo);
             
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) { 
                 priorWeek = new SeasonWeek(crs, "");
             }            
@@ -176,7 +176,7 @@ public class SeasonWeek implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             AuDate now = new AuDate();
                     
             while (crs.next()) {
@@ -238,7 +238,7 @@ public class SeasonWeek implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -258,7 +258,7 @@ public class SeasonWeek implements Serializable {
         sql.append("WHERE SeasonWeekID = ").append(getSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

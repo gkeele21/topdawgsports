@@ -3,6 +3,7 @@ package tds.main.bo;
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
@@ -38,6 +39,7 @@ public class FSFootballDraft implements Serializable {
     public FSFootballDraft(int leagueID, int round, int place) {
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("Player", "p.", "Player$"));
@@ -56,7 +58,8 @@ public class FSFootballDraft implements Serializable {
             sql.append(" AND fsd.Round = ").append(round);
             sql.append(" AND fsd.Place = ").append(place);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
             if (crs.next()) {
                 initFromCRS(crs,"FSFootballDraft$");
@@ -66,6 +69,7 @@ public class FSFootballDraft implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
         
     }
@@ -98,6 +102,7 @@ public class FSFootballDraft implements Serializable {
         List<FSFootballDraft> results = new ArrayList<FSFootballDraft>();
 
         CachedRowSet crs = null;
+        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("Player", "p.", "Player$"));
@@ -115,7 +120,9 @@ public class FSFootballDraft implements Serializable {
             sql.append(" WHERE fsd.FSLeagueID = ").append(leagueID);
             sql.append(" ORDER BY fsd.Round,fsd.Place ");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            System.out.println("Getting draft results with query : " + sql.toString());
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
             while (crs.next()) {
                 results.add(new FSFootballDraft(crs, "FSFootballDraft$"));
@@ -123,8 +130,10 @@ public class FSFootballDraft implements Serializable {
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
+            System.out.println("Error : " + e.getMessage());
         } finally {
             JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
         }
         
         return results;
@@ -143,7 +152,7 @@ public class FSFootballDraft implements Serializable {
 
         // Call QueryCreator
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -163,7 +172,7 @@ public class FSFootballDraft implements Serializable {
         sql.append(" AND Place = ").append(this._Place);
 
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

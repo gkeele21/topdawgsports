@@ -26,7 +26,7 @@ public class State implements Serializable, Comparable {
             sql.append(" SELECT ").append(_Cols.getColumnList("State"));
             sql.append(" FROM State");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 State state = new State(crs);
                 _InstancesByID.put(state.getStateID(), state);

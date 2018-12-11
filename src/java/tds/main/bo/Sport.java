@@ -36,7 +36,7 @@ public class Sport implements Serializable {
             sql.append("FROM Sport s ");
             sql.append("WHERE s.SportID = ").append(sportID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {
