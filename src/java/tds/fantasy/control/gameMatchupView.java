@@ -44,6 +44,7 @@ public class gameMatchupView extends BaseTeamView {
             // check for weekno and game to be passed in
             int weekNo = FSUtils.getIntRequestParameter(request, "wk", 0);
             int gameNo = FSUtils.getIntRequestParameter(request, "game", 0);
+            int lgid = FSUtils.getIntRequestParameter(request, "lgid", 0);
             
             if (weekNo < 1 || gameNo < 1) {
                 _Session.setErrorMessage("Please select a valid Game Matchup.");
@@ -52,7 +53,9 @@ public class gameMatchupView extends BaseTeamView {
             // TODO: grab the fsseasonweekid based on the fsleagueid and weekno
             // I'm lucky now because the weekno matches the FSSeasonWeekID but
             // that won't last past this first season.
-            int lgid = league.getFSLeagueID();
+            if (lgid == 0) {
+                lgid = league.getFSLeagueID();    
+            }
             int fsseasonweekid = FSSeasonWeek.GetFSSeasonWeekID(lgid, weekNo);
             
             matchup = new FSFootballMatchup(lgid,fsseasonweekid,gameNo);
