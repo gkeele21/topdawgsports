@@ -140,11 +140,11 @@ public class FSFootballTransaction {
             sql.append(" INNER JOIN FSLeague l ON l.FSLeagueID = tm.FSLeagueID ");
             sql.append(" INNER JOIN FSSeasonWeek w ON w.FSSeasonWeekID = t.FSSeasonWeekID ");
             sql.append(" INNER JOIN Player dp ON dp.PlayerID = t.DropPlayerID ");
-            sql.append(" INNER JOIN Player pp ON pp.PlayerID = t.PUPlayerID ");
+            sql.append(" LEFT JOIN Player pp ON pp.PlayerID = t.PUPlayerID ");
             sql.append(" INNER JOIN Position dps ON dps.PositionID = dp.PositionID ");
-            sql.append(" INNER JOIN Position pps ON pps.PositionID = pp.PositionID ");
+            sql.append(" LEFT JOIN Position pps ON pps.PositionID = pp.PositionID ");
             sql.append(" INNER JOIN Team dt ON dt.TeamID = dp.TeamID ");
-            sql.append(" INNER JOIN Team pt ON pt.TeamID = pp.TeamID ");
+            sql.append(" LEFT JOIN Team pt ON pt.TeamID = pp.TeamID ");
             sql.append(" WHERE t.FSLeagueID = ").append(leagueID);
             sql.append(" AND t.FSSeasonWeekID = ").append(fsseasonweekID);
 

@@ -200,28 +200,30 @@ public class FootballTransactionRequests implements Harnessable {
             FSSeasonWeek thisWeek = new FSSeasonWeek(fsseasonweekid);
             int thisweekNo = thisWeek.getFSSeasonWeekNo();
             FSSeasonWeek nextWeek = thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo+1));
-            int count = 0;
-            int nextweekid = nextWeek.getFSSeasonWeekID();
+            if (nextWeek != null) {
+                int count = 0;
+                int nextweekid = nextWeek.getFSSeasonWeekID();
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM FSFootballTransactionOrder ");
-            sql.append(" WHERE FSSeasonWeekID = ").append(nextweekid);
-            sql.append(" AND FSLeagueID = ").append(league.getFSLeagueID());
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
-
-            for (Integer teamId : newOrder)
-            {
-                count++;
-                
-                sql = new StringBuilder();
-                sql.append("INSERT INTO FSFootballTransactionOrder ");
-                sql.append(" (FSLeagueID,FSSeasonWeekID,OrderNumber,FSTeamID) ");
-                sql.append(" VALUES (").append(league.getFSLeagueID());
-                sql.append(",").append(nextweekid);
-                sql.append(",").append(count);
-                sql.append(",").append(teamId).append(")");
+                StringBuilder sql = new StringBuilder();
+                sql.append("DELETE FROM FSFootballTransactionOrder ");
+                sql.append(" WHERE FSSeasonWeekID = ").append(nextweekid);
+                sql.append(" AND FSLeagueID = ").append(league.getFSLeagueID());
                 CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
-                
+
+                for (Integer teamId : newOrder)
+                {
+                    count++;
+
+                    sql = new StringBuilder();
+                    sql.append("INSERT INTO FSFootballTransactionOrder ");
+                    sql.append(" (FSLeagueID,FSSeasonWeekID,OrderNumber,FSTeamID) ");
+                    sql.append(" VALUES (").append(league.getFSLeagueID());
+                    sql.append(",").append(nextweekid);
+                    sql.append(",").append(count);
+                    sql.append(",").append(teamId).append(")");
+                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+
+                }
             }
             
             con.commit();

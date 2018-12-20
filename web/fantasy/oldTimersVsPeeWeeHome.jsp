@@ -277,9 +277,9 @@
 
                     <!-- ROUND 3 -->
                     <div class="bracket" style="top: 475px; left: 300px; height: 250px; width: 100px;">
-                        <label style=" top: -27px; width: 100px;" class="team"></label>
+                        <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;John</label>
                         <label class="score" style="top: 0.0px; width: 100px;"></label>
-                        <label style=" top: 25px; width: 100px;" class="team"></label>
+                        <label style=" top: 225px; width: 100px;" class="team">&#160;&#160;Jackson</label>
                     </div>
 
                     <!-- CHAMPION -->
