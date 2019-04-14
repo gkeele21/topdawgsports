@@ -430,6 +430,9 @@ public class FootballResults  {
         int thisweekNo = thisWeek.getFSSeasonWeekNo();
         FSSeasonWeek nextWeek = thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo+1));
 
+        if (nextWeek == null) {
+            return;
+        }
         CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
         while (crs.next()) {
 
@@ -457,6 +460,10 @@ public class FootballResults  {
         int thisweekNo = thisWeek.getFSSeasonWeekNo();
         FSSeasonWeek nextWeek = thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo+1));
 
+        if (nextWeek == null ) {
+            return;
+        }
+        
         StringBuffer sql = new StringBuffer();
         sql.append("select * from FSRoster r " +
                     " INNER JOIN FSTeam t on t.FSTeamID = r.FSTeamID " +

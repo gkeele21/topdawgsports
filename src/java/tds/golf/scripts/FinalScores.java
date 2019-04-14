@@ -84,12 +84,13 @@ public class FinalScores implements Harnessable {
                 return;
             }
             
-            final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2018/leaderboard.xml";
+            final String filePath = "http://www.pgatour.com/data/r/" + extId + "/2019/leaderboard.xml";
             
             // www.pgatour.com/data/r/475/2015/money.xml
             // scores : leaderboard.xml
             // field : field.xml
            
+            System.out.println("Reading from URL : " + filePath);
             URL url = new URL(filePath);
 
             InputStream uin = url.openStream();
@@ -276,12 +277,13 @@ public class FinalScores implements Harnessable {
                 return;
             }
             
-            final String filePath = "https://statdata.pgatour.com/r/" + extId + "/2018/leaderboard-v2mini.json";
+            final String filePath = "https://statdata.pgatour.com/r/" + extId + "/2019/leaderboard-v2mini.json";
             
             // www.pgatour.com/data/r/475/2015/money.xml
             // scores : leaderboard.xml
             // field : field.xml
            
+            System.out.println("Reading from URL : " + filePath);
             URL url = new URL(filePath);
 
             InputStream uin = url.openStream();
@@ -327,86 +329,93 @@ public class FinalScores implements Harnessable {
                         
                     if (weekPlayer != null && weekPlayer.getID() > 0) {
                         
-                        String status = player.get("status").toString();
-                        String rank = player.get("current_position").toString();
-                        boolean active = true;
-                        if ("cut".equals(status))
-                        {
-                            rank = "CUT";
-                            active = false;
-                        }
-                                                
-                        if (!AuUtil.isEmpty(rank)) {
-                            weekPlayer.setTournamentRank(rank);
-                        }
-                        
-                        if (active)
-                        {
-                            String relStr = player.get("total").toString();
-                            if (!AuUtil.isEmpty(relStr)) {
-                                weekPlayer.setRelativeToPar(Integer.parseInt(relStr));
-                            }    
-                        }
-                        
-                        String scStr = player.get("total_strokes").toString();
-                        if (!AuUtil.isEmpty(scStr)) {
-                            weekPlayer.setFinalScore(scStr);
-                        }
-                        
-                        Object thruObj = player.get("thru");
-                        
-                        if (thruObj != null) {
-                            String thruStr = thruObj.toString();
-                            weekPlayer.setThru(Integer.parseInt(thruStr));
-                        }
-                        
-                        Object todayObj = player.get("today");
-                        if (todayObj != null) {
-                            String todayStr = todayObj.toString();
-                            weekPlayer.setTodayRound(Integer.parseInt(todayStr));
-                        }
-                        
-                        // get round scores
-                        JSONArray roundsArr = (JSONArray)player.get("rounds");
-                        for (Object r : roundsArr) {
-                            JSONObject round = (JSONObject) r;
-                            String roundNumberStr = round.get("round_number").toString();
-                            Object roundScoreObj = round.get("strokes");
-                            if (roundScoreObj == null)
-                            {
-                                continue;
-                            }
-                            String roundScore = roundScoreObj.toString();
-                            int roundNumber = Integer.parseInt(roundNumberStr);
+                        try {
                             
-                            switch (roundNumber) {
-                                case 1 :
-                                    weekPlayer.setRound1(roundScore);
-                                    break;
-                                case 2 :
-                                    weekPlayer.setRound2(roundScore);
-                                    break;
-                                case 3 :
-                                    weekPlayer.setRound3(roundScore);
-                                    break;
-                                case 4 :
-                                    weekPlayer.setRound4(roundScore);
-                                    break;
-                                case 5 :
-                                    weekPlayer.setRound5(roundScore);
-                                    break;
-                            } 
-                        }
+                            String status = player.get("status").toString();
+                            String rank = player.get("current_position").toString();
+                            boolean active = true;
+                            if ("cut".equals(status))
+                            {
+                                rank = "CUT";
+                                active = false;
+                            }
 
-                        // Get Money Earnings
-                        JSONObject rankingsObj = (JSONObject)player.get("rankings");                            
-                        String moneyEarned = rankingsObj.get("projected_money_event").toString();
-                        if (!AuUtil.isEmpty(moneyEarned)) {
-                        weekPlayer.setMoneyEarned(Double.parseDouble(moneyEarned)); 
-                        }
+                            if (!AuUtil.isEmpty(rank)) {
+                                weekPlayer.setTournamentRank(rank);
+                            }
 
-                        weekPlayer.Save();
-                        System.out.println(" : SUCCESS!");
+                            if (active)
+                            {
+                                String relStr = player.get("total").toString();
+                                if (!AuUtil.isEmpty(relStr)) {
+                                    weekPlayer.setRelativeToPar(Integer.parseInt(relStr));
+                                }    
+                            }
+
+                            Object tsObj = player.get("total_strokes");
+                            if (tsObj != null) {
+                                String scStr = tsObj.toString();
+                                if (!AuUtil.isEmpty(scStr)) {
+                                    weekPlayer.setFinalScore(scStr);
+                                }                                
+                            }
+                            
+                            Object thruObj = player.get("thru");
+                            if (thruObj != null) {
+                                String thruStr = thruObj.toString();
+                                weekPlayer.setThru(Integer.parseInt(thruStr));
+                            }
+
+                            Object todayObj = player.get("today");
+                            if (todayObj != null) {
+                                String todayStr = todayObj.toString();
+                                weekPlayer.setTodayRound(Integer.parseInt(todayStr));
+                            }
+
+                            // get round scores
+                            JSONArray roundsArr = (JSONArray)player.get("rounds");
+                            for (Object r : roundsArr) {
+                                JSONObject round = (JSONObject) r;
+                                String roundNumberStr = round.get("round_number").toString();
+                                Object roundScoreObj = round.get("strokes");
+                                if (roundScoreObj == null)
+                                {
+                                    continue;
+                                }
+                                String roundScore = roundScoreObj.toString();
+                                int roundNumber = Integer.parseInt(roundNumberStr);
+
+                                switch (roundNumber) {
+                                    case 1 :
+                                        weekPlayer.setRound1(roundScore);
+                                        break;
+                                    case 2 :
+                                        weekPlayer.setRound2(roundScore);
+                                        break;
+                                    case 3 :
+                                        weekPlayer.setRound3(roundScore);
+                                        break;
+                                    case 4 :
+                                        weekPlayer.setRound4(roundScore);
+                                        break;
+                                    case 5 :
+                                        weekPlayer.setRound5(roundScore);
+                                        break;
+                                } 
+                            }
+
+                            // Get Money Earnings
+                            JSONObject rankingsObj = (JSONObject)player.get("rankings");                            
+                            String moneyEarned = rankingsObj.get("projected_money_event").toString();
+                            if (!AuUtil.isEmpty(moneyEarned)) {
+                            weekPlayer.setMoneyEarned(Double.parseDouble(moneyEarned)); 
+                            }
+
+                            weekPlayer.Save();
+                            System.out.println(" : SUCCESS!");
+                        } catch (Exception e) {
+                            System.out.println(" : ERROR!");
+                        }
                     } else {
                         System.out.println(" : SKIPPED - player not in field.");
                     }
@@ -453,6 +462,9 @@ public class FinalScores implements Harnessable {
                 System.out.println("Error: You must pass in PGATournamentID as the 1st param and FSSeasonWeekId as the 2nd param");
                 return;
             }
+            
+            System.out.println("Running for PGATournamentId : " + pgaTournamentId);
+            System.out.println("FSSeasonWeekID : " + fsSeasonWeekId);
             field.run(pgaTournamentId, fsSeasonWeekId);
         } catch (Exception e) {
             e.printStackTrace();
