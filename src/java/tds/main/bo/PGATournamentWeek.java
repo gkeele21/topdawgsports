@@ -293,26 +293,27 @@ public class PGATournamentWeek implements Serializable {
         return players;
     }
     
-    public List<FSTeam> GetLeagueTeamsEntered(Integer fsLeagueID, String orderBy) {
+    public List<FSGolfStandings> GetLeagueTeamsEntered(Integer fsLeagueID, String orderBy) {
 
-        List<FSTeam> teams = new ArrayList<FSTeam>();
+        List<FSGolfStandings> teams = new ArrayList<FSGolfStandings>();
 
         if (orderBy == null)
         {
-            orderBy = "twp.SalaryValue desc, p.lastName";
+            orderBy = "gs.WeekMoneyEarned desc, gs.FSTeamID";
         }
         
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT").append(_Cols.getColumnList("PGATournamentWeek", "tw.", "PGATournamentWeek$")).append(", ");
         sql.append(_Cols.getColumnList("PGATournament", "t.", "PGATournament$")).append(", ");
-        sql.append(_Cols.getColumnList("FSGolfStandings", "gs.", "FSGolfStandings$"));
+        sql.append(_Cols.getColumnList("FSGolfStandings", "gs.", "FSGolfStandings$")).append(", ");
+        sql.append(_Cols.getColumnList("FSTeam", "fst.", "FSTeam$"));
         sql.append(" FROM PGATournamentWeek tw ");
-        sql.append(" JOIN FSGolfStandings gs ON gs.PGATournamentID = twp.PlayerID ");
-        sql.append(" LEFT JOIN Country cnt on cnt.CountryID = p.CountryID ");
+        sql.append(" JOIN FSGolfStandings gs ON gs.FSSeasonWeekID = tw.FSSeasonWeekID ");
         sql.append(" JOIN PGATournament t ON t.PGATournamentID = tw.PGATournamentID");
-        sql.append(" WHERE twp.FSSeasonWeekID = ").append(getFSSeasonWeekID());
-        sql.append(" AND twp.PGATournamentID = ").append(getPGATournamentID());
-//        sql.append(" AND p.PlayerID not in (").append(excludeStr).append(")");
+        sql.append(" JOIN FSTeam fst ON fst.FSTeamID = gs.FSTeamID ");
+        sql.append(" WHERE tw.FSSeasonWeekID = ").append(getFSSeasonWeekID());
+        sql.append(" AND tw.PGATournamentID = ").append(getPGATournamentID());
+        sql.append(" AND gs.WeekEventEntered = 1");
         sql.append(" ORDER BY ").append(orderBy);
 
         // Call QueryCreator
@@ -320,13 +321,8 @@ public class PGATournamentWeek implements Serializable {
         try {
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
-                PGATournamentWeekPlayer player = new PGATournamentWeekPlayer(crs,"PGATournamentWeekPlayer$");
-//                if (includeOwners)
-//                {
-//                    player.populateOwners(fsLeagueID);
-//                }
-//                
-//                players.add(player);
+                FSGolfStandings team = new FSGolfStandings(crs,"FSGolfStandings$");
+                teams.add(team);
             }
 
         } catch (Exception e) {

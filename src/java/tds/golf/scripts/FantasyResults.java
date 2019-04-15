@@ -80,9 +80,17 @@ public class FantasyResults  {
             int lastweekfsseasonweekid = fsseasonweekid - 1;
             
             PGATournamentWeek tournamentWeek = PGATournamentWeek.getTournamentWeek(fsseasonweekid);
+            double thisWeekFees = tournamentWeek.getTeamFee();
             
             //int fsseasonweekid = 14;
             _Logger.info("Processing results for FSSeasonWeekID : " + fsseasonweekid);
+
+            StringBuilder del = new StringBuilder();
+            del.append(" delete ");
+            del.append(" FROM FSGolfStandings ");
+            del.append(" WHERE FSSeasonWeekID = ").append(fsseasonweekid);
+
+            CTApplication._CT_QUICK_DB.executeUpdate(con, del.toString());
 
             // Calculate week's results
             List<FSLeague> leagues = fsseason.GetLeagues();
@@ -123,27 +131,43 @@ public class FantasyResults  {
                     sql.append(" AND t.FSTeamID = ").append(team.getFSTeamID());
                     
                     double totalMoneyEarned = 0;
+                    double totalWinnings = 0;
+                    double totalFees = 0;
+                    int totalEventsEntered = 0;
                     CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
                     if (crs.next()) {
                         totalMoneyEarned = crs.getDouble("TotalMoneyEarned");
                         totalMoneyEarned += moneyEarned;
+                        totalWinnings = crs.getDouble("TotalWinnings");
+                        totalFees = crs.getDouble("TotalFees");
+                        totalEventsEntered = crs.getInt("TotalEventsEntered");
+                        if (teamEntered) {
+                            totalFees += thisWeekFees;
+                            totalEventsEntered++;
+                        }
                     } else
                     {
                         totalMoneyEarned = moneyEarned;
+                        totalFees = thisWeekFees;
+                        totalEventsEntered++;
                     }
                     
                     StringBuilder sql2 = new StringBuilder();
                     sql2.append("INSERT INTO FSGolfStandings ");
-                    sql2.append(" (FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned, WeekEventEntered)");
+                    sql2.append(" (FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned, TotalWinnings, TotalFees, TotalEventsEntered, WeekFees, WeekEventEntered)");
                     sql2.append(" VALUES(").append(team.getFSTeamID());
                     sql2.append(", ").append(fsseasonweekid);
                     sql2.append(", ").append(moneyEarned);
                     sql2.append(", ").append(totalMoneyEarned);
-                    sql2.append(", ");
+                    sql2.append(", ").append(totalWinnings);
+                    sql2.append(", ").append(totalFees);
+                    sql2.append(", ").append(totalEventsEntered);
                     if (teamEntered) {
-                        sql2.append("1");
+                        sql2.append(", ").append(thisWeekFees);
+                        sql2.append(", 1");
                     } else {
-                        sql2.append("0");
+                        sql2.append(", NULL");
+                        sql2.append(", 0");
                     }
                     sql2.append(" )");
                     
@@ -156,15 +180,28 @@ public class FantasyResults  {
             
             // Figure out who won
             for (FSLeague league : leagues) {
-                int numTeamsEntered = 0;
-                List<FSTeam> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID(),null);
-                
-                for (FSTeam team : teams)
+                List<FSGolfStandings> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID(),null);
+                int numTeamsEntered = teams.size();
+                int rank = 0;
+                for (FSGolfStandings standingsTeam : teams)
                 {
+                    rank++;
+                    if (rank == 1) {
+                        double weekFees = standingsTeam.getWeekFees();
+                        double totalWinnings = standingsTeam.getTotalWinnings();
+                        double weekWinnings = numTeamsEntered * weekFees;
+                        // set the winnings
+                        standingsTeam.setWeekWinnings(weekWinnings);
+                        standingsTeam.setTotalWinnings(totalWinnings + weekWinnings);
+                    }
                     
+                    standingsTeam.setRank(rank);
+                    
+                    standingsTeam.Save();
                 }
             }
 
+            _Logger.log(Level.INFO, "All standings have been set.");
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
             _Logger.log(Level.SEVERE, "Exception in FantasyResults.run()", e);
