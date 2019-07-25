@@ -48,7 +48,7 @@
                                             <td colspan="8">${fsteam.FSLeague.leagueName} Roster</td>
                                         </tr>
                                         <tr>
-                                            <td colspan="8">for Week #${fantasyCurrentWeek.FSSeasonWeekNo}</td>
+                                            <td colspan="8">for Week #${fantasyDisplayWeek.FSSeasonWeekNo}</td>
                                         </tr>
                                     </jsp:attribute>
                                     <jsp:attribute name="rowHeader">

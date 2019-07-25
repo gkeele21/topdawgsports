@@ -1,6 +1,7 @@
 package tds.main.control;
 
 import bglib.util.FSUtils;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.*;
@@ -43,6 +44,7 @@ public class BaseTeamView extends BaseView {
             return "../index";
         }
         
+        setWeeks();
         _CurrentFSSeasonWeek = (FSSeasonWeek)_Session.getHttpSession().getAttribute("fantasyCurrentWeek");
         return null;
     }
@@ -87,5 +89,48 @@ public class BaseTeamView extends BaseView {
         }
             
         return null;
+    }
+    
+    private void setWeeks() {
+
+        if (_DisplayFSSeasonWeek == null ) {
+            
+            // Retrieve all of the FSSeasonWeek's for the entire FSSeason
+            List<FSSeasonWeek> allWeeks = FSSeasonWeek.GetAllFSSeasonWeeks(_FSTeam.getFSLeague().getFSSeasonID());
+
+            FSSeasonWeek prevWeek = null;
+            FSSeasonWeek finalWeek = null;
+            FSSeasonWeek initialWeek = null;
+            weeks1 : for (FSSeasonWeek week : allWeeks) {
+
+                if (week.getStatus().equals("CURRENT")) {
+                    if (prevWeek == null) {
+                        _DisplayFSSeasonWeek = week;
+                    } else {
+                        _DisplayFSSeasonWeek = prevWeek;
+                    }
+                    _CurrentFSSeasonWeek = week;
+                }
+
+                if (week.getWeekType().equals(FSSeasonWeek.WeekType.INITIAL.toString())) {
+                    initialWeek = week;
+                }
+
+                // If we get to the final week then set it to this as long as the week hasn't been found and the session object didn't have anything (null)
+                if (week.getWeekType().equals(FSSeasonWeek.WeekType.FINAL.toString())) {
+                    finalWeek = week;
+                }
+
+                prevWeek = week;
+            }     
+
+            // Set it to be the current week as long as the session object didn't have anything (null)
+            if (_CurrentFSSeasonWeek == null) {
+                _DisplayFSSeasonWeek = finalWeek;
+            }
+
+            _Session.getHttpSession().setAttribute("fantasyCurrentWeek", _CurrentFSSeasonWeek);
+            _Session.getHttpSession().setAttribute("fantasyDisplayWeek", _DisplayFSSeasonWeek);
+        }
     }
 }
