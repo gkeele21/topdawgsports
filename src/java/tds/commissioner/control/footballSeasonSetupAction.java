@@ -23,9 +23,9 @@ public class footballSeasonSetupAction extends BaseAction {
         // TODO : Add a UI so this part doesn't have to be hardcoded
         int[] keeleFantasyLeagueSize = {8,10};        
         int[] keeperUserIds = {1,2,5,6,7,9,10,36};
-        int[] tenmanUserIds = {1,2,4,5,6,7,9,10,18,36};
+        int[] tenmanUserIds = {1,2,4,5,6,7,10,18,36,82};
         String[] keeperOwners = {"Grant", "Bert", "Brian", "Mike", "Case", "Ragz", "Jeremy", "John"};
-        String[] tenmanOwners = {"Grant", "Bert", "Dave", "Brian", "Mike", "Case", "Ragz", "Jeremy", "Scott", "John"};        
+        String[] tenmanOwners = {"Grant", "Bert", "Dave", "Brian", "Mike", "Case", "Jeremy", "Scott", "John", "Nick"};        
         
         String nextPage = super.process(request,response);
         if (nextPage != null) { return nextPage; }
@@ -108,6 +108,7 @@ public class footballSeasonSetupAction extends BaseAction {
                 keeperLeague.setScheduleName("8Team");
                 keeperLeague.setStartFSSeasonWeekID(fsSeasonWeekId);
                 keeperLeague.setStatus(FSLeague.Status.ACTIVE.toString());
+                keeperLeague.setIsCustomLeague(0);
                 keeperLeague.Save();
                 nextFSLeagueId += 1;
             }
@@ -120,7 +121,7 @@ public class footballSeasonSetupAction extends BaseAction {
             fsLeague.setDraftType((fantasyGames[n] == FSGame.HEAD_TO_HEAD) ? "redraft" : null);
             fsLeague.setScheduleName((fantasyGames[n] == FSGame.HEAD_TO_HEAD) ? "10Team" : null);
             fsLeague.setStartFSSeasonWeekID((fantasyGames[n] == FSGame.HEAD_TO_HEAD) ? fsSeasonWeekId : null);
-            fsLeague.setIsCustomLeague((fantasyGames[n] == FSGame.PRO_PICKEM) ? 1 : null);
+            fsLeague.setIsCustomLeague((fantasyGames[n] == FSGame.PRO_PICKEM) ? 1 : 0);
             fsLeague.setStatus(FSLeague.Status.ACTIVE.toString());
             fsLeague.Save();
             nextFSLeagueId += 1;
