@@ -16,6 +16,10 @@
             <c:set var="imageURL" value="../images/salarycap.png" />
             <c:set var="menuURL" value="../menu/inc_salaryCapMenu.jsp" />
         </c:when>
+        <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 3}" >
+            <c:set var="imageURL" value="../images/salarycap.png" />
+            <c:set var="menuURL" value="../menu/inc_salaryCapElimMenu.jsp" />
+        </c:when>
         <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 4}" >
             <c:set var="imageURL" value="../images/nflpickem.png" />
             <c:set var="menuURL" value="../menu/inc_proPickemMenu.jsp" />

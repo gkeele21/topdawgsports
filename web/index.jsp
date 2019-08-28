@@ -130,15 +130,17 @@
         
         <div id="promoGame">
             <div id="innerPromoGame">
-                <h2>Fantasy Golf</h2>
-                <img src="images/mastersLogo.jpg"/>
-                <a href="gameSignup.htm?fsGameId=12">Sign Up</a>                    
+                <h2>Salary Cap Eliminator</h2>
+                <img src="images/football_money11.jpg"/>
+                <a href="gameSignup.htm?fsGameId=3">Sign Up</a>                    
                 <ul>
-                    <li>Pick up to 6 golfers each week</li>
+                    <li>Pick a new team each week</li>
+                    <li>Can only pick each player once the whole season</li>
                     <li>Given $1,000,000 to buy your roster</li>
-                    <li>New game every week - no more season running totals</li>
-                    <li>Compete against everyone in the league every week</li>
-                    <li>Game points awarded based on total money earnings from picked players</li>
+                    <li>Player values determined by performance</li>
+                    <li>No head to head competition</li>
+                    <li>Compete against everyone in the league</li>
+                    <li>Game points awarded based on weekly finish amongst all league members</li>
                     <li>Create private leagues or compete for prizes in the General league</li>
                 </ul>
             </div>
@@ -302,4 +304,21 @@
                         <li>One big playoff where half of the teams are eliminated weekly</li>
                     </ul>
                 </div>
+
+        <div id="promoGame">
+            <div id="innerPromoGame">
+                <h2>Fantasy Golf</h2>
+                <img src="images/mastersLogo.jpg"/>
+                <a href="gameSignup.htm?fsGameId=12">Sign Up</a>                    
+                <ul>
+                    <li>Pick up to 6 golfers each week</li>
+                    <li>Given $1,000,000 to buy your roster</li>
+                    <li>New game every week - no more season running totals</li>
+                    <li>Compete against everyone in the league every week</li>
+                    <li>Game points awarded based on total money earnings from picked players</li>
+                    <li>Create private leagues or compete for prizes in the General league</li>
+                </ul>
+            </div>
+        </div>   
+
 --%>        

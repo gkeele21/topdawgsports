@@ -136,6 +136,21 @@
                                             <a href="sal/rules.htm">Click HERE to learn more</a>
                                         </ul>
                                     </c:when>
+                                    <c:when test="${gameSignupFSSeason.FSGameID == 3}">
+                                        <img src="images/football_money11.jpg"/>
+                                        <h1>Salary Cap Eliminator</h1>
+                                        <ul>
+                                            <li>$5 entry fee (General League only)</li>
+                                            <li>Create your own league</li>
+                                            <li>Pick a new team each week</li>
+                                            <li>You can only pick each player once per season</li>
+                                            <li>You're given $1,000,000 weekly to spend on your roster</li>                                            
+                                            <li>No head to head play</li>
+                                            <li>Compete against everyone in the league</li>
+                                            <li>Top 5 finishers win (General League only)</li>
+                                            <a href="salelim/rules.htm">Click HERE to learn more</a>
+                                        </ul>
+                                    </c:when>
                                     <c:when test="${gameSignupFSSeason.FSGameID == 4}">
                                         <img src="images/football_money11.jpg"/>
                                         <h1>Pro Pickem</h1>

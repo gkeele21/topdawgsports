@@ -5,7 +5,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
   <head>
-    <title>TopDawgSports - Salary Cap Rules</title>
+    <title>TopDawgSports - Salary Cap Eliminator Rules</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
@@ -26,11 +26,11 @@
 
                 <div id="rules">
 
-                    <h1>Salary Cap Rules</h1>
+                    <h1>Salary Cap Eliminator Rules</h1>
 
                     <h3>Game Play</h3>                    
                         <h4>Overview</h4>
-                            <p>In this game, an owner selects NFL players on a weekly basis to compete against everyone in the league.  Each NFL player is given a value of how much they cost to pick.  An owner is given $1,000,000 each week to spend on their entire roster.  Points are awarded to each owner based on the order of how they finished compared to every other owner within the league.</p>
+                            <p>In this game, an owner selects NFL players on a weekly basis to compete against everyone in the league.  Each NFL player is given a value of how much they cost to pick.  An owner is given $1,000,000 each week to spend on their entire roster.  Points are awarded to each owner based on the order of how they finished compared to every other owner within the league.  Once an owner has picked a player, they may not pick that player again for the rest of the season.</p>
                         <h4>Leagues</h4>
                             <p>An owner can join or create their own leagues.  A General league will be created for all owners wishing to compete against everyone in the public.</p>
                         <h4>Cost</h4>
