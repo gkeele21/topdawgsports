@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package tds.sal.scripts;
+package tds.salelim.scripts;
 
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
@@ -115,7 +115,7 @@ public class FootballSalariesTemp implements Harnessable {
 
         Connection con = null;
 //        int fsseasonweekid = 447;
-        int fsseasonweekid = 1298;
+        int fsseasonweekid = 1379;
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 

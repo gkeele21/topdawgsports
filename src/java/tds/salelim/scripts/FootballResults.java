@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package tds.sal.scripts;
+package tds.salelim.scripts;
 
+import tds.sal.scripts.*;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
 import java.sql.Connection;
@@ -22,7 +23,7 @@ import tds.util.CTReturnCode;
  */
 public class FootballResults  {
 
-    private static final int _FSSeasonID = 97;
+    private static final int _FSSeasonID = 102;
     
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;

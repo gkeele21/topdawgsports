@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package tds.sal.scripts;
+package tds.salelim.scripts;
 
+import tds.sal.scripts.*;
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class FootballSalaries implements Harnessable {
     private static final double _Multiplier = 10000;
     public static final double MIN_SALARY = 20000;
     public static final double MAX_SALARY = 450000;
-    private static final int _FSSeasonID = 97;
+    private static final int _FSSeasonID = 102;
     private static final int _SeasonID = 39;
 
     public FootballSalaries() {
