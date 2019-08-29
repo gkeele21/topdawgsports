@@ -34,7 +34,7 @@
                         <h4>Leagues</h4>
                             <p>An owner can join or create their own leagues.  A General league will be created for all owners wishing to compete against everyone in the public.</p>
                         <h4>Cost</h4>
-                            <p>$5 per team (General league only).  Free for all custom leagues.</p>
+                            <p>$3 per team (General league only).  Free for all custom leagues.</p>
 
                     <h3>Roster</h3>
                         <h4>Overview</h4>

@@ -140,7 +140,7 @@
                                         <img src="images/football_money11.jpg"/>
                                         <h1>Salary Cap Eliminator</h1>
                                         <ul>
-                                            <li>$5 entry fee (General League only)</li>
+                                            <li>$3 entry fee (General League only)</li>
                                             <li>Create your own league</li>
                                             <li>Pick a new team each week</li>
                                             <li>You can only pick each player once per season</li>

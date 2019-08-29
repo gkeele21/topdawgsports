@@ -40,7 +40,7 @@
                         <div class="regform">
                         	<div class="newmember">
                                 <div class="regGamesTitle">Register for as many games as you want.  After you've signed up, you will receive an email from our Commissioner,
-                                 Grant Keele, so you can arrange to give him the money.</div>
+                                 Bert Keele, so you can arrange to give him the money.</div>
                                  <br />
                                 <form action="registerGames.do" method="post">
                                     <table border="0" cellspacing="5" cellpadding="0" width="100%">
