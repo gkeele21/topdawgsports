@@ -63,6 +63,7 @@ public class createLeagueAction extends BaseAction {
             league.setLeaguePassword(password);
             league.setFSSeasonID(fsSeason.getFSSeasonID());
             league.setIsFull(0);
+            league.setIsCustomLeague(0);
             league.setStatus(FSLeague.Status.FORMING.toString());
             if (("public").equals(leagueScope)) {
                 league.setIsPublic(1);
