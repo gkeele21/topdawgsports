@@ -51,7 +51,6 @@
                                 <td>Pos</td>
                                 <td>Team</td>
                                 <td colspan="2">Player</td>
-                                <td>Salary</td>
                                 <td>Avg Pts</td>
                                 <td>Opp</td>
                                 <td>Game Time</td>                                
@@ -73,7 +72,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${QB1.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${QB1.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -103,7 +101,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${RB1.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${RB1.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${RB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -133,7 +130,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${RB2.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${RB2.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${RB2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -163,7 +159,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${WR1.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${WR1.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${WR1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -193,7 +188,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${WR2.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${WR2.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${WR2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -223,7 +217,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${TE1.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${TE1.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${TE1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -253,7 +246,6 @@
                                         </c:if>
                                     </td>
                                     <td class="playerName"><tds:player player="${PK1.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                    <td><fmt:formatNumber type="currency" value="${PK1.value}" maxFractionDigits="0" /></td>
                                     <td><%--<fmt:formatNumber value="${PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
                                     <td>${opp}</td>
                                     <td>
@@ -267,22 +259,10 @@
                                 </c:if>
                             </tr>
 
-                            <%-- TOTALS --%>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td>Totals:</td>
-                                <td><fmt:formatNumber type="currency" value="${QB1.value + RB1.value + RB2.value + WR1.value + WR2.value + TE1.value + PK1.value }" maxFractionDigits="0" /></td>
-                                <td><%--<fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts + RB1.player.totalFootballStats.avgFantasyPts + RB2.player.totalFootballStats.avgFantasyPts + WR1.player.totalFootballStats.avgFantasyPts + WR2.player.totalFootballStats.avgFantasyPts + TE1.player.totalFootballStats.avgFantasyPts + PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
-                            </tr>
-                            <tr class="salaryRemaining">
-                                <td colspan="3"></td>
-                                <td>Salary Remaining:</td>
-                                <td><fmt:formatNumber type="currency" value="${salaryCap - (QB1.value + RB1.value + RB2.value + WR1.value + WR2.value + TE1.value + PK1.value )}" maxFractionDigits="0" /></td>
-                            </tr>
                         </table>
                                 
                         <p> NOTE : Your picks are automatically saved after each selection.  Your roster is required to have a player selected in each positional slot.
-                            Failure to meet the requirements of a full roster or failure to stay under the salary cap allotted will result in 0 Fantasy Pts.
+                            Failure to meet the requirements of a full roster will result in 0 Fantasy Pts.
                         </p>
 
                         <div id="position">
@@ -311,10 +291,6 @@
                                             <a href="yourPlayers.htm?sort=1${(listSort=="1") ? "_d" : ""}">Player</a>
                                             <img src="${(listSort=="1") ? "/topdawgsports/images/arrow_up.gif" : ((listSort=="1_d") ? "/topdawgsports/images/arrow_down.gif" : "/topdawgsports/images/spacer.gif")}" alt="" />
                                         </td>
-                                        <td>
-                                            <a href="yourPlayers.htm?sort=4${(listSort=="4_d") ? "" : "_d"}">Salary</a>
-                                            <img src="${(listSort=="4") ? "/topdawgsports/images/arrow_up.gif" : ((listSort=="4_d") ? "/topdawgsports/images/arrow_down.gif" : "/topdawgsports/images/spacer.gif")}" alt="" />
-                                        </td>
                                         <td>Avg Pts</td>
                                         <td>Opp</td>
                                         <td>Game Time</td>                                                                            
@@ -338,7 +314,6 @@
                                         <td class="playerName">                                            
                                             <tds:player player="${playervalue.player}" displayStatsLink="true" displayInjury="false" />
                                         </td>
-                                        <td><fmt:formatNumber type="currency" value="${playervalue.value}" maxFractionDigits="0" /></td>
                                         <td><fmt:formatNumber type="number" value="${playervalue.totalFootballStats.avgSalFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>
                                         <td>${opp}</td>
                                         <td>

@@ -1,6 +1,5 @@
-package tds.salelim.control;
+package tds.proloveleaveplayer.control;
 
-import tds.sal.control.*;
 import bglib.util.FSUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

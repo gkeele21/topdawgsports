@@ -130,17 +130,15 @@
         
         <div id="promoGame">
             <div id="innerPromoGame">
-                <h2>Salary Cap Eliminator</h2>
+                <h2>Player Love Em & Leave Em</h2>
                 <img src="images/football_money11.jpg"/>
                 <a href="gameSignup.htm?fsGameId=3">Sign Up</a>                    
                 <ul>
                     <li>Pick a new team each week</li>
                     <li>Can only pick each player once the whole season</li>
-                    <li>Given $1,000,000 to buy your roster</li>
-                    <li>Player values determined by performance</li>
                     <li>No head to head competition</li>
                     <li>Compete against everyone in the league</li>
-                    <li>Game points awarded based on weekly finish amongst all league members</li>
+                    <li>Total Fantasy Points for the whole season will determine the winners</li>
                     <li>Create private leagues or compete for prizes in the General league</li>
                 </ul>
             </div>

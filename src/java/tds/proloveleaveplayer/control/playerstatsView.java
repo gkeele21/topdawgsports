@@ -1,6 +1,5 @@
-package tds.salelim.control;
+package tds.proloveleaveplayer.control;
 
-import tds.sal.control.*;
 import bglib.util.FSUtils;
 import tds.main.bo.FootballStats;
 import tds.main.bo.Player;

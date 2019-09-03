@@ -1,6 +1,5 @@
-package tds.salelim.control;
+package tds.proloveleaveplayer.control;
 
-import tds.sal.control.*;
 import bglib.util.AuTimer;
 import bglib.util.FSUtils;
 import java.util.ArrayList;
@@ -80,9 +79,7 @@ public class yourPlayersView extends BaseTeamView {
 
             System.out.println("Timer[" + timerName + "] - After creating Position : " + AuTimer.elapsedTime(timerName));
             FSFootballSeasonDetail seasonDetail = new FSFootballSeasonDetail(season.getFSSeasonID());
-            Long salarycap = seasonDetail.getMaxSalaryCap();
             
-            _Session.getHttpSession().setAttribute("salaryCap", salarycap);
             _Session.getHttpSession().setAttribute("seasonDetail", seasonDetail);
             
             System.out.println("Timer[" + timerName + "] - After getting Season Detail : " + AuTimer.elapsedTime(timerName));
@@ -94,7 +91,7 @@ public class yourPlayersView extends BaseTeamView {
             int playerID = FSUtils.getIntRequestParameter(request, "pid", 0);
             System.out.println("Timer[" + timerName + "] - After getting playerID : " + AuTimer.elapsedTime(timerName));
 
-            int reqFSSeasonWeekId = FSUtils.getIntRequestParameter(request, "weekid", 0);
+//            int reqFSSeasonWeekId = FSUtils.getIntRequestParameter(request, "weekid", 0);
 //            _DisplayFSSeasonWeek = (FSSeasonWeek)_Session.getHttpSession().getAttribute("fantasyDisplayWeek");
 //          _Session.getHttpSession().setAttribute("fsseasonweek",currFSSeasonWeek);
             // Retrieve all of the FSSeasonWeek's for the entire FSSeason
@@ -138,7 +135,7 @@ public class yourPlayersView extends BaseTeamView {
             
             if (playerID > 0) {
                 
-                addPlayer(salarycap, _Session, playerID,_CurrentFSSeasonWeek.getFSSeasonWeekID(), true);
+                addPlayer(_Session, playerID,_CurrentFSSeasonWeek.getFSSeasonWeekID(), true);
                 System.out.println("Timer[" + timerName + "] - After adding Player to session : " + AuTimer.elapsedTime(timerName));
 //                String temp = updateRoster(_Session);
 //                if (!temp.equals("")) {
@@ -150,7 +147,7 @@ public class yourPlayersView extends BaseTeamView {
             System.out.println("Timer[" + timerName + "] - After checking if we should add player : " + AuTimer.elapsedTime(timerName));
             int dropPlayer = FSUtils.getIntRequestParameter(request, "dip", 0);
             if (dropPlayer > 0) {
-                dropPlayer(salarycap, _Session, dropPlayer);
+                dropPlayer(_Session, dropPlayer);
 
 //                String temp = updateRoster(_Session);
 //                if (!temp.equals("")) {
@@ -159,12 +156,6 @@ public class yourPlayersView extends BaseTeamView {
             }
 
             System.out.println("Timer[" + timerName + "] - After dropping player : " + AuTimer.elapsedTime(timerName));
-            if (dropPlayer <= 0 && playerID <= 0) {
-                if (!teamIsUnderSalaryCap(salarycap, _Session)) {
-                    _Session.setErrorMessage("Warning: You are now over the salary cap. You will be unable to Post until total team salary is reduced.");
-                }
-            }
-
 //            User user = session.getUser();
             List<FSPlayerValue> list = null;
 //            List<FSPlayerValue> curRosterList = getRosterListFromSession(_Session);
@@ -195,7 +186,7 @@ public class yourPlayersView extends BaseTeamView {
 //                    }
 //                }
                 for (FSRoster player : roster) {
-                    addPlayer(salarycap, _Session, player.getPlayerID(),_CurrentFSSeasonWeek.getFSSeasonWeekID(), false);
+                    addPlayer(_Session, player.getPlayerID(),_CurrentFSSeasonWeek.getFSSeasonWeekID(), false);
                     System.out.println("Timer[" + timerName + "] - After adding a player on roster to the session : " + AuTimer.elapsedTime(timerName));
                 }
             }
@@ -300,7 +291,7 @@ public class yourPlayersView extends BaseTeamView {
         return nextPage;
     }
     
-    private void addPlayer(Long salarycap, UserSession session, int playerID, int fsseasonweekid, boolean insertPlayer) {
+    private void addPlayer(UserSession session, int playerID, int fsseasonweekid, boolean insertPlayer) {
         try {
             Player player = Player.getInstance(playerID);
             FSPlayerValue playerValue = player.getFSPlayerValue(fsseasonweekid);
@@ -318,9 +309,6 @@ public class yourPlayersView extends BaseTeamView {
                 String attrName = pos.getPositionName() + i;
                 FSPlayerValue existingValue = (FSPlayerValue)session.getHttpSession().getAttribute(attrName);
                 if (existingValue==null) {
-                    if (!playerIsUnderSalaryCap(salarycap, session, player)) {
-                        session.setErrorMessage("Warning: You are now over the salary cap. You will be unable to complete your team until total team salary is reduced.");
-                    }
                     session.getHttpSession().setAttribute(attrName, playerValue);
                     
                     if (insertPlayer)
@@ -334,7 +322,7 @@ public class yourPlayersView extends BaseTeamView {
                         sql.append(",'").append("starter");
                         sql.append("','").append("active").append("')");
 
-                        int result = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
 
                         System.out.println("Adding player");
                     }
@@ -353,7 +341,7 @@ public class yourPlayersView extends BaseTeamView {
         }
     }
 
-    private void dropPlayer(Long salarycap, UserSession session, int playerID) throws Exception {
+    private void dropPlayer(UserSession session, int playerID) throws Exception {
         Player player = Player.getInstance(playerID);
         if (player==null) {
             session.setErrorMessage("PlayerID not recognized. Please try dropping a legal player.");
@@ -370,12 +358,6 @@ public class yourPlayersView extends BaseTeamView {
             try {
                 FSPlayerValue existingValue = (FSPlayerValue)session.getHttpSession().getAttribute(attrName);
                 if (existingValue != null && existingValue.getPlayerID()==playerID) {
-                    double existingsal = getCreatingTeamSalaryCap(session);
-                    FSPlayerValue playerValue = player.getFSPlayerValue(currFSSeasonWeek.getFSSeasonWeekID());
-                    double playersal = playerValue.getValue();
-                    if (!(existingsal - playersal <= salarycap)) {
-                        session.setErrorMessage("Warning: You are still over the salary cap. You will be unable to Post until total team salary is reduced.");
-                    }
                     session.getHttpSession().removeAttribute(attrName);
                     
                     StringBuilder sql = new StringBuilder();
@@ -396,54 +378,6 @@ public class yourPlayersView extends BaseTeamView {
         
     }
 
-    static boolean playerIsUnderSalaryCap(Long salarycap, UserSession session, Player addPlayer) {
-
-        FSSeasonWeek currFSSeasonWeek = (FSSeasonWeek)session.getHttpSession().getAttribute("salfsseasonweek");
-
-        double existing = getCreatingTeamSalaryCap(session);
-        FSPlayerValue playerValue = addPlayer.getFSPlayerValue(currFSSeasonWeek.getFSSeasonWeekID());
-        double playersal = playerValue.getValue();
-        return (existing + playersal) <= salarycap;
-    }
-
-    static boolean teamIsUnderSalaryCap(Long salarycap, UserSession session) {
-        boolean under = true;
-        double existing = getCreatingTeamSalaryCap(session);
-        System.out.println("Existing salary : " + existing);
-        if (existing <= salarycap) {
-            under = true;
-        } else {
-            under = false;
-        }
-        return under;
-    }
-
-    static double getCreatingTeamSalaryCap(UserSession session) {
-        Collection<Position> allPositions = Position.getAllPositions();
-        double totalSalaries=0;
-
-        FSSeasonWeek currFSSeasonWeek = session.getCurrentSalWeek();
-        
-        for (Position pos : allPositions) {
-            FSFootballRosterPositions rosterPosition = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),pos.getPositionID());
-
-            if (rosterPosition != null)
-            {
-                for (int i=1; i<=rosterPosition.getMaxNum(); i++) {
-                    String attrName = pos.getPositionName() + i;
-                    FSPlayerValue playerValue = (FSPlayerValue)session.getHttpSession().getAttribute(attrName);
-
-                    if (playerValue!=null) {
-                        double playersal = playerValue.getValue();
-                        totalSalaries+=playersal;
-                    }
-                }
-            }
-        }
-
-        return totalSalaries;
-
-    }
     static List<FSPlayerValue> getRosterListFromSession(UserSession session) {
         Collection<Position> allPositions = Position.getAllPositions();
         List<FSPlayerValue> ret = new ArrayList<FSPlayerValue>();

@@ -1,10 +1,8 @@
-package tds.salelim.control;
-
-import tds.sal.control.*;
-import tds.main.control.BaseView;
+package tds.proloveleaveplayer.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import tds.main.control.BaseView;
 
 /**
  * Created by IntelliJ IDEA.

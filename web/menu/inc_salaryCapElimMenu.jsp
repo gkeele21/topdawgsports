@@ -6,19 +6,19 @@
     <c:if test="${pageName == 'yourPlayers'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>
-    <li ${pageClass}><a href="/topdawgsports/salelim/yourPlayers.htm">Roster</a></li>
+    <li ${pageClass}><a href="/topdawgsports/proloveleaveplayer/yourPlayers.htm">Roster</a></li>
     <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'standings'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>
-    <li ${pageClass}><a href="/topdawgsports/salelim/standings.htm">Standings</a></li>
+    <li ${pageClass}><a href="/topdawgsports/proloveleaveplayer/standings.htm">Standings</a></li>
     <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'rules'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>
-    <li ${pageClass}><a href="/topdawgsports/salelim/rules.htm">Rules</a></li>
+    <li ${pageClass}><a href="/topdawgsports/proloveleaveplayer/rules.htm">Rules</a></li>
     <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'gameSignup'}">

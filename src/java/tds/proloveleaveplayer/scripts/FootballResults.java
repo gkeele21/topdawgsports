@@ -3,9 +3,8 @@
  * and open the template in the editor.
  */
 
-package tds.salelim.scripts;
+package tds.proloveleaveplayer.scripts;
 
-import tds.sal.scripts.*;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
 import java.sql.Connection;
