@@ -43,7 +43,7 @@ public class totalStatsQBView extends BaseTeamView {
         // Retrieve players
         FSLeague league = _FSTeam.getFSLeague();
         
-        List<PlayerStats> players = league.GetPlayerStats(_DisplayFSSeasonWeek.getFSSeasonWeekID(),posname,orderBy);
+        List<PlayerStats> players = league.GetPlayerStats(_CurrentFSSeasonWeek.getFSSeasonWeekID(),posname,orderBy);
         request.setAttribute("players",players);
         
         return page;

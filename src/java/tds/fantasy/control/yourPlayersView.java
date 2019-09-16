@@ -31,13 +31,13 @@ public class yourPlayersView extends BaseTeamView {
 
         page = htmlPage;
         
-        List<FSRoster> activeRoster = _FSTeam.getRoster(_DisplayFSSeasonWeek.getFSSeasonWeekID(), "active", false);
+        List<FSRoster> activeRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "active", false);
         request.setAttribute("activeRoster",activeRoster);
 
 //        List<FSRoster> inactiveRoster = _FSTeam.getRoster(_FSSeasonWeek.getFSSeasonWeekID(), "inactive",_FSSeasonWeek.getFSSeason().getSeasonID());
 //        request.setAttribute("inactiveRoster",inactiveRoster);
 
-        List<FSRoster> irRoster = _FSTeam.getRoster(_DisplayFSSeasonWeek.getFSSeasonWeekID(), "ir");
+        List<FSRoster> irRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "ir");
         request.setAttribute("irRoster",irRoster);
         
         return page;

@@ -66,17 +66,10 @@
 
                            <thead>
                                <tr>
-                                   <td colspan="2"></td>
-                                   <td colspan="2">Total</td>
-                                   <td colspan="2">Weekly</td>
-                               </tr>
-                               <tr>
                                    <th>Rank</th>
                                    <th>Player</th>                                   
-                                   <th>Game Pts</th>
-                                   <th>Ftsy Pts</th>
-                                   <th>Game Pts</th>
-                                   <th>Ftsy Pts</th>
+                                   <th>Total Fantasy Pts</th>
+                                   <th>Week Fantasy Pts</th>
                                </tr>
                            </thead>
                            
@@ -84,9 +77,7 @@
                                <tr>
                                    <td>${ls.rank}</td>
                                    <td title="${ls.FSTeam.FSUser.firstName} ${ls.FSTeam.FSUser.lastName}"><tds:team teamObj="${ls.FSTeam}" displayRosterLink="true" weekID="${saldisplayWeek.FSSeasonWeekID}" /></td>
-                                   <td><fmt:formatNumber value="${ls.totalGamePoints}" /></td>
                                    <td><fmt:formatNumber value="${ls.totalFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
-                                   <td><fmt:formatNumber value="${ls.gamePoints}" /></td>                                   
                                    <td><fmt:formatNumber value="${ls.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                </tr>                                                              
                            </c:forEach>
