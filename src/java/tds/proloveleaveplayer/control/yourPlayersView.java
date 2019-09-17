@@ -191,8 +191,10 @@ public class yourPlayersView extends BaseTeamView {
                 }
             }
 
+            
             System.out.println("Timer[" + timerName + "] - After checking roster size : " + AuTimer.elapsedTime(timerName));
             try {
+//                List<FSRoster> allTimeRoster = FSRoster.getRosterAllTime(_FSTeam.getFSTeamID());
                 list = Player.getPlayerValues(_CurrentFSSeasonWeek, position.getPositionID(), sort, curRosterList);
             } catch (Exception e) {
                 e.printStackTrace();

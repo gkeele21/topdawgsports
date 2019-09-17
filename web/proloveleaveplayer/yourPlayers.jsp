@@ -300,12 +300,13 @@
                                     <tr class="rowData">
                                         <c:set var="opp" value="${tds:getOpponentString(playervalue.game,playervalue.player.team.teamID)}" />
                                         <c:set var="game" value="${playervalue.game}" />
+                                        <c:set var="stillAvailable" value="${tds:isLoveEmPlayerStillAvailable(fsteam.FSTeamID,playervalue.playerID)}" />
 
                                         <td>${playervalue.player.position.positionName}</td>
                                         <td>${playervalue.player.team.abbreviation}</td>
                                         <%-- PLUS SIGN --%>
                                         <td>
-                                            <c:if test="${game.bye!=true && game.gameHasStarted==false}">
+                                            <c:if test="${game.bye!=true && game.gameHasStarted==false && stillAvailable==true}">
                                                 <a href="yourPlayers.htm?pid=${playervalue.player.playerID}&pos=${createpostpos}">
                                                     <img class="plusMinus" src="/topdawgsports/images/plus.png" />
                                                 </a>

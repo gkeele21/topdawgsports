@@ -589,5 +589,11 @@
     <function-class>tds.main.bo.FSFootballTransaction</function-class>
     <function-signature>tds.main.bo.FSSeasonWeek getWeekPutOnIR(int,int,int)</function-signature>
   </function>
+  <function>
+      <description>checks if a player is still available for the team to pick</description>
+      <name>isLoveEmPlayerStillAvailable</name>
+      <function-class>tds.main.bo.FSTeam</function-class>
+      <function-signature>boolean isLoveEmPlayerStillAvailable(int,int)</function-signature>
+  </function>
 
 </taglib>

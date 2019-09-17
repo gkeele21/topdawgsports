@@ -402,6 +402,24 @@ public class FSTeam implements Serializable {
         if (doesExist) { Update(); } else { Insert(); }
     }
 
+    public static boolean isLoveEmPlayerStillAvailable(int fsTeamId, int playerId) {
+        boolean available = true;
+        
+        try {
+            List<FSRoster> allPlayers = FSRoster.getRosterAllTime(fsTeamId);
+            
+            if (allPlayers.size() > 0) {
+                for (FSRoster roster : allPlayers) {
+                    if (playerId == roster.getPlayerID()) {
+                        return false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        }
+        return available;
+    }
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */

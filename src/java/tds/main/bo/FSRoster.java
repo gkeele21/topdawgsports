@@ -286,6 +286,53 @@ public class FSRoster {
 //    
 //    }
     
+    public static List<FSRoster> getRosterAllTime(int teamID) {
+        List<FSRoster> roster = new ArrayList<FSRoster>();
+
+        CachedRowSet crs = null;
+        Connection con = null;
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("select ").append(_Cols.getColumnList("FSRoster", "r.", ""));
+            sql.append(",").append(_Cols.getColumnList("Player", "p.", "Player$"));
+            sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+            sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
+            sql.append(",").append(_Cols.getColumnList("FSSeasonWeek", "fsw.", "FSSeasonWeek$"));
+            sql.append(",").append(_Cols.getColumnList("SeasonWeek", "sw.", "SeasonWeek$"));
+            sql.append(",").append(_Cols.getColumnList("FootballStats","st.","FootballStats$"));
+            sql.append(",").append(_Cols.getColumnList("FootballStats","tst.", "TotalFootballStats$"));
+            sql.append(",").append(_Cols.getColumnList("Country","cnt.","Country$"));
+            sql.append(" from FSRoster r ");
+            sql.append(" inner join Player p on p.PlayerID = r.PlayerID ");
+            sql.append(" left join Country cnt on cnt.CountryID = p.CountryID ");
+            sql.append(" inner join Position ps on ps.PositionID = p.PositionID ");
+            sql.append(" inner join Team t on t.TeamID = p.TeamID ");
+            sql.append(" inner join FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
+            sql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID ");
+//            sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
+//            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
+            sql.append(" left join FootballStats st on st.StatsPlayerID = p.NFLGameStatsID and st.SeasonWeekID = sw.SeasonWeekID ");
+            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
+            sql.append(" where r.FSTeamID = ").append(teamID);
+            sql.append(" order by r.ActiveState, ");
+            sql.append("p.PositionID, r.ID");
+
+            con = CTApplication._CT_DB.getConn(false);
+            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+
+            while (crs.next()) {
+                roster.add(new FSRoster(crs));
+            }
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+            JDBCDatabase.close(con);
+        }
+
+        return roster;
+    }
+
     // PRIVATE METHODS
     
     /*  This method populates the object from a cached row set.  */
