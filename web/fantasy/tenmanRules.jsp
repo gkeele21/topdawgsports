@@ -90,8 +90,7 @@
                             <label>16</label><br/>
                         <h3>Draft Order :</h3>
                             <ul>
-                                <li>Cards are drawn for all odd number rounds.  Round #3 is the exception.  When drawing for Round 1, the owners are drawing for spots not necessarily the draft pick.</li>
-                                <li>The owner that draws the first spot in Round 1 gets to select which pick he would like to have in either the 1st Round or 3rd Round. The owner with the second spot then chooses from the remaining possibilities. This continues until all 10 owners have chosen their first pick that they would like whether it be in Round 1 or Round 3. The order then reverses so the owner that had the 10th spot now gets to pick again. An owner must choose the opposite round that he didn’t choose before and will select any pick that is still available in that round. This process continues down to the owner that originally had the first spot. All picks in the first and third rounds should then be fulfilled.</li>
+                                <li>The draft order has been set by a predetermined template.  After 10 years, each team will have drafted in the 10 different slots set up.</li>
                                 <li>Each even number round in the draft serpentines with the round that precedes it.</li>
                             </ul>
                         <h3>Position Requirements :</h3>
@@ -121,7 +120,13 @@
                             </ul>
                     <h2>Injured Reserve</h2>
                         <h3>Regulations :</h3>
-                            <label>There is no injured reserve list.</label><br />
+                            <ul>
+                                <li>A player that is injured can be placed on IR but must stay on IR for at least 8 weeks.</li>
+                                <li>As soon as a player plays in a game after the 8 weeks are up, the owner must make a decision the following week. The owner can take the player off of IR and drop somebody else OR he must drop that player completely off his team.</li>
+                                <li>There is no limit of how many players an owner can place on IR.</li>
+                                <li>An owner may not pick up a player that is already on IR.</li>
+                                <li>When a player gets dropped off of IR, he will not be available to be picked up until the following week</li>
+                            </ul>
                     <h2>Weekly Lineup</h2>
                         <h3>Lineup Size :</h3>
                             <label>An owner’s weekly lineup during the season must always consist of 16 players.</label><br />
