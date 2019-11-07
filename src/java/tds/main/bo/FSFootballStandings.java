@@ -107,27 +107,35 @@ public class FSFootballStandings implements Serializable {
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
 
     // PUBLIC METHODS
-    
+
     public static void CalculateRank(int fsLeagueId, int fsSeasonWeekId, String RankSortBy) {     
+        CalculateRank(fsLeagueId,fsSeasonWeekId, RankSortBy, "TotalGamePoints");
+    }
+
+    public static void CalculateRank(int fsLeagueId, int fsSeasonWeekId, String RankSortBy, String sortColumn) {
         int rank = 0;
         double prevTotal = 0;
         
         List<FSFootballStandings> standings = FSFootballStandings.getLeagueStandings(fsLeagueId, fsSeasonWeekId, RankSortBy);
         for (int i=0; i < standings.size(); i++) {
-             if (standings.get(i).getTotalGamePoints() != prevTotal) {
+             double value = standings.get(i).getTotalGamePoints();
+             if (sortColumn.equals("TotalFantasyPts")) {
+                 value = standings.get(i).getTotalFantasyPts();
+             }
+             if (value != prevTotal) {
                  rank = i+1;                 
              }
              standings.get(i).setRank(rank);
              standings.get(i).Save();
-             prevTotal = standings.get(i).getTotalGamePoints();
+             prevTotal = value;
         }
     }
 
-    public static void CalculateSalaryCapRank(FSSeasonWeek week) {
+    public static void CalculateRankForAllLeagues(FSSeasonWeek week, String sortColumn) {
         try {            
             List<FSLeague> fsLeagues = FSLeague.GetLeagues(week.getFSSeasonID());
             for (int i=0; i < fsLeagues.size(); i++) {
-                CalculateRank(fsLeagues.get(i).getFSLeagueID(), week.getFSSeasonWeekID(), "TotalGamePoints desc");
+                CalculateRank(fsLeagues.get(i).getFSLeagueID(), week.getFSSeasonWeekID(), sortColumn + " desc", sortColumn);
             }
         }        
         catch (Exception e) {

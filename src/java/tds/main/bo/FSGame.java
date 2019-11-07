@@ -15,6 +15,7 @@ public class FSGame implements Serializable {
     // CONSTANTS
     public final static int HEAD_TO_HEAD = 1;
     public final static int SALARY_CAP = 2;
+    public final static int PRO_PLAYER_LOVELEAVE = 3;
     public final static int PRO_PICKEM = 4;
     public final static int PRO_LOVEEMLEAVEEM = 5;
     public final static int COLLEGE_LOVEEMLEAVEEM = 6;

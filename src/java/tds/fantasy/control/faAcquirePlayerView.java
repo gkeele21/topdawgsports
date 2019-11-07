@@ -51,7 +51,7 @@ public class faAcquirePlayerView extends BaseTeamView {
         
         FSLeague league = _FSTeam.getFSLeague();
         
-        List<FSRoster> teamRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID());
+        List<FSRoster> teamRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "", false);
         request.setAttribute("teamRoster",teamRoster);
         
         List<Player> freeagents = league.GetFreeAgents(_CurrentFSSeasonWeek.getFSSeasonWeekID(),posname);

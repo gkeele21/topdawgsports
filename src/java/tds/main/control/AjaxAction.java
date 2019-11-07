@@ -110,7 +110,9 @@ public class AjaxAction extends HttpServlet {
                 
                 switch(fsSeasonWeeks.get(i).getFSSeason().getFSGameID()) {
                     case FSGame.SALARY_CAP:
-                        FSFootballStandings.CalculateSalaryCapRank(fsSeasonWeeks.get(i)); break;
+                        FSFootballStandings.CalculateRankForAllLeagues(fsSeasonWeeks.get(i), "TotalGamePoints"); break;
+                    case FSGame.PRO_PLAYER_LOVELEAVE:
+                        FSFootballStandings.CalculateRankForAllLeagues(fsSeasonWeeks.get(i), "TotalFantasyPts"); break;
                     case FSGame.PRO_PICKEM:
                         ProPickem.CalculateStandings(fsSeasonWeeks.get(i)); break;
                     case FSGame.PRO_LOVEEMLEAVEEM:
