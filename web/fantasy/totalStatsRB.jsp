@@ -73,7 +73,7 @@
                                         <td><a href="totalStatsRB.htm?orderBy=tst.RecYards">Yards</a></td>
                                         <td><a href="totalStatsRB.htm?orderBy=tst.RecTD">Td</a></td>
                                         <td><a href="totalStatsRB.htm?orderBy=tst.FantasyPts">Total</a></td>
-                                        <td>Avg</td>
+                                        <td><a href="totalStatsRB.htm?orderBy=TotalFootballStats$AvgFantasyPts">Avg</a></td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">

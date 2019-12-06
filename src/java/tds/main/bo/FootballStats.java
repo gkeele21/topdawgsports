@@ -73,6 +73,7 @@ public class FootballStats implements Serializable {
     private double _SalFantasyPts;
     private int _SeasonWeekID;
     private int _RecTargets;
+    private double _AvgFantasyPts;
       
     // OBJECTS
     private Player _Player;
@@ -155,6 +156,7 @@ public class FootballStats implements Serializable {
     public double getSalFantasyPts() {return _SalFantasyPts;}
     public int getSeasonWeekID() {return _SeasonWeekID;}
     public int getRecTargets() {return _RecTargets;}
+    public double getAvgFantasyPts() { return _AvgFantasyPts; }
     public Player getPlayer() {if (_Player == null && !AuUtil.isEmpty(_StatsPlayerID)) {_Player = Player.createFromStatsID(_StatsPlayerID);} return _Player;}
     public Season getSeason() {if (_Season == null && _SeasonID > 0) {_Season = new Season(_SeasonID);}return _Season;}
     public Team getTeam() {if (_Team == null && _TeamID > 0) {_Team = new Team(_TeamID);}return _Team;}
@@ -223,20 +225,13 @@ public class FootballStats implements Serializable {
     public void setSalFantasyPts(double SalFantasyPts) {_SalFantasyPts = SalFantasyPts;}
     public void setSeasonWeekID(int SeasonWeekID) {_SeasonWeekID = SeasonWeekID;}
     public void setRecTargets(int RecTargets) {_RecTargets = RecTargets;}
+    public void setAvgFantasyPts( double avg) { _AvgFantasyPts = avg; }
     public void setPlayer(Player Player) {_Player = Player;}
     public void setSeason(Season Season) {_Season = Season;}
     public void setTeam(Team Team) {_Team = Team;}
     public void setSeasonWeek(SeasonWeek SeasonWeek) {_SeasonWeek = SeasonWeek;}
 
     // PUBLIC METHODS    
-    
-    public double getAvgFantasyPts() {
-        if (getPlayed() < 1) {
-            return 0;
-        } else {
-            return getFantasyPts() / getPlayed();
-        }
-    }
     
     public double getAvgSalFantasyPts() {
         if (getPlayed() < 1) {
@@ -561,6 +556,16 @@ public class FootballStats implements Serializable {
             
             if (FSUtils.fieldExists(crs, prefix, "RecTargets")) {
                 setRecTargets(crs.getInt(prefix + "RecTargets"));
+            }
+            
+            if (FSUtils.fieldExists(crs, prefix, "AvgFantasyPts")) {
+                setAvgFantasyPts(crs.getDouble(prefix + "AvgFantasyPts"));
+            } else {
+                if (getPlayed() < 1) {
+                    setAvgFantasyPts(0);
+                } else {
+                    setAvgFantasyPts(getFantasyPts() / getPlayed());
+                }
             }
             
             // OBJECTS
