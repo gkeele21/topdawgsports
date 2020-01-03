@@ -241,12 +241,16 @@ public class FSUser implements Serializable {
             sql.append(",").append(_Cols.getColumnList("FSGame", "g.", "FSGame$"));
             sql.append(",").append(_Cols.getColumnList("Season", "s.", "Season$"));
             sql.append(",").append(_Cols.getColumnList("FSUser", "u.", "FSUser$"));
+            sql.append(",").append(_Cols.getColumnList("Sport", "sp.", "Sport$"));
+            sql.append(",").append(_Cols.getColumnList("FSFootballSeasonDetail", "fsd.", "FSFootballSeasonDetail$"));
             sql.append("FROM FSTeam t ");
             sql.append("JOIN FSLeague l ON l.FSLeagueID = t.FSLeagueID ");
             sql.append("LEFT JOIN FSSeason fss ON fss.FSSeasonID = l.FSSeasonID ");
             sql.append("LEFT JOIN FSGame g ON g.FSGameID = fss.FSGameID ");
             sql.append("LEFT JOIN Season s ON s.SeasonID = fss.SeasonID ");
             sql.append("LEFT JOIN FSUser u ON u.FSUserID = t.FSUserID ");
+            sql.append("LEFT JOIN Sport sp ON sp.SportID = g.SportID ");
+            sql.append("LEFT JOIN FSFootballSeasonDetail fsd ON fsd.FSSeasonID = fss.FSSeasonID ");
             sql.append("WHERE t.FSUserID = ").append(getFSUserID()).append(" AND (s.SportYear = ").append(sportYear).append(" OR s.SportYear IS NULL) ");
             sql.append("ORDER BY fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
 

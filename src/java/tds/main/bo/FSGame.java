@@ -184,7 +184,7 @@ public class FSGame implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "HomeURL")) { setHomeURL(crs.getString(prefix + "HomeURL")); }            
             if (FSUtils.fieldExists(crs, prefix, "HomeURLShort")) { setHomeURLShort(crs.getString(prefix + "HomeURLShort")); }            
             // OBJECTS
-            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }
+//            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

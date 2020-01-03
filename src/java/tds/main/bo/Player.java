@@ -178,9 +178,11 @@ public class Player implements Serializable {
                 sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
                 sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
                 sql.append(",").append(_Cols.getColumnList("Country", "c.", ""));
+                sql.append(",").append(_Cols.getColumnList("Sport", "s.", "Sport$"));
                 sql.append(" FROM Player p ");
                 sql.append(" INNER JOIN Team t ON t.TeamID = p.TeamID ");
                 sql.append(" INNER JOIN Position ps ON ps.PositionID = p.PositionID ");
+                sql.append(" INNER JOIN Sport s ON s.SportID = t.SportID ");
                 sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
                 sql.append(" WHERE p.PlayerID = ").append(playerID);
 

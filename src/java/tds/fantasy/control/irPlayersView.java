@@ -32,7 +32,6 @@ public class irPlayersView extends BaseTeamView {
         page = htmlPage;
         
         // Retrieve ir players
-        
         List<FSRoster> irRoster = _FSTeam.getFSLeague().GetIRPlayers(_CurrentFSSeasonWeek.getFSSeasonWeekID());
         request.setAttribute("irRoster",irRoster);
 

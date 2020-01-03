@@ -30,16 +30,18 @@ public class yourPlayersView extends BaseTeamView {
         }
 
         page = htmlPage;
-        
-        List<FSRoster> activeRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "active", false);
-        request.setAttribute("activeRoster",activeRoster);
+        try {
+            List<FSRoster> activeRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "active", false);
+            request.setAttribute("activeRoster",activeRoster);
 
-//        List<FSRoster> inactiveRoster = _FSTeam.getRoster(_FSSeasonWeek.getFSSeasonWeekID(), "inactive",_FSSeasonWeek.getFSSeason().getSeasonID());
-//        request.setAttribute("inactiveRoster",inactiveRoster);
+    //        List<FSRoster> inactiveRoster = _FSTeam.getRoster(_FSSeasonWeek.getFSSeasonWeekID(), "inactive",_FSSeasonWeek.getFSSeason().getSeasonID());
+    //        request.setAttribute("inactiveRoster",inactiveRoster);
 
-        List<FSRoster> irRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "ir");
-        request.setAttribute("irRoster",irRoster);
-        
+            List<FSRoster> irRoster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID(), "ir");
+            request.setAttribute("irRoster",irRoster);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return page;
     }
     

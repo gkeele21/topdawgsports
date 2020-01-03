@@ -52,6 +52,7 @@ public class FSTeam implements Serializable {
             sql.append(",").append(_Cols.getColumnList("Sport", "sp.", "Sport$"));
             sql.append(",").append(_Cols.getColumnList("Season", "se.", "Season$"));
             sql.append(",").append(_Cols.getColumnList("FSUser", "u.", "FSUser$"));
+            sql.append(",").append(_Cols.getColumnList("FSFootballSeasonDetail", "fsd.", "FSFootballSeasonDetail$"));
             sql.append(" FROM FSTeam t ");
             sql.append(" INNER JOIN FSLeague l ON l.FSLeagueID = t.FSLeagueID ");
             sql.append(" INNER JOIN FSSeason s ON s.FSSeasonID = l.FSSeasonID ");
@@ -59,6 +60,7 @@ public class FSTeam implements Serializable {
             sql.append(" INNER JOIN Sport sp ON sp.SportID = g.SportID ");
             sql.append(" INNER JOIN Season se ON se.SeasonID = s.SeasonID ");
             sql.append(" INNER JOIN FSUser u ON u.FSUserID = t.FSUserID");
+            sql.append(" LEFT JOIN FSFootballSeasonDetail fsd ON fsd.FSSeasonID = s.FSSeasonID");
             sql.append(" WHERE t.FSTeamID = ").append(teamID);
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());

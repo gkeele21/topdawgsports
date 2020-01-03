@@ -238,7 +238,7 @@ public class Team implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "SportID")) { setSportID(crs.getInt(prefix + "SportID")); }
             
             // OBJECTS            
-            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }            
+//            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }            
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

@@ -171,9 +171,19 @@ public class FSSeasonWeek implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         sql.append("SELECT").append(_Cols.getColumnList("FSSeasonWeek", "fssw.", "")).append(",");
-        sql.append(_Cols.getColumnList("FSSeason", "fss.", "FSSeason$"));
+        sql.append(_Cols.getColumnList("FSSeason", "fss.", "FSSeason$")).append(",");
+        sql.append(_Cols.getColumnList("Season", "s.", "Season$")).append(",");
+        sql.append(_Cols.getColumnList("FSGame", "g.", "FSGame$")).append(",");
+        sql.append(_Cols.getColumnList("Sport", "sp.", "Sport$")).append(",");
+        sql.append(_Cols.getColumnList("FSFootballSeasonDetail", "fsd.", "FSFootballSeasonDetail$")).append(",");
+        sql.append(_Cols.getColumnList("SeasonWeek", "sw.", "SeasonWeek$"));
         sql.append("FROM FSSeasonWeek fssw ");
         sql.append("JOIN FSSeason fss ON fss.FSSeasonID = fssw.FSSeasonID AND fssw.FSSeasonID = ").append(fsSeasonId).append(" ");
+        sql.append(" INNER JOIN SeasonWeek sw ON sw.SeasonWeekID = fssw.SeasonWeekID ");
+        sql.append(" INNER JOIN Season s ON s.SeasonID = sw.SeasonID ");
+        sql.append(" INNER JOIN FSGame g ON g.FSGameID = fss.FSGameID ");
+        sql.append(" INNER JOIN Sport sp ON sp.SportID = g.SportID ");
+        sql.append(" LEFT JOIN FSFootballSeasonDetail fsd ON fsd.FSSeasonID = fss.FSSeasonID ");
         sql.append("ORDER BY fssw.FSSeasonWeekNo");
 
         try {

@@ -13,6 +13,18 @@
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script type="text/javascript" src="../js/script.js" ></script>
+    <style>
+        table { text-align: center;}
+        #content { position: relative; }
+        #oldTimerStandings { float:left; margin-left: 50px;}
+        #peeWeeStandings { float:left; margin-left: 150px;}
+        #playoffBracket { clear: both;}
+        #playoffBracket h2 { padding-top: 15px; text-align: center}
+        .bracket, .team, .score, .seed, .finalBracket, .champion, .leagueName { position: absolute; }
+        .bracket { border: solid black 3px; border-left: none; }
+        .finalBracket { border-top: solid black 3px; }
+        .leagueName { font-size: 1.1em; text-transform: uppercase; }
+    </style>
   </head>
   <body>
 
@@ -295,6 +307,51 @@
                         </table>
                     </div> <!-- inner League Transactions -->
                 </div> <!-- league Transactions -->
+                
+                                <c:if test="${fsteam.FSLeague.FSLeagueID == 138}">
+                    
+                <div id="playoffBracket">
+                    <h2>2019 Playoffs</h2>
+                    
+                    <!-- ROUND 1 -->
+                    <div class="bracket" style="top: 700px; left: 100px; height: 50px; width: 100px;">
+                        <label class="seed" style="top: -27px; left: -25px; width:20px;">1</label>
+                        <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=138&wk=15&game=1">Jackson</a></label>
+                        <label class="score" style="top: 0.0px; width: 100px;"></label>
+                        <label class="seed" style="top: 25px; left: -25px; width:20px;">4</label>
+                        <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=138&wk=15&game=1">Travis</a></label>
+                    </div>
+
+                    <div class="bracket" style="top: 800px; left: 100px; height: 50px; width: 100px;">
+                        <label class="seed" style="top: -27px; left: -25px; width:20px;">2</label>
+                        <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=138&wk=15&game=2">Alex</a></label>
+                        <label class="score" style="top: 0.0px; width: 100px;"></label>
+                        <label class="seed" style="top: 25px; left: -25px; width:20px;">3</label>
+                        <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=138&wk=15&game=2">Luke</a></label>
+                    </div>
+
+                    <!-- ROUND 2 -->
+                    <div class="bracket" style="top: 725px; left: 200px; height: 100px; width: 100px;">
+                        <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=138&wk=16&game=1">&#160;</a></label>
+                        <label class="score" style="top: 0.0px; width: 100px;"></label>
+                        <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=138&wk=16&game=1">&#160;</a></label>
+                    </div>
+
+                    <div class="bracket" style="top: 975px; left: 200px; height: 100px; width: 100px;">
+                        <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=125&wk=16&game=2">&#160;</a></label>
+                        <label class="score" style="top: 0.0px; width: 100px;"></label>
+                        <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=125&wk=16&game=2">&#160;</a></label>
+                    </div>
+
+                    <!-- CHAMPION -->
+                    <div class="finalBracket" style="top: 775px; left: 300px; height: 250px; width: 100px;">
+                        <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;&#160;</label>
+                    </div>
+
+                  
+                </div>
+                </c:if>
+
             </div> <!-- inner content -->
         </div> <!-- content -->
     </div> <!-- container-->

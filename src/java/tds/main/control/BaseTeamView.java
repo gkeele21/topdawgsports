@@ -127,6 +127,7 @@ public class BaseTeamView extends BaseView {
             // Set it to be the current week as long as the session object didn't have anything (null)
             if (_CurrentFSSeasonWeek == null) {
                 _DisplayFSSeasonWeek = finalWeek;
+                _CurrentFSSeasonWeek = finalWeek;
             }
 
             _Session.getHttpSession().setAttribute("fantasyCurrentWeek", _CurrentFSSeasonWeek);
