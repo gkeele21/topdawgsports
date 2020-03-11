@@ -26,7 +26,7 @@ public class CTApplication {
 
     static {
         try {
-            String connectionString = _CT_APP_SETTINGS.getProperty(AppSettings.DB_CONNECTIONSTRING_PROP, "default");
+            String connectionString = _CT_APP_SETTINGS.getDBConnectionString();
             System.out.println("In CTApplication - using connection string : " + connectionString);
             CTSQLDataSource defaultInstance = CTSQLDataSource.getInstance(connectionString);
             _CT_DB = defaultInstance;

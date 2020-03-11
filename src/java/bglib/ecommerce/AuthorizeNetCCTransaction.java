@@ -18,10 +18,10 @@ public class AuthorizeNetCCTransaction implements CCTransaction
     private AuDate _ExpirationDate;
     private double _Amount;
 
-    private static String _APILoginID = Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_API_LOGINID);
-    private static String _TransactionKey = Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_TRANSACTION_KEY);
+//    private static String _APILoginID = Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_API_LOGINID);
+//    private static String _TransactionKey = Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_TRANSACTION_KEY);
     // want to make sure that they have to explicitly and correctly set TestMode to false
-    private static boolean _TestMode = !Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_TEST_MODE, "true").toLowerCase().equals("false");
+//    private static boolean _TestMode = !Application._GLOBAL_SETTINGS.getProperty(AppSettings.CC_TEST_MODE, "true").toLowerCase().equals("false");
 
     public AuthorizeNetCCTransaction(String number, AuDate expirationDate, double amount) {
         if (expirationDate==null || expirationDate.isNull()) {
@@ -42,12 +42,12 @@ public class AuthorizeNetCCTransaction implements CCTransaction
 
           // mandatory name/value pairs for all AIM CC transactions
           // as well as some "good to have" values
-          sb.append("x_login=" + _APILoginID + "&");
-          sb.append("x_tran_key=" + _TransactionKey + "&");
-          sb.append("x_version=3.1&");
-          if (_TestMode) {
-            sb.append("x_test_request=TRUE&");             // for testing
-          }
+//          sb.append("x_login=" + _APILoginID + "&");
+//          sb.append("x_tran_key=" + _TransactionKey + "&");
+//          sb.append("x_version=3.1&");
+//          if (_TestMode) {
+//            sb.append("x_test_request=TRUE&");             // for testing
+//          }
           sb.append("x_method=CC&");
           sb.append("x_type=" + ct.getApiString() + "&");
           sb.append("x_amount=" + Display.twoDecimals(_Amount) + "&");

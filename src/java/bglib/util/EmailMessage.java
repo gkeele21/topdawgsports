@@ -95,8 +95,8 @@ public class EmailMessage extends Thread {
         values.put("asBCC", getAsBCC());
         values.put("subject", getSubject());
         values.put("body", getBody());
-        values.put("from", _App.getAppSettings().getProperty(AppSettings.EMAIL_FROM_PROP));
-        values.put("fromPersonal", _App.getAppSettings().getProperty(AppSettings.EMAIL_FROMPERSONAL_PROP));
+//        values.put("from", _App.getAppSettings().getProperty(AppSettings.EMAIL_FROM_PROP));
+//        values.put("fromPersonal", _App.getAppSettings().getProperty(AppSettings.EMAIL_FROMPERSONAL_PROP));
         if (_AttachmentFileItem!=null && _AttachmentFileItem.getSize()>0) {
             values.put("attachmentFileItem", _AttachmentFileItem);
         }

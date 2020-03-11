@@ -44,29 +44,10 @@ public class Log {
 
     private void initSettings() {
         AppSettings appSettings = _Application.getAppSettings();
-        String appHomeDir=appSettings.getProperty(AppSettings.APP_HOME_DIR_NAME_PROP, _Application.getAppDir());
-        String root = appSettings.getAppRoot();
-        String logDir= root + File.separator + appHomeDir + File.separator + "log";
+        String logDir =appSettings.getProperty(AppSettings.LOG_DIR);
         File file = new File(logDir);
         file.mkdirs();
         _LogFile = logDir + File.separator + EXCEPTIONS_LOG;
-
-        try {
-            _EmailLogLevel=Level.parse(appSettings.getProperty(AppSettings.LOG_EMAIL_LOG_LEVEL_PROP, Level.SEVERE.toString()).toUpperCase());
-            _LogLevel = Level.parse(appSettings.getProperty(AppSettings.LOG_LEVEL_PROP, Level.SEVERE.toString()).toUpperCase());
-            _DBLogLevel = Level.parse(appSettings.getProperty(AppSettings.LOG_DB_LOG_LEVEL_PROP, Level.SEVERE.toString()).toUpperCase());
-            _EmailToList = new ArrayList<String>();
-            String email = appSettings.getProperty(AppSettings.EMAIL_EXCEPTIONS_PROP);
-            if (email != null && email.trim().length() > 0) {
-                StringTokenizer st = new StringTokenizer(email, ",");
-                while (st.hasMoreTokens()) {
-                    _EmailToList.add(st.nextToken().trim());
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void error(HttpSession session, HttpServletRequest request, Throwable e, boolean dbError) {
@@ -123,19 +104,19 @@ public class Log {
             }
 
             // dump extra information at the end for production environments
-            if (!Application._GLOBAL_SETTINGS.getProperty(AppSettings.ENV_TEST, "false").equals("true")) {
-                if (request!=null) {
-                    str.append("\n\n" + FSUtils.dumpRequest(request));
-                }
-                if (session!=null) {
-                    Enumeration attrNames = session.getAttributeNames();
-                    str.append("\n***Session Attributes***\n");
-                    while (attrNames.hasMoreElements()) {
-                        String attr = attrNames.nextElement().toString();
-                        str.append(attr + " = " + session.getAttribute(attr) + "\n");
-                    }
-                }
-            }
+//            if (!Application._GLOBAL_SETTINGS.getProperty(AppSettings.ENV_TEST, "false").equals("true")) {
+//                if (request!=null) {
+//                    str.append("\n\n" + FSUtils.dumpRequest(request));
+//                }
+//                if (session!=null) {
+//                    Enumeration attrNames = session.getAttributeNames();
+//                    str.append("\n***Session Attributes***\n");
+//                    while (attrNames.hasMoreElements()) {
+//                        String attr = attrNames.nextElement().toString();
+//                        str.append(attr + " = " + session.getAttribute(attr) + "\n");
+//                    }
+//                }
+//            }
 
             logMessage(level, str.toString());
             if (!dbError && level.intValue() >= _DBLogLevel.intValue()) {

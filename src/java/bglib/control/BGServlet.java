@@ -75,7 +75,7 @@ public class BGServlet extends HttpServlet {
 
     private void recordPageView(ViewController vc) {
         vc.getApplication().getLogger().logMessage(Level.FINE, "page " + vc.getPageName() + " took: " + vc.getDuration() + " ms.");
-        Level logLevel = Level.parse(vc.getApplication().getAppSettings().getProperty(AppSettings.LOG_LEVEL_PROP, "Severe").toUpperCase());
+        Level logLevel = Level.parse("Severe");
         if (logLevel.intValue() <= Level.INFO.intValue()) {
             try {
                 Application._GLOBAL_QUICK_DB.executeUpdate("insert into PageView(ApplicationID, PageName, ProcessTime) " +
@@ -89,7 +89,7 @@ public class BGServlet extends HttpServlet {
 
     private void recordAction(ActionController ac) {
         ac.getApplication().getLogger().logMessage(Level.FINE, "page " + ac.getPageName() + " took: " + ac.getDuration() + " ms.");
-        Level logLevel = Level.parse(ac.getApplication().getAppSettings().getProperty(AppSettings.LOG_LEVEL_PROP, "Severe").toUpperCase());
+        Level logLevel = Level.parse("Severe");
         if (logLevel.intValue() <= Level.INFO.intValue()) {
             try {
                 Application._GLOBAL_QUICK_DB.executeUpdate("insert into PageView(ApplicationID, PageName, ProcessTime) " +
@@ -102,7 +102,7 @@ public class BGServlet extends HttpServlet {
     }
 
     private void recordPageView(Application app, String type, String pageName, long duration) {
-        Level logLevel = Level.parse(app.getAppSettings().getProperty(AppSettings.LOG_LEVEL_PROP, "Severe").toUpperCase());
+        Level logLevel = Level.parse("Severe");
         if (logLevel.intValue() <= Level.FINE.intValue()) {
             System.out.println("page " + pageName + " took: " + duration + " ms.");
         }

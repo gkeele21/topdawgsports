@@ -18,13 +18,13 @@ import org.apache.commons.fileupload.FileItem;
 public class SendEmail implements Runnable {
 
    // SMTP Server INFO
-    private static final String _host = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_HOST_PROP);
-    private static final String _user = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_USER_PROP);
-    private static final String _password = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_PASSWORD_PROP);
+//    private static final String _host = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_HOST_PROP);
+//    private static final String _user = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_USER_PROP);
+//    private static final String _password = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_PASSWORD_PROP);
 
     // Website INFO
-    private static final String _FromEmail = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_FROM_PROP);
-    private static final String _CompanyName = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_FROMPERSONAL_PROP);
+//    private static final String _FromEmail = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_FROM_PROP);
+//    private static final String _CompanyName = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_FROMPERSONAL_PROP);
 
     private Map _Values = new HashMap();
 
@@ -51,8 +51,8 @@ public class SendEmail implements Runnable {
         String from = (String)_Values.get("from");
         String fromPersonal = (String)_Values.get("fromPersonal");
         if (from==null || from.length() == 0) {
-            from = _FromEmail;
-            fromPersonal = _CompanyName;
+//            from = _FromEmail;
+//            fromPersonal = _CompanyName;
         }
 
         String to = (String)_Values.get("to");
@@ -139,49 +139,49 @@ public class SendEmail implements Runnable {
         
         // Setup mail server
         Properties p = new Properties();
-        p.put("mail.smtp.host", _host);
+//        p.put("mail.smtp.host", _host);
         p.put("mail.smtp.port", "25");
         p.put("mail.smtp.auth", "true");
 //            p.put("mail.debug", "true");
-        if (_host.equals("smtp.gmail.com")) {
-            p.put("mail.smtp.port", "465");
-            p.put("mail.smtp.auth", "true");
-            p.put("mail.debug", "true");
-            p.put("mail.smtp.socketFactory.port", "465");
-            p.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            p.put("mail.smtp.socketFactory.fallback", "false");
-        }
+//        if (_host.equals("smtp.gmail.com")) {
+//            p.put("mail.smtp.port", "465");
+//            p.put("mail.smtp.auth", "true");
+//            p.put("mail.debug", "true");
+//            p.put("mail.smtp.socketFactory.port", "465");
+//            p.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//            p.put("mail.smtp.socketFactory.fallback", "false");
+//        }
         try {
             
-            Authenticator auth = new javax.mail.Authenticator() {
-                                                         protected PasswordAuthentication
-                                                         getPasswordAuthentication() {
-                                                             PasswordAuthentication passAuth = new PasswordAuthentication(_user, _password);
-                                                             System.out.println("passAuth");
-                                                             return passAuth;
-                                                         }
-                                                     };
-//            Session session = Session.getDefaultInstance(p,auth);
-            Session session = Session.getInstance(p, new GMailAuthenticator(_user, _password));
+//            Authenticator auth = new javax.mail.Authenticator() {
+//                                                         protected PasswordAuthentication
+//                                                         getPasswordAuthentication() {
+//                                                             PasswordAuthentication passAuth = new PasswordAuthentication(_user, _password);
+//                                                             System.out.println("passAuth");
+//                                                             return passAuth;
+//                                                         }
+//                                                     };
+////            Session session = Session.getDefaultInstance(p,auth);
+//            Session session = Session.getInstance(p, new GMailAuthenticator(_user, _password));
 //        session.setDebug(true);
 
         // Define message
-            message = new MimeMessage(session);
-        
-            message.setFrom(new InternetAddress(from, fromPersonal));
-
-            if (asBCC) {
-                recipientTypeList = new ArrayList();
-                for (int i=0; i<toList.size(); i++) {
-                    recipientTypeList.add(javax.mail.Message.RecipientType.BCC);
-                }
-            }
-            String to = buildToList(message, toList, recipientTypeList, asBCC);
-            if (to.length() > 0) {
-                subject = "To: " + to + " | " + subject;
-            }
-
-            message.setSubject(subject, "utf8");
+//            message = new MimeMessage(session);
+//        
+//            message.setFrom(new InternetAddress(from, fromPersonal));
+//
+//            if (asBCC) {
+//                recipientTypeList = new ArrayList();
+//                for (int i=0; i<toList.size(); i++) {
+//                    recipientTypeList.add(javax.mail.Message.RecipientType.BCC);
+//                }
+//            }
+//            String to = buildToList(message, toList, recipientTypeList, asBCC);
+//            if (to.length() > 0) {
+//                subject = "To: " + to + " | " + subject;
+//            }
+//
+//            message.setSubject(subject, "utf8");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -219,23 +219,23 @@ public class SendEmail implements Runnable {
 
     private static String buildToList(MimeMessage message, List toList, List recipientTypeList, boolean asBCC) {
         String ret = "";
-        String sendEmailsTo = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_ONLY_TO_PROP, "");
+//        String sendEmailsTo = _GLOBAL_SETTINGS.getProperty(AppSettings.EMAIL_ONLY_TO_PROP, "");
         for (int i=0; i<toList.size(); i++) {
             try {
                 String recipient = fixEmails((String)toList.get(i));
-                if (sendEmailsTo.length() == 0) {
-                    String[] recipients = recipient.split(",");
-                    for (String rec : recipients) {
-                        if (recipientTypeList==null) {
-                            addRecipient(message, rec);
-                        } else {
-                            message.addRecipient((javax.mail.Message.RecipientType)recipientTypeList.get(i), new InternetAddress(rec));
-                        }
-                    }
-                } else {
-                    addRecipient(message, sendEmailsTo);
-                    ret += recipient + "; ";
-                }
+//                if (sendEmailsTo.length() == 0) {
+//                    String[] recipients = recipient.split(",");
+//                    for (String rec : recipients) {
+//                        if (recipientTypeList==null) {
+//                            addRecipient(message, rec);
+//                        } else {
+//                            message.addRecipient((javax.mail.Message.RecipientType)recipientTypeList.get(i), new InternetAddress(rec));
+//                        }
+//                    }
+//                } else {
+////                    addRecipient(message, sendEmailsTo);
+//                    ret += recipient + "; ";
+//                }
             }
             catch (Exception e) {
                 System.out.println("bad To email address: " + toList.get(i)); // log and continue; we don't want a bad address to derail the process
@@ -434,19 +434,19 @@ public class SendEmail implements Runnable {
 
             //Authenticator auth = new MyAuthenticator();
             // create the authenticator
-              Authenticator auth = new Authenticator() {
-                public PasswordAuthentication getPasswordAuthentication() {
-                  return new PasswordAuthentication(_user,_password);
-                }
-              };
+//              Authenticator auth = new Authenticator() {
+//                public PasswordAuthentication getPasswordAuthentication() {
+//                  return new PasswordAuthentication(_user,_password);
+//                }
+//              };
 
-            // Get session
-            Session session = Session.getDefaultInstance(props, auth);
+//            // Get session
+//            Session session = Session.getDefaultInstance(props, auth);
+//
+//            // Get the store
+//            store = session.getStore("pop3");
 
-            // Get the store
-            store = session.getStore("pop3");
-
-        } catch (javax.mail.NoSuchProviderException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -46,7 +46,7 @@ public class ViewController {
         // Process the View  code;
         BGBaseView view = null;
         try {
-            if (Application._GLOBAL_APPLICATION.getAppSettings().getProperty(AppSettings.CLASS_CACHE, "true").equals("true") && _PAGES.containsKey(className)) {
+            if (_PAGES.containsKey(className)) {
                 view = _PAGES.get(className);
             } else {
                 view = (BGBaseView)Class.forName(className).newInstance();

@@ -44,7 +44,8 @@ public class ActionController {
         // Process the View code;
         BGBaseAction action = null;
         try {
-            if (Application._GLOBAL_APPLICATION.getAppSettings().getProperty(AppSettings.CLASS_CACHE, "true").equals("true") && _ACTIONS.containsKey(className)) {
+//            if (Application._GLOBAL_APPLICATION.getAppSettings().getProperty(AppSettings.CLASS_CACHE, "true").equals("true") && _ACTIONS.containsKey(className)) {
+            if (_ACTIONS.containsKey(className)) {
                 action = _ACTIONS.get(className);
             } else {
                 action = (BGBaseAction)Class.forName(className).newInstance();

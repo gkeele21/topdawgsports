@@ -210,7 +210,7 @@
             </div> <!-- bucketGame3 -->
         </div>
     </div> <!-- container -->
-
+    <p>v1.0.4</p>
 </body>
 </html>
 

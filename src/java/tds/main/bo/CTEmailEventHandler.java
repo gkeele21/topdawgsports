@@ -37,7 +37,7 @@ public class CTEmailEventHandler implements Runnable, Serializable {
         }
         _ToList = new ArrayList<String>(toList);
         if (_ToList.size()==0) {
-            _ToList.add(_CT_APP_SETTINGS.getProperty(AppSettings.EMAIL_DEFAULT_RECIPIENT, "bruhansen@gmail.com"));
+//            _ToList.add(_CT_APP_SETTINGS.getProperty(AppSettings.EMAIL_DEFAULT_RECIPIENT, "bruhansen@gmail.com"));
         }
     }
 
@@ -51,7 +51,7 @@ public class CTEmailEventHandler implements Runnable, Serializable {
         }
         _ToList = new ArrayList<String>(toList);
         if (_ToList.size()==0) {
-            _ToList.add(_CT_APP_SETTINGS.getProperty(AppSettings.EMAIL_DEFAULT_RECIPIENT, "bruhansen@gmail.com"));
+//            _ToList.add(_CT_APP_SETTINGS.getProperty(AppSettings.EMAIL_DEFAULT_RECIPIENT, "bruhansen@gmail.com"));
         }
         _AsBCC=asBCC;
     }

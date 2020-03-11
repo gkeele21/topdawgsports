@@ -29,7 +29,8 @@ public class JDBCDatabase {
 //        _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=lakers&autoReconnect=true";
         if (AuUtil.isEmpty(connectionString)) {
 //            _ConnectionString = "jdbc:mysql://localhost:3307/topdawg?user=topdawg&password=laker$&autoReconnect=true";
-            _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
+            System.out.println("Connection string passed in is empty - using default hard-coded one");
+            _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=root&autoReconnect=true";
 //            _ConnectionString = "jdbc:mysql://topdawg.circlepix.com:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
         } else {
             _ConnectionString = connectionString;

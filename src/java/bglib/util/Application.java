@@ -3,6 +3,7 @@ package bglib.util;
 import bglib.data.JDBCDatabase;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import sun.jdbc.rowset.CachedRowSet;
 
 public class Application {
@@ -19,7 +20,7 @@ public class Application {
     public static final Log _GLOBAL_LOG = Log.getInstance(GLOBAL_STR);
 
     static {
-        _GLOBAL_QUICK_DB = JDBCDatabase.getInstance(_GLOBAL_SETTINGS.getProperty(AppSettings.DB_CONNECTIONSTRING_PROP));
+        _GLOBAL_QUICK_DB = JDBCDatabase.getInstance(_GLOBAL_SETTINGS.getDBConnectionString());
     }
 
     public static final Application _GLOBAL_APPLICATION = getInstance(GLOBAL_STR);
@@ -35,9 +36,12 @@ public class Application {
     private String _CompanyName;
 
     private Application(String appPrefix) throws Exception {
+        System.out.println("Global connection string: " + _GLOBAL_SETTINGS.getDBConnectionString());
+//        _GLOBAL_LOG.logMessage(Level.WARNING, "Global connection string: " + _GLOBAL_SETTINGS.getDBConnectionString());
         if (!appPrefix.equals(GLOBAL_STR)) {
             String query = "select * from Application where ApplicationPrefix = '" + appPrefix + "'";
             System.out.println("Query : " + query);
+//            _GLOBAL_LOG.logMessage(Level.WARNING,"Query : " + query);
             CachedRowSet crs = _GLOBAL_QUICK_DB.executeQuery(query);
             if (crs.next()) {
                 initFromCRS(crs);
@@ -117,5 +121,7 @@ public class Application {
 
     public AppSettings getAppSettings() { return AppSettings.getInstance(_AppPrefix); }
     public Log getLogger() { return Log.getInstance(_AppPrefix); }
-    public JDBCDatabase getQuickDB() { return JDBCDatabase.getInstance(getAppSettings().getProperty(AppSettings.DB_CONNECTIONSTRING_PROP, "default")); }
+    public JDBCDatabase getQuickDB() { 
+        return JDBCDatabase.getInstance(getAppSettings().getDBConnectionString());
+    }
 }
