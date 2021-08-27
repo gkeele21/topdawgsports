@@ -1,20 +1,23 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import tds.data.CTDataSetDef;
+import tds.util.CTReturnCode;
+
+import sun.jdbc.rowset.CachedRowSet;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.apache.commons.lang.StringEscapeUtils;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.data.CTDataSetDef;
 import static tds.main.bo.CTApplication._CT_DB;
 import static tds.main.bo.CTApplication._CT_LOG;
-import tds.util.CTReturnCode;
 import static tds.util.CTReturnCode.RC_DB_ERROR;
 import static tds.util.CTReturnType.SUCCESS;
 
@@ -24,7 +27,7 @@ public class FSUser implements Serializable {
     private int _FSUserID;
     private String _Username;
     private String _Password;
-    private AuDate _DateCreated;
+    private LocalDate _DateCreated;
     private String _FirstName;
     private String _LastName;
     private String _Email;
@@ -34,8 +37,8 @@ public class FSUser implements Serializable {
     private String _State;
     private String _Zip;
     private String _Country;
-    private AuDate _Birthdate;
-    private AuDate _LastLogin;
+    private LocalDate _Birthdate;
+    private LocalDateTime _LastLogin;
     private boolean _BadEmailAddress;
     private boolean _SendActionAlerts;
     private String _Address2;
@@ -43,10 +46,10 @@ public class FSUser implements Serializable {
     private String _AuthenticationKey;
     private boolean _IsActive;
     private String _LeadSource;
-    
+
     // OTHER FIELDS
     private List<FSTeam> _FSTeams;
-    
+
     // CONSTRUCTORS
     public FSUser() throws Exception {
 
@@ -75,7 +78,7 @@ public class FSUser implements Serializable {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT").append(_Cols.getColumnList("FSUser", "u.", ""));           
+            sql.append("SELECT").append(_Cols.getColumnList("FSUser", "u.", ""));
             sql.append("FROM FSUser u ");
             sql.append("WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
 
@@ -97,7 +100,7 @@ public class FSUser implements Serializable {
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("SELECT").append(_Cols.getColumnList("FSUser", "u.", ""));           
+            sql.append("SELECT").append(_Cols.getColumnList("FSUser", "u.", ""));
             sql.append("FROM FSUser u ");
             sql.append("WHERE UserName='").append(StringEscapeUtils.escapeSql(username)).append("'");
             sql.append("AND Password='").append(StringEscapeUtils.escapeSql(password)).append("'");
@@ -124,11 +127,11 @@ public class FSUser implements Serializable {
         initFromCRS(fields, prefix);
     }
 
-    // GETTERS    
+    // GETTERS
     public int getFSUserID() { return _FSUserID; }
     public String getUsername() { return _Username; }
     public String getPassword() { return _Password; }
-    public AuDate getDateCreated() { return _DateCreated; }
+    public LocalDate getDateCreated() { return _DateCreated; }
     public String getFirstName() { return _FirstName; }
     public String getLastName() { return _LastName; }
     public String getFullName() { return _FirstName + " " + _LastName; }
@@ -142,19 +145,19 @@ public class FSUser implements Serializable {
     public String getZip() { return _Zip; }
     public String getCountry() { return _Country; }
     public String getLeadSource() { return _LeadSource; }
-    public AuDate getBirthdate() { return _Birthdate; }
-    public AuDate getLastLogin() { return _LastLogin; }
+    public LocalDate getBirthdate() { return _Birthdate; }
+    public LocalDateTime getLastLogin() { return _LastLogin; }
     public boolean isBadEmailAddress() { return _BadEmailAddress; }
     public boolean isActive() { return _IsActive; }
     public boolean isSendActionAlerts() { return _SendActionAlerts; }
     public String getAuthenticationKey() { return _AuthenticationKey; }
     public List<FSTeam> getFSTeams() {return _FSTeams;}
-    
-    // SETTERS    
+
+    // SETTERS
     public void setFSUserID(int FSUserID) {_FSUserID = FSUserID;}
     public void setUsername(String Username) {_Username = Username;}
     public void setPassword(String Password) {_Password = Password;}
-    public void setDateCreated(AuDate DateCreated) {_DateCreated = DateCreated;}
+    public void setDateCreated(LocalDate DateCreated) {_DateCreated = DateCreated;}
     public void setFirstName(String FirstName) {_FirstName = FirstName;}
     public void setLastName(String LastName) {_LastName = LastName;}
     public void setEmail(String Email) {_Email = Email;}
@@ -164,8 +167,8 @@ public class FSUser implements Serializable {
     public void setState(String State) {_State = State;}
     public void setZip(String Zip) {_Zip = Zip;}
     public void setCountry(String Country) {_Country = Country;}
-    public void setBirthdate(AuDate Birthdate) {_Birthdate = Birthdate;}
-    public void setLastLogin(AuDate LastLogin) {_LastLogin = LastLogin;}
+    public void setBirthdate(LocalDate Birthdate) {_Birthdate = Birthdate;}
+    public void setLastLogin(LocalDateTime LastLogin) {_LastLogin = LastLogin;}
     public void setBadEmailAddress(boolean BadEmailAddress) {_BadEmailAddress = BadEmailAddress;}
     public void setSendActionAlerts(boolean SendActionAlerts) {_SendActionAlerts = SendActionAlerts;}
     public void setAddress2(String Address2) {_Address2 = Address2;}
@@ -174,7 +177,7 @@ public class FSUser implements Serializable {
     public void setIsActive(boolean IsActive) {_IsActive = IsActive;}
     public void setLeadSource(String LeadSource) {_LeadSource = LeadSource;}
     public void setFSTeams(List<FSTeam> FSTeams) {_FSTeams = FSTeams;}
-    
+
     // PUBLIC METHODS
 
     public CTReturnCode updateUserFields(String firstName, String lastName, String address,
@@ -193,7 +196,7 @@ public class FSUser implements Serializable {
     public CTReturnCode setLastLogin() {
         int res = 0;
         try {
-            res = _CT_DB.updateDataSet(CTDataSetDef.UPDATE_LAST_LOGIN, new java.sql.Timestamp(new AuDate().getDateInMillis()), getFSUserID());
+            res = _CT_DB.updateDataSet(CTDataSetDef.UPDATE_LAST_LOGIN, LocalDateTime.now(), getFSUserID());
         }
         catch (Exception e) {
             _CT_LOG.error(e);
@@ -211,8 +214,8 @@ public class FSUser implements Serializable {
         String procCall = CTApplication.TBL_PREF + "FSUser_lastFSUser";
         int id = _CT_DB.insertDataSet(CTDataSetDef.INSERT_NEW_FSUSER, procCall, username, password, firstName, lastName, email,
                 phone, altPhone, address, address2, city, state, zip, country, leadSource, sendActionAlerts,
-                new java.sql.Timestamp(new AuDate().getDateInMillis()),authKey);
-        
+                LocalDateTime.now(),authKey);
+
         System.out.println("New user id : " + id);
         CTReturnCode ret = (id>0) ? new CTReturnCode(SUCCESS, id) : RC_DB_ERROR;
 
@@ -265,9 +268,9 @@ public class FSUser implements Serializable {
             JDBCDatabase.closeCRS(crs);
             JDBCDatabase.close(con);
         }
-            
+
         return getFSTeams();
-    }   
+    }
 
     public static void main(String[] args) {
 
@@ -364,7 +367,7 @@ public class FSUser implements Serializable {
             sql.append(" WHERE u.Username = '").append(username).append("'");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
-            
+
             if (crs.size() > 0) {
                 exists = true;
             }
@@ -376,15 +379,15 @@ public class FSUser implements Serializable {
 
         return exists;
     }
-    
+
     public static String generateAuthenticationKey() {
-        
+
         StringBuilder key = new StringBuilder();
         Random random = new Random();
         for (int x=1;x<=5;x++) {
             key.append(random.nextInt(100));
         }
-        
+
         return key.toString();
     }
 
@@ -396,100 +399,109 @@ public class FSUser implements Serializable {
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSUserID")) {
                 setFSUserID(crs.getInt(prefix + "FSUserID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Username")) {
                 setUsername(crs.getString(prefix + "Username"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Password")) {
                 setPassword(crs.getString(prefix + "Password"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "DateCreated")) {
-                setDateCreated(new AuDate(crs.getTimestamp(prefix + "DateCreated")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "DateCreated");
+                if (s != null) {
+                    setDateCreated(s.toLocalDate());
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FirstName")) {
                 setFirstName(crs.getString(prefix + "FirstName"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "LastName")) {
                 setLastName(crs.getString(prefix + "LastName"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Email")) {
                 setEmail(crs.getString(prefix + "Email"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Telephone")) {
                 setTelephone(crs.getString(prefix + "Telephone"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "AlternateTelephone")) {
                 setAltTelephone(crs.getString(prefix + "AlternateTelephone"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Address")) {
                 setAddress(crs.getString(prefix + "Address"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Address2")) {
                 setAddress2(crs.getString(prefix + "Address2"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "City")) {
                 setCity(crs.getString(prefix + "City"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "State")) {
                 setState(crs.getString(prefix + "State"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Zip")) {
                 setZip(crs.getString(prefix + "Zip"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Country")) {
                 setCountry(crs.getString(prefix + "Country"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "LeadSource")) {
                 setLeadSource(crs.getString(prefix + "LeadSource"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Birthdate")) {
-                setBirthdate(new AuDate(crs.getTimestamp(prefix + "Birthdate")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "Birthdate");
+                if (s != null) {
+                    setBirthdate(s.toLocalDate());
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "LastLogin")) {
-                setLastLogin(new AuDate(crs.getTimestamp(prefix + "LastLogin")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "LastLogin");
+                if (s != null) {
+                    setLastLogin(s);
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "BadEmailAddress")) {
                 setBadEmailAddress(crs.getBoolean(prefix + "BadEmailAddress"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SendActionAlerts")) {
                 setSendActionAlerts(crs.getBoolean(prefix + "SendActionAlerts"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IsActive")) {
                 setIsActive(crs.getBoolean(prefix + "IsActive"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "AuthenticationKey")) {
                 setAuthenticationKey(crs.getString(prefix + "AuthenticationKey"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }        
+        }
     }
 }

@@ -1,19 +1,22 @@
 package tds.main.bo;
 
-import bglib.util.AuDate;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FootballStats implements Serializable {
-    
+
     // DB FIELDS
-    private String _StatsPlayerID;    
-    private AuDate _BeginPlayDate;
-    private AuDate _EndPlayDate;
+    private String _StatsPlayerID;
+    private LocalDate _BeginPlayDate;
+    private LocalDate _EndPlayDate;
     private int _SeasonID;
     private int _TeamID;
     private String _Position;
@@ -51,7 +54,7 @@ public class FootballStats implements Serializable {
     private int _XtraTD;
     private String _TDDistances;
     private String _StatsOfficial;
-    private int _FootballStatsID;  
+    private int _FootballStatsID;
     private double _FantasyPts;
     private int _IDPAssists;
     private int _IDPFumbleRecoveries;
@@ -74,13 +77,13 @@ public class FootballStats implements Serializable {
     private int _SeasonWeekID;
     private int _RecTargets;
     private double _AvgFantasyPts;
-      
+
     // OBJECTS
     private Player _Player;
-    private Season _Season;    
+    private Season _Season;
     private Team _Team;
     private SeasonWeek _SeasonWeek;
-    
+
     // CONSTRUCTORS
     public FootballStats() {
     }
@@ -92,11 +95,11 @@ public class FootballStats implements Serializable {
     public FootballStats(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public String getStatsPlayerID() {return _StatsPlayerID;}
-    public AuDate getBeginPlayDate() {return _BeginPlayDate;}
-    public AuDate getEndPlayDate() {return _EndPlayDate;}
+    public LocalDate getBeginPlayDate() {return _BeginPlayDate;}
+    public LocalDate getEndPlayDate() {return _EndPlayDate;}
     public int getSeasonID() {return _SeasonID;}
     public int getTeamID() {return _TeamID;}
     public String getPosition() {return _Position;}
@@ -161,11 +164,11 @@ public class FootballStats implements Serializable {
     public Season getSeason() {if (_Season == null && _SeasonID > 0) {_Season = new Season(_SeasonID);}return _Season;}
     public Team getTeam() {if (_Team == null && _TeamID > 0) {_Team = new Team(_TeamID);}return _Team;}
     public SeasonWeek getSeasonWeek() {if (_SeasonWeek == null && _SeasonWeekID > 0) {_SeasonWeek = new SeasonWeek(_SeasonWeekID);}return _SeasonWeek;}
-    
+
     // SETTERS
     public void setStatsPlayerID(String StatsPlayerID) {_StatsPlayerID = StatsPlayerID;}
-    public void setBeginPlayDate(AuDate BeginPlayDate) {_BeginPlayDate = BeginPlayDate;}
-    public void setEndPlayDate(AuDate EndPlayDate) {_EndPlayDate = EndPlayDate;}
+    public void setBeginPlayDate(LocalDate BeginPlayDate) {_BeginPlayDate = BeginPlayDate;}
+    public void setEndPlayDate(LocalDate EndPlayDate) {_EndPlayDate = EndPlayDate;}
     public void setSeasonID(int SeasonID) {_SeasonID = SeasonID;}
     public void setTeamID(int TeamID) {_TeamID = TeamID;}
     public void setPosition(String Position) {_Position = Position;}
@@ -231,8 +234,8 @@ public class FootballStats implements Serializable {
     public void setTeam(Team Team) {_Team = Team;}
     public void setSeasonWeek(SeasonWeek SeasonWeek) {_SeasonWeek = SeasonWeek;}
 
-    // PUBLIC METHODS    
-    
+    // PUBLIC METHODS
+
     public double getAvgSalFantasyPts() {
         if (getPlayed() < 1) {
             return 0;
@@ -242,14 +245,14 @@ public class FootballStats implements Serializable {
     }
 
     public CachedRowSet getTopPerformers(FSLeague fsleague, SeasonWeek seasonWeek, FSSeasonWeek fsseasonWeek, String positionName) {
-        
+
         CachedRowSet crs = null;
-        
+
         // Retrieve the Top Performers
         StringBuffer teamsStr = new StringBuffer();
 
         if (fsleague != null && fsleague.getFSLeagueID() > 0 && fsseasonWeek != null) {
-            
+
             List<FSTeam> teams = fsleague.GetTeams();
             int count = 0;
             for (FSTeam team : teams) {
@@ -260,11 +263,11 @@ public class FootballStats implements Serializable {
                 teamsStr.append(team.getFSTeamID());
             }
         }
-        
+
         if (positionName == null) {
             positionName = "";
         }
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append("select ").append(_Cols.getColumnList("FootballStats", "s.", "FootballStats$"));
         sql.append(",").append(_Cols.getColumnList("Player", "p.", "Player$"));
@@ -313,231 +316,237 @@ public class FootballStats implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "StatsPlayerID")) {
                 setStatsPlayerID(crs.getString(prefix + "StatsPlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "BeginPlayDate")){
-                setBeginPlayDate(new AuDate(crs.getTimestamp(prefix + "BeginPlayDate")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "BeginPlayDate");
+                if (s != null) {
+                    setBeginPlayDate(s.toLocalDate());
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "EndPlayDate")) {
-                setEndPlayDate(new AuDate(crs.getTimestamp(prefix + "EndPlayDate")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "EndPlayDate");
+                if (s != null) {
+                    setEndPlayDate(s.toLocalDate());
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SeasonID")) {
                 setSeasonID(crs.getInt(prefix + "SeasonID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TeamID")) {
                 setTeamID(crs.getInt(prefix + "TeamID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Position")) {
                 setPosition(crs.getString(prefix + "Position"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TeamID")) {
                 setInjuryStatus(crs.getString(prefix + "TeamID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Started")) {
                 setStarted(crs.getInt(prefix + "Started"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Played")) {
                 setPlayed(crs.getInt(prefix + "Played"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Inactive")) {
                 setInactive(crs.getInt(prefix + "Inactive"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassComp")) {
                 setPassComp(crs.getInt(prefix + "PassComp"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassAtt")) {
                 setPassAtt(crs.getInt(prefix + "PassAtt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassYards")) {
                 setPassYards(crs.getInt(prefix + "PassYards"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassInt")) {
                 setPassInt(crs.getInt(prefix + "PassInt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassTD")) {
                 setPassTD(crs.getInt(prefix + "PassTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PassTwoPt")) {
                 setPassTwoPt(crs.getInt(prefix + "PassTwoPt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Sacked")) {
                 setSacked(crs.getInt(prefix + "Sacked"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SackedYardsLost")) {
                 setSackedYardsLost(crs.getInt(prefix + "SackedYardsLost"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RushAtt")) {
                 setRushAtt(crs.getInt(prefix + "RushAtt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RushYards")) {
                 setRushYards(crs.getInt(prefix + "RushYards"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RushTD")) {
                 setRushTD(crs.getInt(prefix + "RushTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RushTwoPt")) {
                 setRushTwoPt(crs.getInt(prefix + "RushTwoPt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RecCatches")) {
                 setRecCatches(crs.getInt(prefix + "RecCatches"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RecYards")) {
                 setRecYards(crs.getInt(prefix + "RecYards"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RecTD")) {
                 setRecTD(crs.getInt(prefix + "RecTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RecTwoPt")) {
                 setRecTwoPt(crs.getInt(prefix + "RecTwoPt"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "XPM")) {
                 setXPM(crs.getInt(prefix + "XPM"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "XPA")) {
                 setXPA(crs.getInt(prefix + "XPA"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "XPBlocked")) {
                 setXPBlocked(crs.getInt(prefix + "XPBlocked"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FGM")) {
                 setFGM(crs.getInt(prefix + "FGM"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FGA")) {
                 setFGA(crs.getInt(prefix + "FGA"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FGBlocked")) {
                 setFGBlocked(crs.getInt(prefix + "FGBlocked"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FG29Minus")) {
                 setFG29Minus(crs.getInt(prefix + "FG29Minus"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FG30to39")) {
                 setFG30to39(crs.getInt(prefix + "FG30to39"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FG40to49")) {
                 setFG40to49(crs.getInt(prefix + "FG40to49"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FG50Plus")) {
                 setFG50Plus(crs.getInt(prefix + "FG50Plus"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FumblesLost")) {
                 setFumblesLost(crs.getInt(prefix + "FumblesLost"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "XtraTD")) {
                 setXtraTD(crs.getInt(prefix + "XtraTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TDDistances")) {
                 setTDDistances(crs.getString(prefix + "TDDistances"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "StatsOfficial")) {
                 setStatsOfficial(crs.getString(prefix + "StatsOfficial"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FootballStatsID")) {
                 setFootballStatsID(crs.getInt(prefix + "FootballStatsID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FantasyPts")) {
                 setFantasyPts(crs.getDouble(prefix + "FantasyPts"));
-            }            
-            
+            }
+
             if (FSUtils.fieldExists(crs, prefix, "IDPAssists")) {
                 setIDPAssists(crs.getInt(prefix + "IDPAssists"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPFumbleRecoveries")) {
                 setIDPFumbleRecoveries(crs.getInt(prefix + "IDPFumbleRecoveries"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPFumbleReturnYards")) {
                 setIDPFumbleReturnYards(crs.getInt(prefix + "IDPFumbleReturnYards"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPFumbleReturnsForTD")) {
                 setIDPFumbleReturnsForTD(crs.getInt(prefix + "IDPFumbleReturnsForTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPFumblesForced")) {
                 setIDPFumblesForced(crs.getInt(prefix + "IDPFumblesForced"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPIntReturnYards")) {
                 setIDPIntReturnYards(crs.getInt(prefix + "IDPIntReturnYards"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPIntReturnsForTD")) {
                 setIDPIntReturnsForTD(crs.getInt(prefix + "IDPIntReturnsForTD"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPInterceptions")) {
                 setIDPInterceptions(crs.getInt(prefix + "IDPInterceptions"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPPassesDefensed")) {
                 setIDPPassesDefensed(crs.getInt(prefix + "IDPPassesDefensed"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPQBHurries")) {
                 setIDPQBHurries(crs.getInt(prefix + "IDPQBHurries"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPSackYardsLost")) {
                 setIDPSackYardsLost(crs.getInt(prefix + "IDPSackYardsLost"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPSacks")) {
                 setIDPSacks(crs.getInt(prefix + "IDPSacks"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPSafeties")) {
                 setIDPSafeties(crs.getInt(prefix + "IDPSafeties"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPTDDistances")) {
                 setIDPTDDistances(crs.getString(prefix + "IDPTDDistances"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "IDPTackles")) {
                 setIDPTackles(crs.getInt(prefix + "IDPTackles"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "OverallRank")) {
                 setOverallRank(crs.getString(prefix + "OverallRank"));
             }
@@ -545,19 +554,19 @@ public class FootballStats implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "PositionRank")) {
                 setPositionRank(crs.getString(prefix + "PositionRank"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SalFantasyPts")) {
                 setSalFantasyPts(crs.getDouble(prefix + "SalFantasyPts"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SeasonWeekID")) {
                 setSeasonWeekID(crs.getInt(prefix + "SeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RecTargets")) {
                 setRecTargets(crs.getInt(prefix + "RecTargets"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "AvgFantasyPts")) {
                 setAvgFantasyPts(crs.getDouble(prefix + "AvgFantasyPts"));
             } else {
@@ -567,28 +576,28 @@ public class FootballStats implements Serializable {
                     setAvgFantasyPts(getFantasyPts() / getPlayed());
                 }
             }
-            
+
             // OBJECTS
             /*
             if (FSUtils.fieldExists(crs, "Player$", "PlayerID")) {
                 _Player = new Player(crs, "Player$");
             }
             */
-            
+
             if (FSUtils.fieldExists(crs, "Season$", "SeasonID")) {
                 setSeason(new Season(crs, "Season$"));
             }
-            
+
             /*
             if (FSUtils.fieldExists(crs, "Team$", "TeamID")) {
                 _Team = new Team(crs, "Team$");
             }
             */
-            
+
             if (FSUtils.fieldExists(crs, "SeasonWeek$", "SeasonWeekID")) {
                 setSeasonWeek(new SeasonWeek(crs, "SeasonWeek$"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

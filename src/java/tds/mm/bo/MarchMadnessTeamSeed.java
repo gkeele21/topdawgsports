@@ -22,20 +22,20 @@ public class MarchMadnessTeamSeed implements Serializable {
     private Integer _SeedNumber;
     private String _SeasonRecord;
     private String _Status;
-    private Integer _TournamentWins;    
-    
+    private Integer _TournamentWins;
+
     // OBJECTS
     private MarchMadnessTournament _Tournament;
     private MarchMadnessRegion _Region;
     private Team _Team;
-    
+
     // ADDITIONAL FIELDS
     private Integer _TimesPicked;
 
     // CONSTRUCTORS
     public MarchMadnessTeamSeed() {
     }
-    
+
     public MarchMadnessTeamSeed(int teamSeedId) {
         CachedRowSet crs = null;
         try {
@@ -55,7 +55,7 @@ public class MarchMadnessTeamSeed implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public MarchMadnessTeamSeed(int tournamentId, int teamSeedId) {
         CachedRowSet crs = null;
         try {
@@ -75,7 +75,7 @@ public class MarchMadnessTeamSeed implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public MarchMadnessTeamSeed(CachedRowSet crs, String prefix) {
         InitFromCRS(crs, prefix);
     }
@@ -88,7 +88,7 @@ public class MarchMadnessTeamSeed implements Serializable {
     public Integer getSeedNumber() {return _SeedNumber;}
     public String getSeasonRecord() {return _SeasonRecord;}
     public String getStatus() {return _Status;}
-    public Integer getTournamentWins() {return _TournamentWins;}    
+    public Integer getTournamentWins() {return _TournamentWins;}
     public MarchMadnessTournament getTournament() {return _Tournament;}
     public MarchMadnessRegion getRegion() {return _Region;}
     public Team getTeam() {return _Team;}
@@ -102,12 +102,12 @@ public class MarchMadnessTeamSeed implements Serializable {
     public void setSeedNumber(Integer SeedNumber) {_SeedNumber = SeedNumber;}
     public void setSeasonRecord(String SeasonRecord) {_SeasonRecord = SeasonRecord;}
     public void setStatus(String Status) {_Status = Status;}
-    public void setTournamentWins(Integer TournamentWins) {_TournamentWins = TournamentWins;}    
+    public void setTournamentWins(Integer TournamentWins) {_TournamentWins = TournamentWins;}
     public void setTournament(MarchMadnessTournament Tournament) {_Tournament = Tournament;}
     public void setRegion(MarchMadnessRegion Region) {_Region = Region;}
     public void setTeam(Team Team) {_Team = Team;}
     public void setTimesPicked(Integer TimesPicked) {_TimesPicked = TimesPicked;}
-    
+
     // PUBLIC METHODS
 
     /* This retrieves all of the Tournament teams */
@@ -121,10 +121,10 @@ public class MarchMadnessTeamSeed implements Serializable {
         sql.append(_Cols.getColumnList("Team", "tm.", "Team$")).append(",");
         sql.append(_Cols.getColumnList("MarchMadnessRegion", "r.", "MarchMadnessRegion$"));
         sql.append("FROM MarchMadnessTeamSeed ts ");
-        sql.append("JOIN MarchMadnessTournament t ON t.TournamentID = ts.TournamentID ");        
+        sql.append("JOIN MarchMadnessTournament t ON t.TournamentID = ts.TournamentID ");
         sql.append("JOIN MarchMadnessRegion r ON r.RegionID = ts.RegionID ");
         sql.append("LEFT JOIN Team tm ON tm.TeamID = ts.TeamID ");
-        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" ");        
+        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" ");
         sql.append("ORDER BY r.RegionNumber, ts.SeedNumber");
 
         try {
@@ -139,13 +139,13 @@ public class MarchMadnessTeamSeed implements Serializable {
         }
         return teams;
     }
-    
+
     /* This retrieves all of the Seed Groups for the given tournament */
     public static List<MarchMadnessTeamSeed> GetMarchMadnessTeamsBySeedGroup(int tournamentId, int seedGroupId) {
         List<MarchMadnessTeamSeed> availableTeams = new ArrayList<MarchMadnessTeamSeed>();
         CachedRowSet crs = null;
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("SELECT").append(_Cols.getColumnList("MarchMadnessTeamSeed", "ts.", "")).append(",");
         sql.append(_Cols.getColumnList("MarchMadnessTournament", "t.", "MarchMadnessTournament$")).append(",");
         sql.append(_Cols.getColumnList("Team", "tm.", "Team$")).append(",");
@@ -155,7 +155,7 @@ public class MarchMadnessTeamSeed implements Serializable {
         sql.append("JOIN MarchMadnessTournament t ON t.TournamentID = ts.TournamentID ");
         sql.append("JOIN Team tm ON tm.TeamID = ts.TeamID ");
         sql.append("JOIN MarchMadnessRegion r ON r.RegionID = ts.RegionID ");
-        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" AND ts.SeedNumber BETWEEN (SELECT StartingSeedNumber FROM SeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") AND (SELECT EndingSeedNumber FROM SeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") ");        
+        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" AND ts.SeedNumber BETWEEN (SELECT StartingSeedNumber FROM SeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") AND (SELECT EndingSeedNumber FROM SeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") ");
         sql.append("ORDER BY ts.SeedNumber, r.RegionNumber");
 
         try {
@@ -170,9 +170,9 @@ public class MarchMadnessTeamSeed implements Serializable {
         }
         return availableTeams;
     }
-    
+
     /*  This method determines if a record already exists in the DB so it can call either an Insert or Update */
-    public void Save() {        
+    public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("MarchMadnessTeamSeed", "TeamSeedID", getTeamSeedID());
         if (doesExist) Update(); else Insert();
     }
@@ -184,19 +184,19 @@ public class MarchMadnessTeamSeed implements Serializable {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "TeamSeedID")) { setTeamSeedID(crs.getInt(prefix + "TeamSeedID")); }
-            if (FSUtils.fieldExists(crs, prefix, "TournamentID")) { setTournamentID(crs.getInt(prefix + "TournamentID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "TournamentID")) { setTournamentID(crs.getInt(prefix + "TournamentID")); }
             if (FSUtils.fieldExists(crs, prefix, "RegionID")) { setRegionID(crs.getInt(prefix + "RegionID")); }
             if (FSUtils.fieldExists(crs, prefix, "TeamID")) { setTeamID(crs.getInt(prefix + "TeamID")); }
-            if (FSUtils.fieldExists(crs, prefix, "SeedNumber")) { setSeedNumber(crs.getInt(prefix + "SeedNumber")); }            
-            if (FSUtils.fieldExists(crs, prefix, "SeasonRecord")) { setSeasonRecord(crs.getString(prefix + "SeasonRecord")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }            
-            if (FSUtils.fieldExists(crs, prefix, "TournamentWins")) { setTournamentWins(crs.getInt(prefix + "TournamentWins")); }            
+            if (FSUtils.fieldExists(crs, prefix, "SeedNumber")) { setSeedNumber(crs.getInt(prefix + "SeedNumber")); }
+            if (FSUtils.fieldExists(crs, prefix, "SeasonRecord")) { setSeasonRecord(crs.getString(prefix + "SeasonRecord")); }
+            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
+            if (FSUtils.fieldExists(crs, prefix, "TournamentWins")) { setTournamentWins(crs.getInt(prefix + "TournamentWins")); }
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "MarchMadnessTournament$", "TournamentID")) { setTournament(new MarchMadnessTournament(crs, "MarchMadnessTournament$")); }
-            if (FSUtils.fieldExists(crs, "MarchMadnessRegion$", "RegionID")) { setRegion(new MarchMadnessRegion(crs, "MarchMadnessRegion$")); } 
-            if (FSUtils.fieldExists(crs, "Team$", "TeamID")) { setTeam(new Team(crs, "Team$")); }            
-            
+            if (FSUtils.fieldExists(crs, "MarchMadnessRegion$", "RegionID")) { setRegion(new MarchMadnessRegion(crs, "MarchMadnessRegion$")); }
+            if (FSUtils.fieldExists(crs, "Team$", "TeamID")) { setTeam(new Team(crs, "Team$")); }
+
             // ADDITIONAL FIELDS
             if (FSUtils.fieldExists(crs, prefix, "TimesPicked")) { setTimesPicked(crs.getInt(prefix + "TimesPicked")); }
             if (prefix.equals("MarchMadnessTeamSeed$") && FSUtils.fieldExists(crs, "PredictedTeam$", "TeamID")) { setTeam(new Team(crs, "PredictedTeam$")); }
@@ -210,11 +210,11 @@ public class MarchMadnessTeamSeed implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     /*  This method inserts a new record into the DB. */
     private void Insert() {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("INSERT INTO MarchMadnessTeamSeed ");
         sql.append("(TeamSeedID, TournamentID, RegionID, TeamID, SeedNumber, SeasonRecord, Status, TournamentWins) ");
         sql.append("VALUES (");
@@ -233,12 +233,12 @@ public class MarchMadnessTeamSeed implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     /*  This method updates a record in the DB. */
     private void Update() {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("UPDATE MarchMadnessTeamSeed SET ");
         sql.append(FSUtils.UpdateDBFieldValue("TournamentID", getTournamentID()));
         sql.append(FSUtils.UpdateDBFieldValue("RegionID", getRegionID()));

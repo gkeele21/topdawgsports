@@ -1,26 +1,27 @@
 package bglib.util;
 
 import bglib.data.JDBCDatabase;
-import static bglib.util.Application._GLOBAL_LOG;
-import java.io.BufferedReader;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.WordUtils;
 import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import tds.main.bo.CTApplication;
+
+import static bglib.util.Application._GLOBAL_LOG;
 
 /**
  * Class declaration
@@ -87,7 +88,7 @@ public class FSUtils
 
         String[] children = direct.list();
         if (children == null) {
-            logger.info("File does not exist on the filesystem. (Dir : '" + dir + "' ;File : '" + filename + "'");
+            logger.info("File does not exist on the filesystem. (Dir : '" + dir + "' ;File : '" + filename + "')");
             return false;
         } else {
             for (String tempfilename : children) {
@@ -97,7 +98,7 @@ public class FSUtils
                 }
             }
         }
-        logger.info("File does not exist on the filesystem. (Dir : '" + dir + "' ;File : '" + filename + "'");
+        logger.info("File does not exist on the filesystem. (Dir : '" + dir + "' ;File : '" + filename + "')");
         return false;
 
     }
@@ -475,7 +476,7 @@ public class FSUtils
         }
 
         crs.close();
-        
+
         return list;
     }
 
@@ -692,7 +693,7 @@ public class FSUtils
                     frompage = url.substring(lastindex+1);
                 }
             }
-            
+
             // Strip parameters
             int beg = frompage.indexOf("?");
             if (beg > 0) {
@@ -708,7 +709,7 @@ public class FSUtils
         } else {
             frompage = "";
         }
-        
+
         return frompage;
     }
 
@@ -1090,7 +1091,7 @@ public class FSUtils
         }
         return str + postfix;
     }
-    
+
     public static String stringValue(Object value,boolean returnNulls) {
         try {
             String val = value.toString();
@@ -1132,40 +1133,40 @@ public class FSUtils
     public static String InsertDBFieldValue(Object value) {
         return InsertDBFieldValue(value, false);
     }
-    
+
     public static String InsertDBFieldValue(Object value, boolean needsQuotes) {
         if (value == null) { return null + ","; }
-        
+
         StringBuilder sql = new StringBuilder();
-        if (needsQuotes == true) { sql.append("'"); } 
+        if (needsQuotes == true) { sql.append("'"); }
         sql.append(StringEscapeUtils.escapeSql(value.toString()));
-        if (needsQuotes == true) { sql.append("'"); } 
+        if (needsQuotes == true) { sql.append("'"); }
         sql.append(",");
         return sql.toString();
     }
-    
+
     public static String UpdateDBFieldValue(String fieldName, Object value) {
         return UpdateDBFieldValue(fieldName, value, false);
     }
-    
-    public static String UpdateDBFieldValue(String fieldName, Object value, boolean needsQuotes) {        
+
+    public static String UpdateDBFieldValue(String fieldName, Object value, boolean needsQuotes) {
         if (value == null) { return ""; }
-        
+
         StringBuilder sql = new StringBuilder();
-        sql.append(fieldName).append(" = "); 
-        if (needsQuotes == true) { sql.append("'"); } 
+        sql.append(fieldName).append(" = ");
+        if (needsQuotes == true) { sql.append("'"); }
         sql.append(value.toString());
-        if (needsQuotes == true) { sql.append("'"); } 
+        if (needsQuotes == true) { sql.append("'"); }
         sql.append(",");
         return sql.toString();
     }
-    
+
     public static int GetHighestIdNumber(String tableName, String fieldName) {
-        
+
         int lastId = 0;
         CachedRowSet crs = null;
-        StringBuilder sql = new StringBuilder();        
-   
+        StringBuilder sql = new StringBuilder();
+
         try {
             sql.append("SELECT max(").append(fieldName).append(") ");
             sql.append("FROM ").append(tableName);
@@ -1179,10 +1180,10 @@ public class FSUtils
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return lastId;
     }
-    
+
     /* This method removes a record out of the DB. */
     public static void Delete (String tableName, String columnName, int value) {
         StringBuilder sql = new StringBuilder();
@@ -1192,12 +1193,12 @@ public class FSUtils
             CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
         } catch (Exception e) { CTApplication._CT_LOG.error(e); }
     }
-    
+
     /*  This method determines if a record already exists in the DB. */
-    public static boolean DoesARecordExistInDB(String tableName, String columnName, Integer value) {        
+    public static boolean DoesARecordExistInDB(String tableName, String columnName, Integer value) {
         return DoesARecordExistInDB(tableName, columnName, value, null, null);
     }
-    
+
     /*  This method determines if a record already exists in the DB. */
     public static boolean DoesARecordExistInDB(String tableName, String column1Name, Integer value1, String column2Name, Integer value2) {
         boolean exists = false;
@@ -1224,8 +1225,8 @@ public class FSUtils
         }
         return exists;
     }
-    
+
     public static int ToInt (Integer value) {
-        return (value == null) ? 0 : value.intValue();          
-    } 
+        return (value == null) ? 0 : value.intValue();
+    }
 }

@@ -69,7 +69,7 @@ public class FootballSalariesTemp {
                 int positionid = crs.getInt("PositionID");
                 String name = crs.getString("Name");
                 int id = crs.getInt("ID");
-                
+
                 if (name.indexOf("'") > 0) {
                     continue;
                 }
@@ -78,7 +78,7 @@ public class FootballSalariesTemp {
                 CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,sql2);
                 if (crs2.next()) {
                     int playerid = crs2.getInt("PlayerID");
-                    
+
                     name = FSUtils.fixupUserInputForDB(name);
                     String sql3 = "update ct_temp.TempSalaryPlayers " +
                                 " set PlayerID = " + playerid +
@@ -86,12 +86,12 @@ public class FootballSalariesTemp {
                     _Logger.info(sql3);
                     CTApplication._CT_QUICK_DB.executeUpdate(con,sql3);
                 }
-                
+
                 crs2.close();
             }
 
             crs.close();
-            
+
             con.commit();
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
@@ -111,7 +111,7 @@ public class FootballSalariesTemp {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 
             CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FSPlayerValue where FSSeasonWeekID = " + fsseasonweekid);
-            
+
             StringBuffer sql = new StringBuffer();
             sql.append("select * from ct_temp.TempSalaryPlayers ");
 
@@ -148,11 +148,11 @@ public class FootballSalariesTemp {
                     case 11 :
                         multiplier = 700;
                         break;
-                    
+
                 }
                 int salary = points * multiplier;
                 int playerid = crs.getInt("PlayerID");
-                
+
                 String sql3 = "insert into FSPlayerValue (PlayerID,FSSeasonWeekID,Value) " +
                             " values (" + playerid + "," + fsseasonweekid + "," + salary + ")";
                 _Logger.info(sql3);
@@ -161,7 +161,7 @@ public class FootballSalariesTemp {
             }
 
             crs.close();
-            
+
             con.commit();
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());

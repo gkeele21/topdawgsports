@@ -1,15 +1,17 @@
 package bglib.util;
 
+import bglib.control.BGServlet;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-
-import bglib.control.BGServlet;
 
 public class Log {
 
@@ -120,7 +122,7 @@ public class Log {
 
             logMessage(level, str.toString());
             if (!dbError && level.intValue() >= _DBLogLevel.intValue()) {
-                writeToDB(level, str.toString(), e); 
+                writeToDB(level, str.toString(), e);
             }
         }
         catch (Exception e2) {
@@ -130,6 +132,8 @@ public class Log {
 
     public void logMessage(Level level, String str) {
         try {
+            System.out.println(str);
+/*
             if (level.intValue() >= _LogLevel.intValue()) {
                 // write to log file
                 FileWriter fw = new FileWriter(_LogFile, true);
@@ -142,8 +146,9 @@ public class Log {
             if (level.intValue() >= _EmailLogLevel.intValue()) {
                 sendEmail(str);
             }
+*/
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

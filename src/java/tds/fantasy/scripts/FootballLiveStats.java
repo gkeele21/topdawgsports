@@ -20,12 +20,12 @@ import tds.main.bo.FSSeasonWeek;
 public class FootballLiveStats {
 
     Logger _Logger;
-    
+
     public FootballLiveStats() {
         _Logger = Logger.global;
         _Logger.setLevel(Level.ALL);
     }
-    
+
     public void setLogger(Logger logger) {
         _Logger = logger;
     }
@@ -34,10 +34,8 @@ public class FootballLiveStats {
     public static void main(String[] args) {
         try
         {
-            FootballLiveStats stats = new FootballLiveStats();
-            
             System.out.println("Starting Football Live Stats...");
-            
+
             FSGame fsGame = new FSGame(1);
             int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
             FSSeason currentFSSeason = new FSSeason(currentFSSeasonID);
@@ -45,21 +43,22 @@ public class FootballLiveStats {
 
             if (fsseasonweek == null)
             {
-                System.out.println("Error : no current fsseasonweek foundfor FSSeasonId " + currentFSSeasonID);
+                System.out.println("Error : no current fsseasonweek found for FSSeasonId " + currentFSSeasonID);
             }
-            
-            int currentSeasonID = currentFSSeason.getSeasonID();
-            int seasonWeekNum = fsseasonweek.getFSSeasonWeekNo();
-            String statsPath = FootballStatsJson._STATS_DIR;
-            
+
+//            int currentSeasonID = currentFSSeason.getSeasonID();
+//            int seasonWeekNum = fsseasonweek.getFSSeasonWeekNo();
+//            String statsPath = FootballStatsJson._STATS_DIR;
+
             // Retrieve stats through Python
-            System.out.println("Calling Python code...");
-            stats.runPythonScripts(FootballStatsJson._Year, seasonWeekNum, statsPath);
-            
+//            System.out.println("Calling Python code...");
+//            FootballLiveStats stats = new FootballLiveStats();
+//            stats.runPythonScripts(FootballStatsJson._Year, seasonWeekNum, statsPath);
+
             // Run Java code to run stats
             FootballStatsJson jsonStats = new FootballStatsJson();
             jsonStats.run(fsseasonweek.getFSSeasonWeekID());
-            
+
             // Run Java code to calc results
             FootballResults results = new FootballResults();
             results.run(false, fsseasonweek.getFSSeasonWeekID());
@@ -69,7 +68,7 @@ public class FootballLiveStats {
             e.printStackTrace();
         }
     }
-    
+
     public void runPythonScripts(String year, int weekNo, String statsPath)
     {
         try
@@ -83,7 +82,7 @@ public class FootballLiveStats {
             }
 
             String[] files = {"getNFLWeekStats.py"};
-            
+
             for (String file : files)
             {
                 String command = pythonCommand + " " + pythonPath + file + " " + year + " " + weekNo + " " + statsPath;

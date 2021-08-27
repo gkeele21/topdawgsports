@@ -1,15 +1,17 @@
 package tds.commissioner.control;
 
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.FSTeam;
 import tds.main.bo.UserSession;
 import tds.main.control.BaseAction;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+
 public class fsTeamEditAction extends BaseAction {
-    
+
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
@@ -36,12 +38,12 @@ public class fsTeamEditAction extends BaseAction {
             String lastAccessed = FSUtils.getRequestParameter(request, "lastAccessed", null);
             String rankDraftMode = FSUtils.getRequestParameter(request, "rankDraftMode", null);
             String isAlive = FSUtils.getRequestParameter(request, "isAlive", null);
-                        
+
             fsTeam.setFSLeagueID(fsLeagueID);
             fsTeam.setFSUserID(fsUserID);
             if (dateCreated != null)
             {
-                AuDate dt = AuDate.getInstance(dateCreated, BGConstants.PLAYDATE_PATTERN);
+                LocalDateTime dt = LocalDateTime.parse(dateCreated, Application._DATE_TIME_FORMATTER);
                 fsTeam.setDateCreated(dt);
             }
             if (teamName != null)
@@ -57,7 +59,7 @@ public class fsTeamEditAction extends BaseAction {
             fsTeam.setScheduleTeamNo(scheduleTeamNo);
             if (lastAccessed != null)
             {
-                AuDate dt = AuDate.getInstance(lastAccessed, BGConstants.PLAYDATE_PATTERN);
+                LocalDateTime dt = LocalDateTime.parse(lastAccessed, Application._DATE_TIME_FORMATTER);
                 fsTeam.setLastAccessed(dt);
             }
             if (rankDraftMode != null)
@@ -68,7 +70,7 @@ public class fsTeamEditAction extends BaseAction {
             {
                 fsTeam.setIsAlive(Boolean.parseBoolean(isAlive));
             }
-            
+
             try {
                 //fsTeam.update();
 
@@ -77,9 +79,9 @@ public class fsTeamEditAction extends BaseAction {
                 System.out.println("Error : " + e.getMessage());
                 session.setErrorMessage("Error updating FSTeam.");
             }
-            
+
         }
-        
+
 
         return nextPage;
     }

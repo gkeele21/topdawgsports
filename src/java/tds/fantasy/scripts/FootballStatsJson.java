@@ -10,6 +10,12 @@ import bglib.scripts.ResultCode;
 import bglib.util.Application;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+import tds.main.bo.FSGame;
+import tds.main.bo.FSSeason;
+import tds.main.bo.FSSeasonWeek;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
@@ -19,12 +25,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.CTApplication;
-import tds.main.bo.FSGame;
-import tds.main.bo.FSSeason;
-import tds.main.bo.FSSeasonWeek;
 
 /**
  *
@@ -37,9 +37,9 @@ public class FootballStatsJson implements Harnessable {
     public static String _STATS_DIR = Application._GLOBAL_SETTINGS.getProperty(STATS_DIR_PROP);
 //    private static final int _FSSeasonID = 20;
 //    private static final int _SeasonID = 8;
-    public static final String _Year = "2019";
+    public static final String _Year = "2020";
     private static final int _NumColumns = 60;
-    
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -89,10 +89,10 @@ public class FootballStatsJson implements Harnessable {
     public static final String KICKRETURNTDS = "KickReturnTDs";
 
     private static final String[] TEMPPLAYERSTATS = new String[_NumColumns];
-    
+
 //        PLAYERID, PROTEAM, NOTUSED, PROTEAMID, POSITION, NOTUSED, NOTUSED,
-//        NOTUSED, NOTUSED, 
-//        
+//        NOTUSED, NOTUSED,
+//
 //        INJURYSTATUS,STARTED,PLAYED,INACTIVE,PASSCOMP,PASSATT,PASSYARDS,
 //        PASSINT,PASSTD,PASS2PT,SACKED,SACKEDYARDSLOST,RUSHATT,RUSHYARDS,RUSHTD,RUSH2PT,
 //        RECTARGETS,RECCATCHES,RECYARDS,RECTD,REC2PT,XPM,XPA,XPBLOCKED,FGM,FGA,FGBLOCKED,FG_29,FG_30_39,FG_40_49,FG50_,
@@ -128,7 +128,7 @@ public class FootballStatsJson implements Harnessable {
         TEMPPLAYERSTATS[56] = RUSHTD;
         TEMPPLAYERSTATS[58] = RUSH2PT;
         TEMPPLAYERSTATS[59] = RUSHYARDS;
-        
+
 // 0    name,id,home,team,pos,
 // 5    defense_ast,defense_ffum,defense_int,defense_sk,defense_tkl,
 // 10   fumbles_lost,fumbles_rcv,fumbles_tot,fumbles_trcv,fumbles_yds,
@@ -170,9 +170,9 @@ public class FootballStatsJson implements Harnessable {
                 {
                     e.printStackTrace();
                 }
-                
+
             }
-            
+
             stats.run(fsseasonweekid);
 //            stats.insertIntoTotalFootballStats(15, 1);
             /*int seasonid = 4;
@@ -184,17 +184,17 @@ public class FootballStatsJson implements Harnessable {
         }
 
     }
-    
+
     @Override
     public void run() {
         run(0);
     }
-    
+
     public void run(int fsseasonweekid) {
 
         int statsofficial = 1;
         System.out.println("Starting Football Stats...");
-        
+
         FSGame fsGame = new FSGame(1);
         int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
         FSSeason currentFSSeason = new FSSeason(currentFSSeasonID);
@@ -206,36 +206,38 @@ public class FootballStatsJson implements Harnessable {
 
         int currentSeasonID = currentFSSeason.getSeasonID();
 
+        System.out.println("Running Stats for SeasonId : " + currentSeasonID + " and FSSeasonWeekID : " + fsseasonweek.getFSSeasonWeekID());
+
         try {
 
             int seasonweeknum = fsseasonweek.getFSSeasonWeekNo();
 
-            System.out.println("Running stats for WeekNo " + seasonweeknum);
-            
+            System.out.println("Running stats for WeekNo " + seasonweeknum + " and SeasonWeekID : " + fsseasonweek.getSeasonWeekID());
+
             // get stats for the current week
             String week = seasonweeknum < 10 ? "0"+seasonweeknum : ""+seasonweeknum;
             String extension = "csv";
             String statsfile = "week"+week+"."+extension;
             String kickersfile = "week"+week+"kickers."+extension;
 
-//            boolean statsFileExists = FSUtils.fileExists(_STATS_DIR,statsfile,_Logger);
-            boolean statsFileExists = true;
+            boolean statsFileExists = FSUtils.fileExists(_STATS_DIR,statsfile,_Logger);
+//            boolean statsFileExists = false;
             if (statsFileExists) {
                 System.out.println("Stats Files found - Starting stats...");
                 insertIntoTempFootballStatsCommaDelimited(_STATS_DIR + statsfile);
                 insertKickersIntoTempFootballStats(_STATS_DIR + kickersfile);
                 System.out.println("Stats inserted into TempFootballStats...");
-                insertIntoFootballStats(currentSeasonID,fsseasonweek.getSeasonWeekID(),statsofficial);
-                System.out.println("Stats inserted into FootballStats...");
-                insertIntoTotalFootballStats(currentSeasonID, statsofficial);
-                System.out.println("Stats inserted into TotalFootballStats...");
-//                checkNonMatchingIDs(currentSeasonID);
-                System.out.println("Done!");
-                _ResultCode = ResultCode.RC_SUCCESS;
             } else {
-                System.out.println("Stats Files don't exist... exiting.");
-                _ResultCode = ResultCode.RC_INCOMPLETE;
+                System.out.println("Stats Files don't exist... going with what is already in tempfootballstats.");
             }
+
+            insertIntoFootballStats(currentSeasonID,fsseasonweek.getSeasonWeekID(),statsofficial);
+            System.out.println("Stats inserted into FootballStats...");
+            insertIntoTotalFootballStats(currentSeasonID, statsofficial);
+            System.out.println("Stats inserted into TotalFootballStats...");
+//                checkNonMatchingIDs(currentSeasonID);
+            System.out.println("Done!");
+            _ResultCode = ResultCode.RC_SUCCESS;
 
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
@@ -262,7 +264,7 @@ public class FootballStatsJson implements Harnessable {
                     continue;
                 }
                 List statscolumns = Arrays.asList(TEMPPLAYERSTATS);
-                
+
                 Connection con = CTApplication._CT_QUICK_DB.getConn(false);
                 try {
                     if (line != null && line.length() > 20) {
@@ -295,7 +297,7 @@ public class FootballStatsJson implements Harnessable {
                                     String value = player[x];
                                     if (!AuUtil.isEmpty(value))
                                     {
-                                    
+
                                         if (x > 0) {
                                             sql.append(",");
                                         }
@@ -319,7 +321,7 @@ public class FootballStatsJson implements Harnessable {
                                         }
                                         sql.append("'").append(value).append("'");
                                     }
-                                    
+
                                 }
                             }
 
@@ -337,7 +339,7 @@ public class FootballStatsJson implements Harnessable {
                 con.close();
 
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
@@ -391,17 +393,17 @@ public class FootballStatsJson implements Harnessable {
                 }
 
             } // end while
-            
+
             // Loop through each player and set their fg length
             Iterator keyValuePairs = players.entrySet().iterator();
             for (int i = 0; i < players.size(); i++) {
                 Map.Entry entry = (Map.Entry) keyValuePairs.next();
                 Object playerId = entry.getKey();
                 Collection<Integer> fgLengths = (Collection<Integer>)entry.getValue();
-                
+
                 String lengths = fgLengths.toString();
                 System.out.println("Player Id : " + playerId + ", FGLengths : " + lengths);
-                
+
                 // update an existing record in TempFootballStats
                 StringBuilder sql = new StringBuilder();
                 sql.append("UPDATE TempFootballStats ");
@@ -410,7 +412,7 @@ public class FootballStatsJson implements Harnessable {
 
                 _Logger.info(sql.toString());
                 CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
-                
+
             }
 
             con.commit();
@@ -442,6 +444,9 @@ public class FootballStatsJson implements Harnessable {
             count++;
             System.out.println("Count : " + count);
             String playerid = crs.getString(PLAYERID);
+            if (playerid.equals("00-0032211")) {
+                System.out.println("Hey");
+            }
             String team = crs.getString(PROTEAM);
             int teamid = crs.getInt(PROTEAMID);
             String position = crs.getString(POSITION);
@@ -460,7 +465,7 @@ public class FootballStatsJson implements Harnessable {
             int played = 1;
             Boolean obj = crs.getBoolean(INACTIVE);
             int inactive = obj ? 1 : 0;
-            
+
             int comp = crs.getInt(PASSCOMP);
             int att = crs.getInt(PASSATT);
             int inter = crs.getInt(PASSINT);
@@ -492,7 +497,7 @@ public class FootballStatsJson implements Harnessable {
             int kickrettd = crs.getInt(KICKRETURNTDS);
             String tddistances = crs.getString(TDDISTANCES);
             String fgLengthsString = crs.getString(FGLENGTHS);
-            
+
             int xtratd = 0;
             int fglengths = 0;
 
@@ -514,11 +519,11 @@ public class FootballStatsJson implements Harnessable {
                     }
                 }
             }
-            
+
             xtratd += kickrettd + puntrettd;
-            
+
             // Figure the field goal lengths
-            if (!AuUtil.isEmpty(fgLengthsString))
+            if (!AuUtil.isEmpty(fgLengthsString) && !"0".equals(fgLengthsString))
             {
                 fgLengthsString = fgLengthsString.replace("[", "");
                 fgLengthsString = fgLengthsString.replace("]", "");
@@ -537,7 +542,7 @@ public class FootballStatsJson implements Harnessable {
                         fglengths = fglengths + newlength;
                     }
                 }
-                
+
             }
 
             // remove any negative yardage
@@ -547,7 +552,7 @@ public class FootballStatsJson implements Harnessable {
                 rushyards = 0;
             if (recyards < 0)
                 recyards = 0;
-            
+
             // calculate Player Fantasy Points
 
             double fantasypts = 6*((double)rushtd+(double)passtd+(double)rectd+(double)xtratd) + ((double)passyards/25.0) +
@@ -562,7 +567,7 @@ public class FootballStatsJson implements Harnessable {
             for (int x = 1;x <= inter;x++) {
                 intfantasypts += x;
             }
-            
+
             double fumfantasypts = 0.00;
             for (int x = 1;x <= fumbleslost;x++) {
                 fumfantasypts += x;
@@ -755,11 +760,11 @@ public class FootballStatsJson implements Harnessable {
                         // Add player to MissingPlayers list
                         MissingPlayer missing = new MissingPlayer(statsplayerid);
                         missingPlayers.add(missing);
-                        
+
                     }
-                    
+
                     crs22.close();
-                    
+
                 }
 
                 crs2.close();
@@ -768,7 +773,7 @@ public class FootballStatsJson implements Harnessable {
             crs.close();
 
             processMissingPlayers();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
@@ -780,7 +785,7 @@ public class FootballStatsJson implements Harnessable {
         Connection con = null;
         Statement stmt = null;
         ResultSet crs = null;
-        
+
         try {
             // clear out existing footballstats
             CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = 0  and seasonid = " + seasonid);
@@ -814,17 +819,17 @@ public class FootballStatsJson implements Harnessable {
             System.out.println("Total Stats : " + sql);
             stmt = con.createStatement();
             crs = stmt.executeQuery(sql.toString());
-            
+
             int count = 0;
             while (crs.next()) {
                 //System.out.println("Processing...");
-                
+
                 count++;
                 String playerid = crs.getString(PLAYERID);
                 String started = crs.getString(STARTED);
                 int played = crs.getInt(PLAYED);
                 int inactive = crs.getInt(INACTIVE);
-                
+
                 int comp = crs.getInt(PASSCOMP);
                 int att = crs.getInt(PASSATT);
                 int inter = crs.getInt(PASSINT);
@@ -857,7 +862,7 @@ public class FootballStatsJson implements Harnessable {
                 double fantasypts = crs.getDouble("FantasyPts");
                 double salfantasypts = crs.getDouble("SalFantasyPts");
 
-                
+
                 _Logger.log(Level.INFO, "PlayerID : {0},Total Fantasy Pts : {1}", new Object[]{playerid, fantasypts});
 
                 // Insert record into FootballStats table for TotalFantasyPts (seasonweekid = 0)
@@ -908,7 +913,7 @@ public class FootballStatsJson implements Harnessable {
                 CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
             }
             con.commit();
-            
+
         } catch (Exception exception) {
             exception.printStackTrace();
         } finally {
@@ -942,7 +947,7 @@ public class FootballStatsJson implements Harnessable {
             count++;
             int playerid = crs.getInt(PLAYERID);
             double fantasypts = 0;
-            
+
             _Logger.log(Level.INFO, "PlayerID : {0},Fantasy Pts : {1}", new Object[]{playerid, fantasypts});
 
             // Insert record into FootballStats table
@@ -966,7 +971,7 @@ public class FootballStatsJson implements Harnessable {
 
         con.close();
     }
-    
+
     public static void findStatsPlayerIds() throws Exception
     {
         StringBuilder sql = new StringBuilder();
@@ -987,31 +992,31 @@ public class FootballStatsJson implements Harnessable {
             String proTeam = crs.getString(PROTEAM);
             proTeam = proTeam.trim();
             int tempId = crs.getInt("TempID");
-            
+
             sql = new StringBuilder();
             sql.append(" SELECT * FROM Player p ");
             sql.append(" INNER JOIN Team t ON t.TeamID = p.TeamID");
             sql.append(" WHERE concat(firstName,' ',lastName) = '").append(name).append("'");
             sql.append(" AND t.Abbreviation = '").append(proTeam).append("'");
-            
+
 //            System.out.println("SQL : " + sql.toString());
             Statement stmt2 = con.createStatement();
             ResultSet crs2 = stmt2.executeQuery(sql.toString());
-            
+
             if (crs2.next())
             {
                 int playerid = crs2.getInt("playerId");
                 int statsPlayerId = crs2.getInt("statsPlayerId");
 //                System.out.println("[" + name + "] Stats PlayerID : " + statsPlayerId);
-                
+
                 sql = new StringBuilder();
                 sql.append(" UPDATE TempFootballStats set StatsPlayerID = ").append(statsPlayerId);
                 sql.append(" WHERE TempID = ").append(tempId);
-                
+
                 System.out.println(sql.toString() + ";");
                 CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
 //                System.out.println("=================================");
-                
+
             }
         }
     }

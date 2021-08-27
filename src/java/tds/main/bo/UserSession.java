@@ -1,16 +1,18 @@
 package tds.main.bo;
 
 import bglib.util.*;
-import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.*;
+
 import static tds.main.bo.CTApplication._CT_LOG;
 
 public class UserSession implements BGUserSession {
 
     public enum UserSessionState { ACTIVE, USER_LOGGED_OUT }
-    
+
     private HttpServletRequest _Request;
     private HttpServletResponse _Response;
     private HttpSession _Session;
@@ -32,21 +34,20 @@ public class UserSession implements BGUserSession {
     public FSUser getLoggedInUser() {
         return (FSUser)_Session.getAttribute("validUser");
     }
-    
+
     public FSTeam getLoggedInTeam() {
         return (FSTeam)_Session.getAttribute("fsteam");
     }
-    
+
     public FSSeasonWeek getCurrentWeek() {
         return (FSSeasonWeek)_Session.getAttribute("fsseasonweek");
     }
 
     public FSSeasonWeek getCurrentSalWeek() {
-        System.out.println("Howdy");
         return (FSSeasonWeek)_Session.getAttribute("salfsseasonweek");
     }
-    
-    public HttpServletRequest getRequest() { return _Request; } 
+
+    public HttpServletRequest getRequest() { return _Request; }
     public int getSessionID() {   return _SessionID;   }
     public String getJSessionID() {    return _JSessionID;   }
     public AuDate getSessionStarted() {    return _SessionStarted;   }
@@ -74,7 +75,7 @@ public class UserSession implements BGUserSession {
     public void clearErrorMessage() {
         _Session.setAttribute(BGConstants.ERROR_MESSAGE_ATTR, null);
     }
-    
+
     @Override
     public void setErrorMessage(String msg) {
         setErrorMessage(new ErrorMessage(msg));
@@ -119,9 +120,9 @@ public class UserSession implements BGUserSession {
 
         return session;
     }
-    
+
     // PRIVATE METHODS
-    
+
     private UserSession(HttpServletRequest request, HttpServletResponse response) {
         _Request = request;
         _Response = response;

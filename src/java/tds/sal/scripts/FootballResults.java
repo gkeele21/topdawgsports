@@ -22,8 +22,8 @@ import tds.util.CTReturnCode;
  */
 public class FootballResults  {
 
-    private static final int _FSSeasonID = 97;
-    
+    private static final int _FSSeasonID = 105;
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -44,7 +44,7 @@ public class FootballResults  {
     public static void main(String[] args) {
         try {
             FootballResults results = new FootballResults();
-            
+
             int fsseasonweekid = 0;
             if (args != null && args.length > 0)
             {
@@ -55,23 +55,23 @@ public class FootballResults  {
                     e.printStackTrace();
                 }
             }
-            
+
             results.run(fsseasonweekid);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
+
     public void run() {
         run(0);
     }
-    
+
     public void run(int tempFsseasonweekid) {
-        
+
         try {
             FSSeason fsseason = new FSSeason(_FSSeasonID);
-            
+
             FSSeasonWeek fsSeasonWeek = fsseason.getCurrentFSSeasonWeek();
             if (tempFsseasonweekid > 0)
             {
@@ -188,22 +188,22 @@ public class FootballResults  {
             while (crs.next()) {
                 int teamid = crs.getInt("FSTeamID");
                 FSTeam team = new FSTeam(teamid);
-                
+
                 double teampts = team.getWeekFantasyPoints(fsseasonweekid,"s.SalFantasyPts",thisWeek.getFSSeason().getSeasonID());
-                
+
                 // grab last week's standings info for this team
                 double totfpts = 0.0;
                 double totgpts = 0.0;
                 StringBuffer s = new StringBuffer();
                 s.append("select * from FSFootballStandings where FSTeamID = ").append(teamid);
                 s.append(" and FSSeasonWeekID = ").append(lastWeek.getFSSeasonWeekID());
-                
+
                 CachedRowSet cc = CTApplication._CT_QUICK_DB.executeQuery(con, s.toString());
                 if (cc.next()) {
                     totfpts = cc.getDouble("TotalFantasyPts");
                     totgpts = cc.getDouble("TotalGamePoints");
                 }
-                
+
                 cc.close();
 
                 DecimalFormat twoDForm = new DecimalFormat("#.##");
@@ -284,18 +284,18 @@ public class FootballResults  {
             con.setAutoCommit(false);
 
             // grab previous week's standings
-            
+
             FSSeasonWeek thisWeek = new FSSeasonWeek(fsseasonweekid);
             int thisweekNo = thisWeek.getFSSeasonWeekNo();
             FSSeasonWeek lastWeek = thisweekNo == 1 ? thisWeek : thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo-1));
 
             FSLeague league = new FSLeague(fsleagueid);
             int numteams = league.getNumTeams();
-                    
+
 //            String sql = "select count(1) as cnt " +
 //                        " from " + CTApplication.TBL_PREF + "FSFootballStandings s " +
 //                        " INNER JOIN " + CTApplication.TBL_PREF + "FSTeam t on t.FSTeamID = s.FSTeamID " +
-//                        " where s.FSSeasonWeekID = " + lastWeek.getFSSeasonWeekID() + 
+//                        " where s.FSSeasonWeekID = " + lastWeek.getFSSeasonWeekID() +
 //                        " and t.FSLeagueID = " + fsleagueid;
 //
 //            logger.finer(sql);
@@ -374,5 +374,5 @@ public class FootballResults  {
         logger.info("Calculated and updated to db salary points for " + count + " teams.");
     }
 
-    
+
 }

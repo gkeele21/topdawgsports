@@ -1,11 +1,14 @@
 package tds.main.control;
 
+import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSUser;
 import tds.main.bo.UserSession;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,19 +29,26 @@ public class indexView extends BaseView {
         }
 
         nextPage = htmlPage;
-        
+
         UserSession session = UserSession.getUserSession(request, response);
-        
+
         // Create FSUser obj
         int userID = FSUtils.getIntRequestParameter(request, "userid", 0);
         String authKey = FSUtils.getRequestParameter(request,"authKey","");
         String logoutAction = FSUtils.getRequestParameter(request,"action","");
-        
+
         if (logoutAction.equals("logout")) {
             session.getHttpSession().removeAttribute("validUser");
             session.getHttpSession().removeAttribute("fsteam");
         }
-        
+
+        try {
+            Connection con = JDBCDatabase.getConnection();
+            System.out.println("Connection created");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         FSUser user = null;
         if (userID > 0) {
             try {

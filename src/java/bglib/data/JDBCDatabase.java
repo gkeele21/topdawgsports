@@ -1,36 +1,37 @@
 package bglib.data;
 
-import static bglib.util.Application._GLOBAL_LOG;
 import bglib.util.AuDate;
 import bglib.util.AuUtil;
-import java.sql.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import sun.jdbc.rowset.CachedRowSet;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.CTApplication;
+import java.sql.*;
+import java.util.Date;
+import java.util.*;
 
+import static bglib.util.Application._GLOBAL_LOG;
 
 public class JDBCDatabase {
 
     private static final Map<String, JDBCDatabase> _Instances = new HashMap<String, JDBCDatabase>();
 
     public int queryCount;
+    private static int maxConnections = 20;
 
-    private DataSource _DataSource;
+    private static DataSource _DataSource;
     private String _ConnectionString;
 
     private JDBCDatabase(String connectionString) throws Exception {
 //        _ConnectionString = connectionString;
-//        _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=lakers&autoReconnect=true";
+//        _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=root&autoReconnect=true";
+//        _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=gkeele&password=w$3sZ#W^3oIV&autoReconnect=true";
         if (AuUtil.isEmpty(connectionString)) {
 //            _ConnectionString = "jdbc:mysql://localhost:3307/topdawg?user=topdawg&password=laker$&autoReconnect=true";
             System.out.println("Connection string passed in is empty - using default hard-coded one");
-            _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=root&autoReconnect=true";
+            _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=root&password=Lakers55&autoReconnect=true&characterEncoding=utf8";
+//            _ConnectionString = "jdbc:mysql://localhost:3306/topdawg?user=gkeele&password=w$3sZ#W^3oIV&autoReconnect=true";
 //            _ConnectionString = "jdbc:mysql://topdawg.circlepix.com:3306/topdawg?user=webuser&password=lakers55&autoReconnect=true";
         } else {
             _ConnectionString = connectionString;
@@ -40,51 +41,107 @@ public class JDBCDatabase {
     }
 
     public static JDBCDatabase getInstance(String connectionString) {
-        JDBCDatabase obj = _Instances.get(connectionString);
-        if (obj==null) {
-            try {
-                obj = new JDBCDatabase(connectionString);
-                _Instances.put(connectionString, obj);
-            }
-            catch (Exception e) {
-                _GLOBAL_LOG.dbError(e);
-            }
+
+        System.out.println("Here in getInstance");
+        Random rand = new Random();
+
+        int conNum = rand.nextInt(maxConnections);
+        if (_Instances.containsKey(""+conNum)) {
+            JDBCDatabase obj = _Instances.get(connectionString);
+            return obj;
         }
 
-        return obj;
+        try {
+            System.out.println("Creating new JDBCDatabase instance.");
+            JDBCDatabase obj = new JDBCDatabase(connectionString);
+            _Instances.put(""+conNum, obj);
+            return obj;
+        }
+        catch (Exception e) {
+            _GLOBAL_LOG.dbError(e);
+        }
+
+        return null;
     }
 
     private void initSettings() throws Exception {
 
         // init the DataSource
-        Context ctx=null;
+//        Context ctx=null;
         try {
-            ctx = new InitialContext();
-            Context envCtx = (Context) ctx.lookup("java:comp/env");
-            _DataSource = (DataSource)envCtx.lookup("jdbc/topdawg");
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            _DataSource = new DataSource();
+            _DataSource = (DataSource) envCtx.lookup("jdbc/topdawg");
+
+//            ctx = new InitialContext();
+//            Context envCtx = (Context) ctx.lookup("java:comp/env");
+
+//            PoolProperties p = new PoolProperties();
+//            p.setUrl("jdbc:mysql://" + AppSettings.getDomain() + ":" + AppSettings.getPort() + "/" + AppSettings.getDBName());
+//            p.setDriverClassName("com.mysql.jdbc.Driver");
+//            p.setUsername(AppSettings.getUsername());
+//            p.setPassword(AppSettings.getPassword());
+//            p.setJmxEnabled(true);
+//            p.setTestWhileIdle(false);
+//            p.setTestOnBorrow(true);
+//            p.setValidationQuery("SELECT 1");
+//            p.setTestOnReturn(false);
+//            p.setValidationInterval(30000);
+//            p.setTimeBetweenEvictionRunsMillis(30000);
+//            p.setMaxActive(30);
+//            p.setInitialSize(10);
+//            p.setMaxWait(10000);
+//            p.setRemoveAbandonedTimeout(10);
+//            p.setMinEvictableIdleTimeMillis(30000);
+//            p.setMaxIdle(50);
+//            p.setMinIdle(10);
+//            p.setLogAbandoned(true);
+//            p.setRemoveAbandoned(true);
+//            p.setJdbcInterceptors(
+//                    "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+
+//                    "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+//            _DataSource = new DataSource();
+//            _DataSource.setPoolProperties(p);
+
+            // Test
+            Connection con = null;
+            try {
+                con = _DataSource.getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery("select * from FSUser");
+                int cnt = 1;
+                while (rs.next()) {
+                    System.out.println(cnt++ + " First : " + rs.getString("FirstName"));
+                }
+                rs.close();
+                st.close();
+            } finally {
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+//            System.out.println("Created connection from pool");
+//            _DataSource = (DataSource)envCtx.lookup("jdbc/topdawg");
         }
         catch (Exception e) {
             System.out.println("Error : " + e.getMessage());
             System.out.println("No Tomcat context found; using db connection string from settings file without connection pooling.");
-        }
-        finally {
-            if (ctx!=null) {
-                try { ctx.close(); } catch (Exception ne) {}
-            }
         }
 
         initDriver();
     }
 
     private void initDriver() throws Exception {
-        if (_ConnectionString.indexOf("sqlserver")>=0) {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            //Class.forName("com.intersys.jdbc.CacheDriver");
-        } else {
-            Class.forName("com.mysql.jdbc.Driver");
-            //Class.forName("org.gjt.mm.mysql.Driver");
-        }
-        //Class.forName("com.intersys.jdbc.CacheDriver");
+//        if (_ConnectionString.indexOf("sqlserver")>=0) {
+//            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//        } else {
+//            Class.forName("com.mysql.jdbc.Driver");
+//        }
     }
 
     // Methods without the Connection Object
@@ -110,7 +167,8 @@ public class JDBCDatabase {
         CachedRowSet crs = null;
 
         try {
-            con = getConn();
+//            con = getConn();
+            con = _DataSource.getConnection();
             crs = executeQuery(con, query);
         } finally {
             close(con);
@@ -164,7 +222,7 @@ public class JDBCDatabase {
             }
             if (stmt!=null) {
                 stmt.close();
-            } 
+            }
         }
 
         return id;
@@ -244,7 +302,7 @@ public class JDBCDatabase {
 
     public CachedRowSet executeQuery(Connection con,String query) throws Exception {
         if (con==null) {
-            return executeQuery(query);
+            con = _DataSource.getConnection();
         }
         Statement stmt = null;
         ResultSet rs = null;
@@ -267,6 +325,7 @@ public class JDBCDatabase {
             if (stmt!=null) {
                 stmt.close();
             }
+            close(con);
         }
 
         return crs;
@@ -451,6 +510,10 @@ public class JDBCDatabase {
         }
     }
 
+    public static Connection getConnection() throws Exception {
+        return _DataSource.getConnection();
+    }
+
     public Connection getConn() throws Exception {
         return getConn(true);
     }
@@ -459,32 +522,57 @@ public class JDBCDatabase {
         Connection C = null;
 //        System.out.println("Grabbing Connection...");
         // first try and get the connection from the Context
-        /*try {
+        try {
+            C = _DataSource.getConnection();
+            return C;
+
+/*
+            JDBCDatabase database = getInstance(_ConnectionString);
+            if (database != null) {
+                return database.getConn();
+            }
             if (_DataSource!=null) {
+                Random ran = new Random();
+                int conNum = ran.nextInt(maxConnections);
+                if (_Instances.containsKey(""+conNum)) {
+                    JDBCDatabase dataB = _Instances.get(""+conNum);
+                    C = dataB.getConn();
+                    return C;
+                }
+
+//                C = (Connection)JDBCDatabase.getInstance(_ConnectionString);
+                if (C != null) {
+                    System.out.println("Returning Connection from getInstance");
+                    return C;
+                }
                 System.out.println("Call to getConnection...");
+//                C = ((javax.sql.PooledConnection)_DataSource.getConnection()).getConnection();
                 C = _DataSource.getConnection();
                 System.out.println("returned from getConnection");
                 if (C != null) {
                     C.setAutoCommit(autoCommit);
                     return C;
+                } else {
+                    System.out.println();
                 }
             }
+*/
         }
         catch (Exception e) {
             System.out.println("Error2 : " + e.getMessage());
             e.printStackTrace();
-        }*/
+        }
 
 //        System.out.println("Con from pool failed.");
 
         // now invoke the JDBC driver directly
 
-        for (int x=1; C == null && x<=10; x++) {
+        for (int x=1; C == null && x<=5; x++) {
             try {
 //                System.out.println("Creating DB Conn (not from pool).");
-//                C = DriverManager.getConnection(_ConnectionString);
+                C = DriverManager.getConnection(_ConnectionString);
 //                C = DriverManager.getConnection(_ConnectionString, "root","lakers");
-                C = DriverManager.getConnection(_ConnectionString, "webuser","lakers55");
+//                C = DriverManager.getConnection(_ConnectionString, "webuser","lakers55");
             } catch (SQLException E) {
 //                Log.error(new Exception("Failed to get db connection; connection string = " + conString, E));
                 System.out.println("conString = " + _ConnectionString);

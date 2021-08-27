@@ -1,23 +1,13 @@
 package tds.fantasy.control;
 
-import bglib.util.AuDate;
+import tds.main.bo.*;
 import tds.main.control.BaseAction;
-import tds.main.bo.CTApplication;
-import tds.main.bo.FSFootballRosterPositions;
-import tds.main.bo.FSFootballSeasonDetail;
-import tds.main.bo.FSFootballTransaction;
-import tds.main.bo.FSFootballTransactionRequest;
-import tds.main.bo.FSRoster;
-import tds.main.bo.FSSeasonWeek;
-import tds.main.bo.FSTeam;
-import tds.main.bo.FSUser;
-import tds.main.bo.Player;
-import tds.main.bo.UserSession;
 import tds.util.CTReturnCode;
-import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,19 +33,19 @@ public class faConfirmAction extends BaseAction {
             session.getHttpSession().removeAttribute("dropType");
             session.getHttpSession().removeAttribute("puPlayer");
             session.getHttpSession().removeAttribute("faTransaction");
-            
+
             return "faAcquirePlayer";
         }
-        
+
         FSFootballTransaction transaction = (FSFootballTransaction)session.getHttpSession().getAttribute("faTransaction");
-        
+
         if (transaction == null) {
             System.out.println("Transaction obj is null - returning to page again...");
             return nextPage;
         }
-        
+
         String errorMsg = "";
-        
+
         try {
             // Create FSTeam obj
             FSTeam team = (FSTeam)session.getHttpSession().getAttribute("fsteam");
@@ -78,14 +68,14 @@ public class faConfirmAction extends BaseAction {
 
             int fsseasonid = team.getFSLeague().getFSSeasonID();
             FSFootballSeasonDetail seasonDetail = new FSFootballSeasonDetail(fsseasonid);
-            
+
             FSSeasonWeek currFSSeasonWeek = (FSSeasonWeek)session.getHttpSession().getAttribute("fantasyCurrentWeek");
             // do the validation for this transaction to be valid
-            
+
             boolean valid = true;
-            
+
             Map<Integer,Integer> rosterPositions = new HashMap<Integer,Integer>();
-            
+
             List<FSRoster> activeRoster = team.getRoster(currFSSeasonWeek.getFSSeasonWeekID());
             for (FSRoster roster : activeRoster) {
                 int posid = roster.getPlayer().getPositionID();
@@ -100,7 +90,7 @@ public class faConfirmAction extends BaseAction {
                 if (rosterPositions.containsKey(posid)) {
                     currnum = rosterPositions.get(posid);
                 }
-                
+
                 currnum++;
                 rosterPositions.put(posid,currnum);
             }
@@ -116,7 +106,7 @@ public class faConfirmAction extends BaseAction {
             int numPlayers = rosterPositions.get(puposid);
             numPlayers++;
             rosterPositions.put(puposid,numPlayers);
-            
+
             Player dropPlayer = transaction.getDropPlayer();
             int dropposid = puPlayer.getPositionID();
             //if (team.getFSLeagueID() == 10) {
@@ -149,17 +139,17 @@ public class faConfirmAction extends BaseAction {
                 valid = false;
                 errorMsg = "ERROR : You must carry at least " + position.getMinNum() + " " + dropPlayer.getPosition().getPositionName() + "s.";
             }
-            
+
             // TODO: check to see if either player involved has started their game for this week.rags
-            
+
             if (valid) {
-                
+
                 // check to see if the transaction deadline has passed.  If not, add this transaction into the requests table.
                 // otherwise, add the transaction into the normal FSFootballTransactions table
                 System.out.println("Right before the date check...");
-                AuDate dt = currFSSeasonWeek.getTransactionDeadline();
-                AuDate now = new AuDate();
-                if (now.before(dt, false)) {
+                LocalDateTime dt = currFSSeasonWeek.getTransactionDeadline();
+                LocalDateTime now = LocalDateTime.now();
+                if (now.isBefore(dt)) {
                     FSFootballTransactionRequest trequest = new FSFootballTransactionRequest();
                     trequest.setDropPlayerID(transaction.getDropPlayerID());
                     trequest.setDropType(transaction.getDropType());
@@ -169,17 +159,17 @@ public class faConfirmAction extends BaseAction {
                     trequest.setPUPlayerID(transaction.getPUPlayerID());
                     trequest.setPUType(transaction.getPUType());
                     trequest.setProcessed(0);
-                    
+
                     // find last rank for this team
                     int lastrank = 0;
                     List<FSFootballTransactionRequest> teamrequests = FSFootballTransactionRequest.getTransactionRequests(team.getFSTeamID(), transaction.getFSSeasonWeekID());
                     for (FSFootballTransactionRequest teamrequest : teamrequests) {
                         lastrank = teamrequest.getRank();
                     }
-                    
+
                     trequest.setRank(lastrank+1);
-                    trequest.setRequestDate(new AuDate());
-                    
+                    trequest.setRequestDate(LocalDateTime.now());
+
                     CTReturnCode ret = trequest.insert();
                     if (ret.isSuccess()) {
                         // clear out all the session stuff
@@ -191,7 +181,7 @@ public class faConfirmAction extends BaseAction {
                     } else {
                         errorMsg = "Error : could not insert your transaction request.  Please try again.";
                     }
-                    
+
                 } else {
                     CTReturnCode rc = transaction.insert();
                     if (rc.isSuccess()) {
@@ -201,14 +191,14 @@ public class faConfirmAction extends BaseAction {
                         {
                             // add new roster spot and set existing to ir
                             FSRoster newRoster = new FSRoster();
-                            
+
                             newRoster.setActiveState(roster.getActiveState());
                             newRoster.setFSSeasonWeekID(roster.getFSSeasonWeekID());
                             newRoster.setFSTeamID(roster.getFSTeamID());
                             newRoster.setPlayerID(transaction.getPUPlayerID());
                             newRoster.setStarterState(roster.getStarterState());
                             newRoster.Save();
-                            
+
                             roster.setActiveState("ir");
                             ret = roster.Save();
                         } else
@@ -217,7 +207,7 @@ public class faConfirmAction extends BaseAction {
 
                             roster.setPlayerID(transaction.getPUPlayerID());
                             ret = roster.Save();
-                            
+
                         }
 
                         if (ret.isSuccess()) {
@@ -232,7 +222,7 @@ public class faConfirmAction extends BaseAction {
                     } else {
                         errorMsg = "Error : could not process your transaction.  Please try again.";
                     }
-                    
+
                 }
             }
 
@@ -241,7 +231,7 @@ public class faConfirmAction extends BaseAction {
             //System.out.println("Error : " + e.getMessage());
             errorMsg = "Error processing team changes.";
         }
-        
+
         if (!errorMsg.equals("")) {
             session.setErrorMessage(errorMsg);
             return "faConfirm";

@@ -1,15 +1,16 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.util.HashMap;
 import java.util.Map;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 import static tds.main.bo.CTApplication._CT_LOG;
 
 public class SeasonSchedule {
-    
+
     private int _SeasonID;
     private Map<String, Game> _Games = new HashMap<String, Game>();
 
@@ -49,7 +50,7 @@ public class SeasonSchedule {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     // PUBLIC METHODS
 
     public static SeasonSchedule getInstance(int seasonweekid) {

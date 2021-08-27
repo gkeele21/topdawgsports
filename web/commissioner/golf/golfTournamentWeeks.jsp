@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : viewFSGames
     Created on : Aug 27, 2009, 10:53:43 PM
     Author     : admin
@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="container">
-        
+
             <jsp:include page="../inc_header.jsp" />
 
             <jsp:include page="../inc_mainmenu.jsp" />
@@ -39,7 +39,7 @@
                 <div class="main">
 
                     <jsp:include page="../inc_golfMenu.jsp" />
-                    
+
                     <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                         <tds:tableRows items="${tournamentWeeks}" var="tournamentWeek" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                             <jsp:attribute name="rowInfo">
@@ -55,8 +55,9 @@
                             <jsp:attribute name="rowHeader">
                                 <tr class="rowHeader">
                                     <td width="10%" align="center"><strong>ID</strong></td>
-                                    <td width="65%" align="center"><strong>Name</strong></td>
+                                    <td width="55%" align="center"><strong>Name</strong></td>
                                     <td width="25%" align="center"><strong>Dates</strong></td>
+                                    <td width="10%" align="center"><strong>Dates</strong></td>
                                 </tr>
                             </jsp:attribute>
                             <jsp:attribute name="rowData">
@@ -68,6 +69,7 @@
                                         </a>
                                     </td>
                                     <td align="center"><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
+                                    <td align="center"><c:out value="${tournamentWeek.FSSeasonWeek.status}" /></td>
                                 </tr>
                             </jsp:attribute>
                             <jsp:attribute name="rowEmpty">

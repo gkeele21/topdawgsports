@@ -7,12 +7,13 @@ package tds.sal.scripts;
 
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
+import tds.main.bo.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tds.main.bo.*;
 
 
 /**
@@ -29,8 +30,8 @@ public class FootballSalaries implements Harnessable {
     private static final double _Multiplier = 10000;
     public static final double MIN_SALARY = 20000;
     public static final double MAX_SALARY = 450000;
-    private static final int _FSSeasonID = 97;
-    private static final int _SeasonID = 39;
+    private static final int _FSSeasonID = 105;
+    private static final int _SeasonID = 42;
 
     public FootballSalaries() {
         _Logger = Logger.global;
@@ -51,7 +52,7 @@ public class FootballSalaries implements Harnessable {
     @Override
     public void run() {
         try {
-            
+
             _Season = new FSSeason(_FSSeasonID);
 
 //            if (_Args.length>0) {
@@ -71,7 +72,7 @@ public class FootballSalaries implements Harnessable {
             FSSeasonWeek fsSeasonWeek = _Season.getCurrentFSSeasonWeek();
             _FSSeasonWeekID = fsSeasonWeek.getFSSeasonWeekID();
 //            _FSSeasonWeekID = 801;
-            
+
 //            CTApplication._CT_QUICK_DB.executeUpdate("delete from FSPlayerValue where FSSeasonWeekID = " + _FSSeasonWeekID);
 
             generateSalaries();

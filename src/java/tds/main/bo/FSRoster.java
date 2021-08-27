@@ -2,33 +2,35 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.util.CTReturnCode;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.util.CTReturnCode;
 
 public class FSRoster {
-    
+
     // DB FIELDS
     private int _ID;
-    private int _FSTeamID;    
-    private int _PlayerID;    
-    private int _FSSeasonWeekID;    
+    private int _FSTeamID;
+    private int _PlayerID;
+    private int _FSSeasonWeekID;
     private String _StarterState;
     private String _ActiveState;
-        
+
     // OBJECTS
     private FSTeam _FSTeam;
     private Player _Player;
     private FSSeasonWeek _FSSeasonWeek;
     private PGATournamentWeekPlayer _PGATournamentWeekPlayer;
-    
+
     // ADDITIONAL FIELDS
     private FootballStats _FootballStats;
     private FootballStats _TotalFootballStats;
-    
+
     // CONSTRUCTORS
     public FSRoster() {
     }
@@ -103,7 +105,7 @@ public class FSRoster {
             JDBCDatabase.close(con);
         }
     }
-    
+
     public FSRoster(CachedRowSet fields) {
         initFromCRS(fields, "");
     }
@@ -114,9 +116,9 @@ public class FSRoster {
 
     // GETTERS
     public int getID() {return _ID;}
-    public int getFSTeamID() {return _FSTeamID;}    
-    public int getPlayerID() {return _PlayerID;}    
-    public int getFSSeasonWeekID() {return _FSSeasonWeekID;}    
+    public int getFSTeamID() {return _FSTeamID;}
+    public int getPlayerID() {return _PlayerID;}
+    public int getFSSeasonWeekID() {return _FSSeasonWeekID;}
     public String getStarterState() {return _StarterState;}
     public String getActiveState() {return _ActiveState;}
     public FSTeam getFSTeam() {if (_FSTeam == null && _FSTeamID > 0) {_FSTeam = new FSTeam(_FSTeamID);}return _FSTeam;}
@@ -125,14 +127,14 @@ public class FSRoster {
     public FootballStats getFootballStats() {return _FootballStats;}
     public FootballStats getTotalFootballStats() {return _TotalFootballStats;}
     public PGATournamentWeekPlayer getPGATournamentWeekPlayer() {return _PGATournamentWeekPlayer;}
-    
+
     // SETTERS
     public void setID(int ID) {_ID = ID;}
     public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}
     public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
-    public void setStarterState(String StarterState) {_StarterState = StarterState;}	
-    public void setActiveState(String ActiveState) {_ActiveState = ActiveState;}    
+    public void setStarterState(String StarterState) {_StarterState = StarterState;}
+    public void setActiveState(String ActiveState) {_ActiveState = ActiveState;}
     public void setFSTeam(FSTeam FSTeam) {_FSTeam = FSTeam;}
     public void setPlayer(Player Player) {_Player = Player;}
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
@@ -140,7 +142,7 @@ public class FSRoster {
     public void setTotalFootballStats(FootballStats TotalFootballStats) {_TotalFootballStats = TotalFootballStats;}
     public void setPGATournamentWeekPlayer(PGATournamentWeekPlayer player){_PGATournamentWeekPlayer = player;}
 
-    // PUBLIC METHODS    
+    // PUBLIC METHODS
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID) {
         String activeState = "";
@@ -153,7 +155,7 @@ public class FSRoster {
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID, String activeState, boolean sortByStarterState) {
         List<FSRoster> roster = new ArrayList<FSRoster>();
-
+        System.out.println("getRoster 156");
         CachedRowSet crs = null;
         Connection con = null;
         try {
@@ -190,6 +192,7 @@ public class FSRoster {
             }
             sql.append("p.PositionID, r.ID");
 
+            System.out.println("Query : " + sql.toString());
             con = CTApplication._CT_DB.getConn(false);
             crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
 
@@ -197,6 +200,7 @@ public class FSRoster {
                 roster.add(new FSRoster(crs));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
@@ -256,7 +260,7 @@ public class FSRoster {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSRoster", "ID", getID());
         if (doesExist) { return Update(); } else { return Insert(); }
     }
-    
+
     public CTReturnCode Delete() {
         int res = 0;
         StringBuilder sql = new StringBuilder();
@@ -269,7 +273,7 @@ public class FSRoster {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-        
+
         return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
 //    public CTReturnCode update() {
@@ -283,9 +287,9 @@ public class FSRoster {
 //        }
 //
 //        return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
-//    
+//
 //    }
-    
+
     public static List<FSRoster> getRosterAllTime(int teamID) {
         List<FSRoster> roster = new ArrayList<FSRoster>();
 
@@ -334,54 +338,54 @@ public class FSRoster {
     }
 
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "ID")) {
                 setID(crs.getInt(prefix + "ID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) {
                 setFSTeamID(crs.getInt(prefix + "FSTeamID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
                 setPlayerID(crs.getInt(prefix + "PlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) {
                 setFSSeasonWeekID(crs.getInt(prefix + "FSSeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "StarterState")) {
                 setStarterState(crs.getString(prefix + "StarterState"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "ActiveState")) {
                 setActiveState(crs.getString(prefix + "ActiveState"));
             }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) {
                 setFSTeam(new FSTeam(crs, "FSTeam$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "Player$", "PlayerID")) {
                 setPlayer(new Player(crs, "Player$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) {
                 setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$FSSeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FootballStats$", "StatsPlayerID")) {
                 setFootballStats(new FootballStats(crs, "FootballStats$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "TotalFootballStats$", "StatsPlayerID")) {
                 setTotalFootballStats(new FootballStats(crs, "TotalFootballStats$"));
             }
@@ -390,7 +394,7 @@ public class FSRoster {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private CTReturnCode Insert() {
         int res = 0;
         StringBuilder sql = new StringBuilder();
@@ -410,7 +414,7 @@ public class FSRoster {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-        
+
         return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
 
@@ -432,7 +436,7 @@ public class FSRoster {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-        
+
         return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
 

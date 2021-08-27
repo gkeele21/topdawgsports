@@ -1,40 +1,42 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.data.CTDataSetDef;
 import tds.util.CTReturnCode;
 
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class FSFootballTransaction {
-    
+
     // DB FIELDS
-    private int _FSTransactionID;    
-    private int _FSTeamID;    
-    private int _FSSeasonWeekID;    
-    private AuDate _TransactionDate;
-    private int _DropPlayerID;   
+    private int _FSTransactionID;
+    private int _FSTeamID;
+    private int _FSSeasonWeekID;
+    private LocalDateTime _TransactionDate;
+    private int _DropPlayerID;
     private String _DropType;
-    private int _PUPlayerID;   
+    private int _PUPlayerID;
     private String _PUType;
     private String _TransactionType;
     private int _FSLeagueID;
-    
+
     // OBJECTS
     private FSTeam _FSTeam;
     private FSSeasonWeek _FSSeasonWeek;
     private Player _DropPlayer;
-    private Player _PUPlayer;    
-    
+    private Player _PUPlayer;
+
     // CONSTRUCTORS
     public FSFootballTransaction() {
     }
-   
+
     public FSFootballTransaction(int transactionID) {
         CachedRowSet crs = null;
         Connection con = null;
@@ -82,15 +84,15 @@ public class FSFootballTransaction {
     public FSFootballTransaction(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
-    public int getFSTransactionID() {return _FSTransactionID;}    
-    public int getFSTeamID() {return _FSTeamID;}    
-    public int getFSSeasonWeekID() {return _FSSeasonWeekID;}   
-    public AuDate getTransactionDate() {return _TransactionDate;}
-    public int getDropPlayerID() {return _DropPlayerID;}    
+    public int getFSTransactionID() {return _FSTransactionID;}
+    public int getFSTeamID() {return _FSTeamID;}
+    public int getFSSeasonWeekID() {return _FSSeasonWeekID;}
+    public LocalDateTime getTransactionDate() {return _TransactionDate;}
+    public int getDropPlayerID() {return _DropPlayerID;}
     public String getDropType() {return _DropType;}
-    public int getPUPlayerID() {return _PUPlayerID;}    
+    public int getPUPlayerID() {return _PUPlayerID;}
     public String getPUType() {return _PUType;}
     public String getTransactionType() {return _TransactionType;}
     public int getFSLeagueID() {return _FSLeagueID;}
@@ -98,15 +100,15 @@ public class FSFootballTransaction {
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public Player getDropPlayer() {if (_DropPlayer == null && _DropPlayerID > 0) {_DropPlayer = Player.getInstance(_DropPlayerID);}return _DropPlayer;}
     public Player getPUPlayer() {if (_PUPlayer == null && _PUPlayerID > 0) {_PUPlayer = Player.getInstance(_PUPlayerID);}return _PUPlayer;}
-    
+
     // SETTERS
-    public void setFSTransactionID(int FSTransactionID) {_FSTransactionID = FSTransactionID;}    
-    public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}    
-    public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}    
-    public void setTransactionDate(AuDate TransactionDate) {_TransactionDate = TransactionDate;}
-    public void setDropPlayerID(int DropPlayerID) {_DropPlayerID = DropPlayerID;}    
+    public void setFSTransactionID(int FSTransactionID) {_FSTransactionID = FSTransactionID;}
+    public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}
+    public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
+    public void setTransactionDate(LocalDateTime TransactionDate) {_TransactionDate = TransactionDate;}
+    public void setDropPlayerID(int DropPlayerID) {_DropPlayerID = DropPlayerID;}
     public void setDropType(String DropType) {_DropType = DropType;}
-    public void setPUPlayerID(int PUPlayerID) {_PUPlayerID = PUPlayerID;}    
+    public void setPUPlayerID(int PUPlayerID) {_PUPlayerID = PUPlayerID;}
     public void setPUType(String PUType) {_PUType = PUType;}
     public void setTransactionType(String TransactionType) {_TransactionType = TransactionType;}
     public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
@@ -114,7 +116,7 @@ public class FSFootballTransaction {
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
     public void setDropPlayer(Player DropPlayer) {_DropPlayer = DropPlayer;}
     public void setPUPlayer(Player PUPlayer) {_PUPlayer = PUPlayer;}
-    
+
     // PUBLIC METHODS
 
     public static List<FSFootballTransaction> getTransactions(int leagueID, int fsseasonweekID) {
@@ -123,7 +125,7 @@ public class FSFootballTransaction {
         CachedRowSet crs = null;
         Connection con = null;
         try {
-            
+
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballTransaction", "t.", ""));
             sql.append(",").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -165,8 +167,8 @@ public class FSFootballTransaction {
 
     public CTReturnCode insert() throws Exception {
 
-        int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, getFSLeagueID(), getFSTeamID(), getFSSeasonWeekID(), new java.sql.Timestamp(new AuDate().getDateInMillis()), getDropPlayerID(), getDropType(), getPUPlayerID(), getPUType(), getTransactionType());
-        
+        int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, getFSLeagueID(), getFSTeamID(), getFSSeasonWeekID(), LocalDateTime.now(), getDropPlayerID(), getDropType(), getPUPlayerID(), getPUType(), getTransactionType());
+
         CTReturnCode ret = (id > 0) ? new CTReturnCode(tds.util.CTReturnType.SUCCESS,id) : new CTReturnCode(tds.util.CTReturnType.DB_ERROR,id);
 
         return ret;
@@ -175,9 +177,9 @@ public class FSFootballTransaction {
     public static CTReturnCode insert(FSFootballTransactionRequest request) throws Exception {
 
         int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, request.getFSTeam().getFSLeagueID(), request.getFSTeamID(),
-                request.getFSSeasonWeekID(), new java.sql.Timestamp(new AuDate().getDateInMillis()), request.getDropPlayerID(),
+                request.getFSSeasonWeekID(), LocalDateTime.now(), request.getDropPlayerID(),
                 request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU");
-        
+
         CTReturnCode ret = (id > 0) ? new CTReturnCode(tds.util.CTReturnType.SUCCESS,id) : new CTReturnCode(tds.util.CTReturnType.DB_ERROR,id);
 
         return ret;
@@ -236,7 +238,7 @@ public class FSFootballTransaction {
 
             for (FSTeam team : oldOrder) {
                 int oldTeamId = team.getFSTeamID();
-                
+
                 // check the transactions for this team;
                 if (transactions.size() > 0) {
                     for (FSFootballTransaction transaction : transactions) {
@@ -260,7 +262,7 @@ public class FSFootballTransaction {
                 }
             }
         }
-        
+
 
         int count = 0;
         for (Object teamId : newOrder) {
@@ -321,75 +323,78 @@ public class FSFootballTransaction {
         int fsseasonweekid = 220;
 
         FSFootballTransaction.createTransactionOrder(fsleagueid, fsseasonweekid);
-        
+
     }
-    
+
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSTransactionID")) {
                 setFSTransactionID(crs.getInt(prefix + "FSTransactionID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) {
                 setFSTeamID(crs.getInt(prefix + "FSTeamID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) {
                 setFSSeasonWeekID(crs.getInt(prefix + "FSSeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TransactionDate")) {
-                setTransactionDate(new AuDate(crs.getTimestamp(prefix + "TransactionDate")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "TransactionDate");
+                if (s != null) {
+                    setTransactionDate(s);
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "DropPlayerID")) {
                 setDropPlayerID(crs.getInt(prefix + "DropPlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "DropType")) {
                 setDropType(crs.getString(prefix + "DropType"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PUPlayerID")) {
                 setPUPlayerID(crs.getInt(prefix + "PUPlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PUType")) {
                 setPUType(crs.getString(prefix + "PUType"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TransactionType")) {
                 setTransactionType(crs.getString(prefix + "TransactionType"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
                 setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
             }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) {
                 setFSTeam(new FSTeam(crs, "FSTeam$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "$FSSeasonWeekID")) {
                 setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "DropPlayer$", "$PlayerID")) {
                 setDropPlayer(new Player(crs, "DropPlayer$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "PUPlayer$", "$PlayerID")) {
                 setPUPlayer(new Player(crs, "PUPlayer$"));
             }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }        
-    } 
+        }
+    }
 }

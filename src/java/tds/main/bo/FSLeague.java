@@ -1,27 +1,29 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.data.CTDataSetDef;
 import tds.util.CTReturnCode;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
 import static tds.util.CTReturnCode.RC_DB_ERROR;
 import static tds.util.CTReturnType.SUCCESS;
 
 public class FSLeague implements Serializable {
-    
+
     public enum Status {FORMING, ACTIVE, DEAD};
-    
+
     // DB FIELDS
     private Integer _FSLeagueID;
-    private Integer _FSSeasonID;    
+    private Integer _FSSeasonID;
     private String _LeagueName;
     private String _LeaguePassword;
     private Integer _IsFull;
@@ -32,7 +34,7 @@ public class FSLeague implements Serializable {
     private Integer _StartFSSeasonWeekID;
     private Integer _VendorID;
     private String _DraftType;
-    private AuDate _DraftDate;
+    private LocalDateTime _DraftDate;
     private Integer _HasPaid;
     private Integer _IsDraftComplete;
     private Integer _CommissionerUserID;
@@ -42,10 +44,10 @@ public class FSLeague implements Serializable {
     private String _SignupType;
     private String _Status;
     private Integer _IncludeTEasWR;
-    
+
     // OBJECTS
     private FSSeason _FSSeason;
-    
+
     // CONSTRUCTORS
     public FSLeague() {
     }
@@ -78,7 +80,7 @@ public class FSLeague implements Serializable {
             JDBCDatabase.close(con);
         }
     }
-    
+
     public FSLeague(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -86,7 +88,7 @@ public class FSLeague implements Serializable {
     public FSLeague(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public Integer getFSLeagueID() {return _FSLeagueID;}
     public Integer getFSSeasonID() {return _FSSeasonID;}
@@ -100,7 +102,7 @@ public class FSLeague implements Serializable {
     public Integer getStartFSSeasonWeekID() {return _StartFSSeasonWeekID;}
     public Integer getVendorID() {return _VendorID;}
     public String getDraftType() {return _DraftType;}
-    public AuDate getDraftDate() {return _DraftDate;}
+    public LocalDateTime getDraftDate() {return _DraftDate;}
     public Integer getHasPaid() {return _HasPaid;}
     public Integer getIsDraftComplete() {return _IsDraftComplete;}
     public Integer getCommissionerUserID() {return _CommissionerUserID;}
@@ -111,7 +113,7 @@ public class FSLeague implements Serializable {
     public String getStatus() {return _Status;}
     public Integer getIncludeTEasWR() {return _IncludeTEasWR;}
     public FSSeason getFSSeason() {if (_FSSeason == null && _FSSeasonID > 0) {_FSSeason = new FSSeason(_FSSeasonID);}return _FSSeason;}
-    
+
     // SETTERS
     public void setFSLeagueID(Integer FSLeagueID) {_FSLeagueID = FSLeagueID;}
     public void setFSSeasonID(Integer FSSeasonID) {_FSSeasonID = FSSeasonID;}
@@ -125,7 +127,7 @@ public class FSLeague implements Serializable {
     public void setStartFSSeasonWeekID(Integer StartFSSeasonWeekID) {_StartFSSeasonWeekID = StartFSSeasonWeekID;}
     public void setVendorID(Integer VendorID) {_VendorID = VendorID;}
     public void setDraftType(String DraftType) {_DraftType = DraftType;}
-    public void setDraftDate(AuDate DraftDate) {_DraftDate = DraftDate;}
+    public void setDraftDate(LocalDateTime DraftDate) {_DraftDate = DraftDate;}
     public void setHasPaid(Integer HasPaid) {_HasPaid = HasPaid;}
     public void setIsDraftComplete(Integer IsDraftComplete) {_IsDraftComplete = IsDraftComplete;}
     public void setCommissionerUserID(Integer CommissionerUserID) {_CommissionerUserID = CommissionerUserID;}
@@ -136,17 +138,17 @@ public class FSLeague implements Serializable {
     public void setStatus(String Status) {_Status = Status;}
     public void setIncludeTEasWR(Integer IncludeTEasWR) {_IncludeTEasWR = IncludeTEasWR;}
     public void setFSSeason(FSSeason FSSeason) {_FSSeason = FSSeason;}
-    
+
     // PUBLIC METHODS
-    
+
     public List<FSFootballStandings> GetStandings(int fsseasonweekID,String sort) {
         return FSFootballStandings.getLeagueStandings(_FSLeagueID,fsseasonweekID,sort);
     }
-    
+
     public List<FSFootballStandings> GetStandings(int fsseasonweekID,String sort, boolean requireStandingsRecords) {
         return FSFootballStandings.getLeagueStandings(_FSLeagueID,fsseasonweekID,sort, requireStandingsRecords);
     }
-    
+
     public List<FSFootballMatchup> GetResults(int fsseasonweekID) {
         return FSFootballMatchup.getLeagueResults(_FSLeagueID,fsseasonweekID);
     }
@@ -154,14 +156,14 @@ public class FSLeague implements Serializable {
     public List<FSFootballTransaction> GetTransactions(int fsseasonweekID) {
         return FSFootballTransaction.getTransactions(_FSLeagueID,fsseasonweekID);
     }
-    
+
     public List<FSTeam> GetTransactionOrder(int fsseasonweekID) {
         return FSFootballTransaction.getTransactionOrder(_FSLeagueID, fsseasonweekID);
     }
 
     public List<Player> GetFreeAgents(int fsseasonweekID, String positionName) {
         List<Player> players = new ArrayList<Player>();
-                
+
         // Retrieve the Teams in this league
         List<FSTeam> teams = GetTeams();
         StringBuilder teamsStr = new StringBuilder();
@@ -173,7 +175,7 @@ public class FSLeague implements Serializable {
             }
             teamsStr.append(team.getFSTeamID());
         }
-        
+
         // Add in the players dropped this week.
         List<FSFootballTransaction> transactions = GetTransactions(fsseasonweekID);
         StringBuilder except = new StringBuilder();
@@ -185,9 +187,9 @@ public class FSLeague implements Serializable {
             }
             except.append(transaction.getDropPlayerID());
         }
-        
+
         FSSeason season = getFSSeason();
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
@@ -312,7 +314,7 @@ public class FSLeague implements Serializable {
             JDBCDatabase.closeCRS(crs);
             JDBCDatabase.close(con);
         }
-        
+
         return players;
     }
 
@@ -328,7 +330,7 @@ public class FSLeague implements Serializable {
         }
         return teamid;
     }
-    
+
     public CTReturnCode InsertIntoStandings(int fsteamid, int fsseasonweekid, double fantasypts,
                             double totalfantasypts, double gamepoints, double totalgamepoints,
                             int salaryspent, int wins, int losses, int ties, double winpercentage,
@@ -338,17 +340,17 @@ public class FSLeague implements Serializable {
 
         int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_FSFOOTBALLSTANDINGS, fsteamid, fsseasonweekid,
                             fantasypts, totalfantasypts, gamepoints, totalgamepoints,
-                            salaryspent, wins, losses, ties, winpercentage, fantasyptsagainst, 
+                            salaryspent, wins, losses, ties, winpercentage, fantasyptsagainst,
                             hiscore, totalhiscores, gamescorrect, totalgamescorrect,
                             gameswrong, totalgameswrong, rank, currentstreak, lastfive);
-        
+
         System.out.println("New user id : " + id);
         CTReturnCode ret = (id>0) ? new CTReturnCode(SUCCESS, id) : RC_DB_ERROR;
 
         return ret;
 
     }
-    
+
     public List<FSTeam> GetTeams() {
         List<FSTeam> teams = new ArrayList<FSTeam>();
         CachedRowSet crs = null;
@@ -384,7 +386,7 @@ public class FSLeague implements Serializable {
             sort += " ,FSPlayerValueSelected$Count desc";
         }
         List<FSPlayerValueSelected> ret = new ArrayList<FSPlayerValueSelected>();
-        
+
         List<FSTeam> leagueTeams = GetTeams();
         StringBuffer teamsStr = new StringBuffer();
         int count = 0;
@@ -422,7 +424,7 @@ public class FSLeague implements Serializable {
         sql.append(" where pv.FSSeasonWeekID = ").append(fsseasonweekid);
         sql.append(" group by r.PlayerID ");
         sql.append(" order by ").append(sort);
-        
+
         CachedRowSet crs = null;
         Connection con = null;
         try {
@@ -441,7 +443,7 @@ public class FSLeague implements Serializable {
         return ret;
 
     }
-    
+
     public boolean GetUserAlreadyInLeague(int fsUserID) {
         boolean exists = false;
         CachedRowSet crs = null;
@@ -470,7 +472,7 @@ public class FSLeague implements Serializable {
                 JDBCDatabase.close(con);
             }
         }
-        
+
         return exists;
     }
 
@@ -504,10 +506,10 @@ public class FSLeague implements Serializable {
     }
 
     // PRIVATE METHODS
-   
+
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
-        try {            
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
+        try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) { setFSLeagueID(crs.getInt(prefix + "FSLeagueID")); }
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) { setFSSeasonID(crs.getInt(prefix + "FSSeasonID")); }
@@ -521,7 +523,12 @@ public class FSLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "StartFSSeasonWeekID")) { setStartFSSeasonWeekID(crs.getInt(prefix + "StartFSSeasonWeekID")); }
             if (FSUtils.fieldExists(crs, prefix, "VendorID")) { setVendorID(crs.getInt(prefix + "VendorID")); }
             if (FSUtils.fieldExists(crs, prefix, "DraftType")) { setDraftType(crs.getString(prefix + "DraftType")); }
-            if (FSUtils.fieldExists(crs, prefix, "DraftDate")) { setDraftDate(new AuDate(crs.getTimestamp(prefix + "DraftDate"))); }
+            if (FSUtils.fieldExists(crs, prefix, "DraftDate")) {
+                Object s = crs.getObject(prefix + "DraftDate");
+                if (s != null) {
+                    setDraftDate((LocalDateTime)s);
+                }
+            }
             if (FSUtils.fieldExists(crs, prefix, "HasPaid")) { setHasPaid(crs.getInt(prefix + "HasPaid")); }
             if (FSUtils.fieldExists(crs, prefix, "IsDraftComplete")) { setIsDraftComplete(crs.getInt(prefix + "IsDraftComplete")); }
             if (FSUtils.fieldExists(crs, prefix, "CommissionerUserID")) { setCommissionerUserID(crs.getInt(prefix + "CommissionerUserID")); }
@@ -529,9 +536,9 @@ public class FSLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "ScheduleName")) { setScheduleName(crs.getString(prefix + "ScheduleName")); }
             if (FSUtils.fieldExists(crs, prefix, "IsDefaultLeague")) { setIsDefaultLeague(crs.getInt(prefix + "IsDefaultLeague")); }
             if (FSUtils.fieldExists(crs, prefix, "SignupType")) { setSignupType(crs.getString(prefix + "SignupType")); }
-            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); } 
-            if (FSUtils.fieldExists(crs, prefix, "IncludeTEasWR")) { setIncludeTEasWR(crs.getInt(prefix + "IncludeTEasWR")); } 
-            
+            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
+            if (FSUtils.fieldExists(crs, prefix, "IncludeTEasWR")) { setIncludeTEasWR(crs.getInt(prefix + "IncludeTEasWR")); }
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeason$", "FSSeasonID")) { setFSSeason(new FSSeason(crs, "FSSeason$")); }
 
@@ -539,7 +546,7 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -559,7 +566,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getStartFSSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue(getVendorID()));
         sql.append(FSUtils.InsertDBFieldValue(getDraftType(), true));
-        sql.append(FSUtils.InsertDBFieldValue((getDraftDate() == null) ? null : getDraftDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue((getDraftDate() == null) ? null : Application._DATE_FORMATTER.format(getDraftDate()), true));
         sql.append(FSUtils.InsertDBFieldValue(getHasPaid()));
         sql.append(FSUtils.InsertDBFieldValue(getIsDraftComplete()));
         sql.append(FSUtils.InsertDBFieldValue(getCommissionerUserID()));
@@ -593,7 +600,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("StartFSSeasonWeekID", getStartFSSeasonWeekID()));
         sql.append(FSUtils.UpdateDBFieldValue("VendorID", getVendorID()));
         sql.append(FSUtils.UpdateDBFieldValue("DraftType", getDraftType(), true));
-        sql.append(FSUtils.UpdateDBFieldValue("DraftDate", (getDraftDate() == null) ? null : getDraftDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("DraftDate", (getDraftDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getDraftDate()), true));
         sql.append(FSUtils.UpdateDBFieldValue("HasPaid", getHasPaid()));
         sql.append(FSUtils.UpdateDBFieldValue("IsDraftComplete", getIsDraftComplete()));
         sql.append(FSUtils.UpdateDBFieldValue("CommissionerUserID", getCommissionerUserID()));

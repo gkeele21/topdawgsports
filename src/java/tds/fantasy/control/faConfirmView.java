@@ -9,21 +9,22 @@
 
 package tds.fantasy.control;
 
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.FSFootballTransaction;
 import tds.main.bo.FSRoster;
 import tds.main.bo.Player;
 import tds.main.control.BaseTeamView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
 /**
  *
  * @author grant.keele
  */
 public class faConfirmView extends BaseTeamView {
-    
+
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
@@ -59,11 +60,11 @@ public class faConfirmView extends BaseTeamView {
 
         _Session.getHttpSession().setAttribute("dropRoster",dropRoster);
         _Session.getHttpSession().setAttribute("dropType", dropType);
-        
+
         Player puPlayer = (Player)_Session.getHttpSession().getAttribute("puPlayer");
-        
+
         FSFootballTransaction transaction = new FSFootballTransaction();
-        
+
         transaction.setDropPlayer(dropRoster.getPlayer());
         transaction.setDropPlayerID(dropRoster.getPlayerID());
         transaction.setDropType(dropType.toUpperCase());
@@ -75,12 +76,12 @@ public class faConfirmView extends BaseTeamView {
         transaction.setPUPlayer(puPlayer);
         transaction.setPUPlayerID(puPlayer.getPlayerID());
         transaction.setPUType("PU");
-        transaction.setTransactionDate(new AuDate());
+        transaction.setTransactionDate(LocalDateTime.now());
         transaction.setTransactionType("PU");
-        
+
         _Session.getHttpSession().setAttribute("faTransaction",transaction);
-        
+
         return page;
     }
-    
+
 }

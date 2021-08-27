@@ -1,30 +1,32 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class SeasonWeek implements Serializable {
-    
+
     public enum Status {PENDING, CURRENT, COMPLETED};
     public enum WeekType {INITIAL, MIDDLE, FINAL};
-    
+
     // DB FIELDS
     private Integer _SeasonWeekID;
-    private Integer _SeasonID;    
+    private Integer _SeasonID;
     private Integer _WeekNo;
-    private AuDate _StartDate;
-    private AuDate _EndDate;
+    private LocalDateTime _StartDate;
+    private LocalDateTime _EndDate;
     private String _Status;
     private String _WeekType;
-    
+
     // OBJECTS
     private Season _Season;
 
@@ -53,7 +55,7 @@ public class SeasonWeek implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public SeasonWeek(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -64,73 +66,73 @@ public class SeasonWeek implements Serializable {
 
     // GETTERS
     public Integer getSeasonWeekID() {return _SeasonWeekID;}
-    public Integer getSeasonID() {return _SeasonID;}   
+    public Integer getSeasonID() {return _SeasonID;}
     public Integer getWeekNo() {return _WeekNo;}
-    public AuDate getStartDate() {return _StartDate;}
-    public AuDate getEndDate() {return _EndDate;}
+    public LocalDateTime getStartDate() {return _StartDate;}
+    public LocalDateTime getEndDate() {return _EndDate;}
     public String getStatus() {return _Status;}
     public String getWeekType() {return _WeekType;}
     public Season getSeason() {if (_Season == null && _SeasonID > 0) {_Season = new Season(_SeasonID);}return _Season;}
-     
+
     // SETTERS
     public void setSeasonWeekID(Integer SeasonWeekID) {_SeasonWeekID = SeasonWeekID;}
     public void setSeasonID(Integer SeasonID) {_SeasonID = SeasonID;}
     public void setWeekNo(Integer WeekNo) {_WeekNo = WeekNo;}
-    public void setStartDate(AuDate StartDate) {_StartDate = StartDate;}
-    public void setEndDate(AuDate EndDate) {_EndDate = EndDate;}
+    public void setStartDate(LocalDateTime StartDate) {_StartDate = StartDate;}
+    public void setEndDate(LocalDateTime EndDate) {_EndDate = EndDate;}
     public void setStatus(String Status) {_Status = Status;}
     public void setWeekType(String WeekType) {_WeekType = WeekType;}
     public void setSeason(Season Season) {_Season = Season;}
-    
+
     // PUBLIC METHODS
-    
+
     public static void CompleteSeasonWeek(SeasonWeek seasonWeek) {
         CachedRowSet crs = null;
         int nextSeasonWeekId = 0;
-        
+
         try {
             // Update the seasonWeek to be COMPLETED
             seasonWeek.setStatus(Status.COMPLETED.toString());;
             seasonWeek.Save();
-           
+
             // Get the next week and set it to be CURRENT
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT SeasonWeekID ");
             sql.append("FROM SeasonWeek ");
             sql.append("WHERE SeasonID = ").append(seasonWeek.getSeasonID()).append(" AND WeekNo = ").append(seasonWeek.getWeekNo() + 1);
-            
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
-            while (crs.next()) { 
-                nextSeasonWeekId = crs.getInt("SeasonWeekID"); 
-            }            
-            
+            while (crs.next()) {
+                nextSeasonWeekId = crs.getInt("SeasonWeekID");
+            }
+
             if (nextSeasonWeekId > 0) {
                 SeasonWeek nextSeasonWeek = new SeasonWeek(nextSeasonWeekId);
                 nextSeasonWeek.setStatus(Status.CURRENT.toString());
                 nextSeasonWeek.Save();
             }
-            
+
         } catch (Exception e) {
-            CTApplication._CT_LOG.error(e); 
+            CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public static SeasonWeek GetPriorSeasonWeek(SeasonWeek seasonWeek) {
         SeasonWeek priorWeek = null;
         CachedRowSet crs = null;
         int priorWeekNo = seasonWeek.getWeekNo() - 1;
-        
+
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * ");
             sql.append("FROM SeasonWeek ");
             sql.append("WHERE SeasonID = ").append(seasonWeek.getSeasonID()).append(" AND WeekNo = ").append(priorWeekNo);
-            
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
-            while (crs.next()) { 
+            while (crs.next()) {
                 priorWeek = new SeasonWeek(crs, "");
-            }            
-    
+            }
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -139,7 +141,7 @@ public class SeasonWeek implements Serializable {
         }
         return priorWeek;
     }
-    
+
     public static List<SeasonWeek> GetSportWeeks(int sportId, int sportYear) {
         List<SeasonWeek> allWeeks = new ArrayList<SeasonWeek>();
         CachedRowSet crs = null;
@@ -153,7 +155,7 @@ public class SeasonWeek implements Serializable {
         sql.append("JOIN Sport sp ON sp.SportID = s.SportID ");
         sql.append("WHERE sp.sportID = ").append(sportId).append(" AND s.SportYear = ").append(sportYear).append(" ");
         sql.append("ORDER BY sp.SportID, sw.WeekNo");
-        
+
         try {
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) { allWeeks.add(new SeasonWeek(crs,"")); }
@@ -165,8 +167,8 @@ public class SeasonWeek implements Serializable {
         }
         return allWeeks;
     }
-    
-    public static SeasonWeek GetCurrentSeasonWeek(int seasonid) {        
+
+    public static SeasonWeek GetCurrentSeasonWeek(int seasonid) {
         SeasonWeek seasonWeek = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ").append(_Cols.getColumnList("SeasonWeek","sw.", "SeasonWeek$"));
@@ -177,11 +179,11 @@ public class SeasonWeek implements Serializable {
         CachedRowSet crs = null;
         try {
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
-            AuDate now = new AuDate();
-                    
+            LocalDateTime now = LocalDateTime.now();
+
             while (crs.next()) {
                 SeasonWeek sw = new SeasonWeek(crs,"SeasonWeek$");
-                if (now.before(sw.getEndDate(), true)) {
+                if (now.isBefore(sw.getEndDate())) {
                     seasonWeek = sw;
                     break;
                 }
@@ -190,11 +192,11 @@ public class SeasonWeek implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-        }        
+        }
         return seasonWeek;
 
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("SeasonWeek", "SeasonWeekID", getSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -204,24 +206,34 @@ public class SeasonWeek implements Serializable {
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        try {            
+        try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "SeasonWeekID")) { setSeasonWeekID(crs.getInt(prefix + "SeasonWeekID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "SeasonID")) { setSeasonID(crs.getInt(prefix + "SeasonID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "WeekNo")) { setWeekNo(crs.getInt(prefix + "WeekNo")); }  
-            if (FSUtils.fieldExists(crs, prefix, "StartDate")) { setStartDate(new AuDate(crs.getTimestamp(prefix + "StartDate"))); }  
-            if (FSUtils.fieldExists(crs, prefix, "EndDate")) { setEndDate(new AuDate(crs.getTimestamp(prefix + "EndDate"))); }  
-            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }  
-            if (FSUtils.fieldExists(crs, prefix, "WeekType")) { setWeekType(crs.getString(prefix + "WeekType")); }  
-            
+            if (FSUtils.fieldExists(crs, prefix, "SeasonWeekID")) { setSeasonWeekID(crs.getInt(prefix + "SeasonWeekID")); }
+            if (FSUtils.fieldExists(crs, prefix, "SeasonID")) { setSeasonID(crs.getInt(prefix + "SeasonID")); }
+            if (FSUtils.fieldExists(crs, prefix, "WeekNo")) { setWeekNo(crs.getInt(prefix + "WeekNo")); }
+            if (FSUtils.fieldExists(crs, prefix, "StartDate")) {
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "StartDate");
+                if (s != null) {
+                    setStartDate(s);
+                }
+            }
+            if (FSUtils.fieldExists(crs, prefix, "EndDate")) {
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "EndDate");
+                if (s != null) {
+                    setEndDate(s);
+                }
+            }
+            if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
+            if (FSUtils.fieldExists(crs, prefix, "WeekType")) { setWeekType(crs.getString(prefix + "WeekType")); }
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "Season$", "SeasonID")) { setSeason(new Season(crs, "Season$")); }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }       
+        }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -231,8 +243,8 @@ public class SeasonWeek implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue(getSeasonID()));
         sql.append(FSUtils.InsertDBFieldValue(getWeekNo()));
-        sql.append(FSUtils.InsertDBFieldValue((getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
-        sql.append(FSUtils.InsertDBFieldValue((getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue((getStartDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getStartDate()), true));
+        sql.append(FSUtils.InsertDBFieldValue((getEndDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getEndDate()), true));
         sql.append(FSUtils.InsertDBFieldValue(getStatus(), true));
         sql.append(FSUtils.InsertDBFieldValue(getWeekType(), true));
         sql.deleteCharAt(sql.length()-1).append(")");
@@ -244,14 +256,14 @@ public class SeasonWeek implements Serializable {
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE SeasonWeek SET ");
         sql.append(FSUtils.UpdateDBFieldValue("SeasonID", getSeasonID()));
         sql.append(FSUtils.UpdateDBFieldValue("WeekNo", getWeekNo()));
-        sql.append(FSUtils.UpdateDBFieldValue("StartDate", (getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
-        sql.append(FSUtils.UpdateDBFieldValue("EndDate", (getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("StartDate", (getStartDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getStartDate()), true));
+        sql.append(FSUtils.UpdateDBFieldValue("EndDate", (getEndDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getEndDate()), true));
         sql.append(FSUtils.UpdateDBFieldValue("Status", getStatus(), true));
         sql.append(FSUtils.UpdateDBFieldValue("WeekType", getWeekType(), true));
         sql.deleteCharAt(sql.length()-1).append(" ");

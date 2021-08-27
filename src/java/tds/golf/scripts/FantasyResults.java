@@ -6,12 +6,12 @@
 package tds.golf.scripts;
 
 import bglib.scripts.ResultCode;
-import java.sql.Connection;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.*;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.*;
 
 /**
  *
@@ -39,13 +39,13 @@ public class FantasyResults  {
     public static void main(String[] args) {
         try {
             FantasyResults results = new FantasyResults();
-            
+
             int fsseasonweekid = 0;
             if (args != null && args.length > 0) {
                 try {
                     fsseasonweekid = Integer.parseInt(args[1]);
                 } catch (Exception e) {
-                    
+
                 }
             }
 //            fsseasonweekid = 759;
@@ -55,33 +55,32 @@ public class FantasyResults  {
         }
 
     }
-    
+
     public void run() {
         run(0);
     }
-    
+
     public void run(int tempFsseasonweekid) {
 
+        System.out.println("Calculating Golf results.");
         FSGame fsGame = new FSGame(12);
         int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
         FSSeason fsseason = new FSSeason(currentFSSeasonID);
 
-        Connection con = null;
         try {
 
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-            
             FSSeasonWeek fsSeasonWeek = fsseason.getCurrentFSSeasonWeek();
             if (tempFsseasonweekid > 0) {
                 fsSeasonWeek = new FSSeasonWeek(tempFsseasonweekid);
             }
-            
+
             int fsseasonweekid = fsSeasonWeek.getFSSeasonWeekID();
+            System.out.println("For FSSeasonWeekID : " + fsseasonweekid);
             int lastweekfsseasonweekid = fsseasonweekid - 1;
-            
+
             PGATournamentWeek tournamentWeek = PGATournamentWeek.getTournamentWeek(fsseasonweekid);
             double thisWeekFees = tournamentWeek.getTeamFee();
-            
+
             //int fsseasonweekid = 14;
             _Logger.info("Processing results for FSSeasonWeekID : " + fsseasonweekid);
 
@@ -90,14 +89,14 @@ public class FantasyResults  {
             del.append(" FROM FSGolfStandings ");
             del.append(" WHERE FSSeasonWeekID = ").append(fsseasonweekid);
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con, del.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(del.toString());
 
             // Calculate week's results
             List<FSLeague> leagues = fsseason.GetLeagues();
 
             for (FSLeague league : leagues) {
                 List<FSTeam> teams = league.GetTeams();
-                
+
                 for (FSTeam team : teams)
                 {
                     double moneyEarned = 0;
@@ -105,11 +104,11 @@ public class FantasyResults  {
                     boolean teamEntered = false;
                     // get team roster
                     List<FSRoster> rosterPlayers = team.getRoster(fsseasonweekid);
-                    
+
                     if (rosterPlayers.size() >= 1) {
                         teamEntered = true;
                     }
-                    
+
                     for (FSRoster rosterPlayer : rosterPlayers)
                     {
                         PGATournamentWeekPlayer weekPlayer = new PGATournamentWeekPlayer(tournamentWeek.getPGATournamentID(), fsseasonweekid, rosterPlayer.getPlayerID());
@@ -117,24 +116,24 @@ public class FantasyResults  {
                         moneyEarned += playerEarnings;
                         numPlayers++;
                     }
-                    
+
 //                    if (numPlayers < 6)
 //                    {
 //                        moneyEarned = 0;
 //                    }
-                    
+
                     StringBuilder sql = new StringBuilder();
                     sql.append(" SELECT s.* ");
                     sql.append(" FROM FSGolfStandings s ");
                     sql.append(" INNER JOIN FSTeam t on t.FSTeamID = s.FSTeamID ");
                     sql.append(" WHERE s.FSSeasonWeekID = ").append(lastweekfsseasonweekid);
                     sql.append(" AND t.FSTeamID = ").append(team.getFSTeamID());
-                    
+
                     double totalMoneyEarned = 0;
                     double totalWinnings = 0;
                     double totalFees = 0;
                     int totalEventsEntered = 0;
-                    CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                    CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                     if (crs.next()) {
                         totalMoneyEarned = crs.getDouble("TotalMoneyEarned");
                         totalMoneyEarned += moneyEarned;
@@ -151,7 +150,7 @@ public class FantasyResults  {
                         totalFees = thisWeekFees;
                         totalEventsEntered++;
                     }
-                    
+
                     StringBuilder sql2 = new StringBuilder();
                     sql2.append("INSERT INTO FSGolfStandings ");
                     sql2.append(" (FSTeamID, FSSeasonWeekID, WeekMoneyEarned, TotalMoneyEarned, TotalWinnings, TotalFees, TotalEventsEntered, WeekFees, WeekEventEntered)");
@@ -170,14 +169,12 @@ public class FantasyResults  {
                         sql2.append(", 0");
                     }
                     sql2.append(" )");
-                    
-                    CTApplication._CT_QUICK_DB.executeUpdate(con, sql2.toString());
+
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql2.toString());
                     crs.close();
                 }
             }
-            
-            con.commit();
-            
+
             // Figure out who won
             for (FSLeague league : leagues) {
                 List<FSGolfStandings> teams = tournamentWeek.GetLeagueTeamsEntered(league.getFSLeagueID(),null);
@@ -194,24 +191,22 @@ public class FantasyResults  {
                         standingsTeam.setWeekWinnings(weekWinnings);
                         standingsTeam.setTotalWinnings(totalWinnings + weekWinnings);
                     }
-                    
+
                     standingsTeam.setRank(rank);
-                    
+
                     standingsTeam.Save();
                 }
             }
+
+            // Advance the week
+            System.out.println("Advancing the week...");
+            FSSeasonWeek.CompleteFSSeasonWeek(fsSeasonWeek);
 
             _Logger.log(Level.INFO, "All standings have been set.");
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
             _Logger.log(Level.SEVERE, "Exception in FantasyResults.run()", e);
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (Exception e) {}
-            }
-
+            System.out.println("Error in FantasyGolfResults : " + e.getMessage());
         }
     }
 

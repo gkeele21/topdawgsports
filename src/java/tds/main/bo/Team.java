@@ -1,15 +1,17 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 import static tds.main.bo.CTApplication._CT_LOG;
 
@@ -17,14 +19,14 @@ public class Team implements Serializable {
 
     // DB FIELDS
     private Integer _TeamID;
-    private String _DisplayName;    
+    private String _DisplayName;
     private String _Abbreviation;
     private String _FullName;
     private String _Mascot;
     private Integer _LiveStatsTeamID;
     private Integer _StatsTeamID;
     private Integer _SportID;
-    
+
     // OBJECTS
     private Sport _Sport;
 
@@ -33,10 +35,10 @@ public class Team implements Serializable {
     private static final int _CurrentSalFSSeasonID = 50;
     public static int _seasonweekid = 77;
     private static FSSeason _FSSeason;
-    
+
     static {
         try {
-            
+
             CachedRowSet crs = null;
             try {
                 StringBuilder sql = new StringBuilder();
@@ -86,7 +88,7 @@ public class Team implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public Team(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -104,12 +106,12 @@ public class Team implements Serializable {
     public Integer getLiveStatsTeamID() {return _LiveStatsTeamID;}
     public Integer getStatsTeamID() {return _StatsTeamID;}
     public Integer getSportID() {return _SportID;}
-    
+
     public static Map<Integer,Team> getTeamCache() {return _TeamCache;}
     public static int getCurrentSeasonID() {return _CurrentSeasonID;}
     public static FSSeason getFSSeason() {return _FSSeason;}
     public Sport getSport() {if (_Sport == null && _SportID > 0) {_Sport = new Sport(_SportID);}return _Sport;}
-    
+
     // SETTERS
     public void setTeamID(Integer TeamID) {_TeamID = TeamID;}
     public void setDisplayName(String DisplayName) {_DisplayName = DisplayName;}
@@ -121,7 +123,7 @@ public class Team implements Serializable {
     public void setSportID(Integer SportID) {_SportID = SportID;}
     public void setSport(Sport Sport) {_Sport = Sport;}
     public static void setFSSeason(FSSeason aFSSeason) {_FSSeason = aFSSeason;}
-    
+
     // PUBLIC METHODS
 
     public static Team getInstance(int teamID) {
@@ -165,9 +167,9 @@ public class Team implements Serializable {
 
     public boolean getGameHasStarted() {
         Game game = getGame(getCurrentSeasonID(), _seasonweekid);
-        AuDate gameDate = game.getGameDate();
-        AuDate now = new AuDate();
-        return now.after(gameDate, false);
+        LocalDateTime gameDate = game.getGameDate();
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(gameDate);
     }
 
     public static int getIDFromDisplayName( String displayName) throws Exception {
@@ -178,7 +180,7 @@ public class Team implements Serializable {
             sql.append(" SELECT teamid ");
             sql.append(" FROM Team ");
             sql.append(" WHERE DisplayName = '").append(displayName).append("'");
-            
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 id = crs.getInt("teamid");
@@ -188,22 +190,22 @@ public class Team implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return id;
     }
-    
+
     public static List<Team> GetTeamsBySport(int sportId) throws Exception {
-        
+
         List<Team> teams = new ArrayList<Team>();
         CachedRowSet crs = null;
-        
+
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT").append(_Cols.getColumnList("Team", "", ""));
             sql.append("FROM Team ");
             sql.append("WHERE SportID = ").append(sportId).append(" ");
             sql.append("ORDER BY FullName");
-            
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 teams.add(new Team(crs, ""));
@@ -213,38 +215,38 @@ public class Team implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return teams;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Team", "TeamID", getTeamID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        try {            
+        try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "TeamID")) { setTeamID(crs.getInt(prefix + "TeamID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "DisplayName")) { setDisplayName(crs.getString(prefix + "DisplayName")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Abbreviation")) { setAbbreviation(crs.getString(prefix + "Abbreviation")); }            
-            if (FSUtils.fieldExists(crs, prefix, "FullName")) { setFullName(crs.getString(prefix + "FullName")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Mascot")) { setMascot(crs.getString(prefix + "Mascot")); }            
-            if (FSUtils.fieldExists(crs, prefix, "LiveStatsTeamID")) { setLiveStatsTeamID(crs.getInt(prefix + "LiveStatsTeamID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "StatsTeamID")) { setStatsTeamID(crs.getInt(prefix + "StatsTeamID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "TeamID")) { setTeamID(crs.getInt(prefix + "TeamID")); }
+            if (FSUtils.fieldExists(crs, prefix, "DisplayName")) { setDisplayName(crs.getString(prefix + "DisplayName")); }
+            if (FSUtils.fieldExists(crs, prefix, "Abbreviation")) { setAbbreviation(crs.getString(prefix + "Abbreviation")); }
+            if (FSUtils.fieldExists(crs, prefix, "FullName")) { setFullName(crs.getString(prefix + "FullName")); }
+            if (FSUtils.fieldExists(crs, prefix, "Mascot")) { setMascot(crs.getString(prefix + "Mascot")); }
+            if (FSUtils.fieldExists(crs, prefix, "LiveStatsTeamID")) { setLiveStatsTeamID(crs.getInt(prefix + "LiveStatsTeamID")); }
+            if (FSUtils.fieldExists(crs, prefix, "StatsTeamID")) { setStatsTeamID(crs.getInt(prefix + "StatsTeamID")); }
             if (FSUtils.fieldExists(crs, prefix, "SportID")) { setSportID(crs.getInt(prefix + "SportID")); }
-            
-            // OBJECTS            
-//            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }            
+
+            // OBJECTS
+//            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }        
+        }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -268,7 +270,7 @@ public class Team implements Serializable {
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE Team SET ");

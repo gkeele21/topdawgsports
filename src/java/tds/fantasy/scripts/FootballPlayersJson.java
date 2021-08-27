@@ -9,17 +9,18 @@ import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.Application;
 import bglib.util.FSUtils;
+import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+
 import java.io.File;
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.CTApplication;
 
 /**
  *
@@ -29,7 +30,7 @@ public class FootballPlayersJson implements Harnessable {
 
     public static final String PLAYERS_FILE_PROP = "tds.Football.playersFile";
     public static String _PLAYERS_FILE = Application._GLOBAL_SETTINGS.getProperty(PLAYERS_FILE_PROP);
-    
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -71,15 +72,19 @@ public class FootballPlayersJson implements Harnessable {
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 
-            File playersFile = new File(_PLAYERS_FILE);
-            String playerData = FileUtils.readFileToString(playersFile);
-            
             // clear out the temp table
             StringBuilder clear = new StringBuilder();
             clear.append("delete from TempProPlayer");
 
             CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
 
+            System.out.println("Original players file : " + _PLAYERS_FILE);
+            if (_PLAYERS_FILE == "") {
+                _PLAYERS_FILE = "/usr/lib/python2.7/dist-packages/nflgame/players.json";
+            }
+            System.out.println("Grabbing players file : " + _PLAYERS_FILE);
+            File playersFile = new File(_PLAYERS_FILE);
+            String playerData = FileUtils.readFileToString(playersFile);
 
             JSONObject objs =(JSONObject) JSONValue.parse(playerData);
             Iterator it = objs.entrySet().iterator();
@@ -95,14 +100,14 @@ public class FootballPlayersJson implements Harnessable {
                 String status = "";
                 int yearsPro = 0;
                 int active = 0;
-                
+
                 Iterator playerIt = playerDataObj.entrySet().iterator();
                 while (playerIt.hasNext())
                 {
                     Map.Entry playerPairs = (Map.Entry)playerIt.next();
                     String fieldName = (String)playerPairs.getKey();
                     String value = String.valueOf(playerPairs.getValue());
-                    
+
                     if ("first_name".equals(fieldName))
                     {
                         firstName = value;
@@ -135,7 +140,7 @@ public class FootballPlayersJson implements Harnessable {
                     {
                         yearsPro = Integer.parseInt(value);
                     }
-  
+
                     if (lastName.equals("Yeldon"))
                     {
                         System.out.println("Here he is.");
@@ -144,9 +149,9 @@ public class FootballPlayersJson implements Harnessable {
                     {
                         active = 1;
                     }
-                    
+
                 }
-                
+
                 if (active == 1 && ("RB".equals(position) || "WR".equals(position) ||
                         "QB".equals(position) || "TE".equals(position) || "PK".equals(position)))
                 {
@@ -172,7 +177,7 @@ public class FootballPlayersJson implements Harnessable {
                         playerId = crs3.getInt("PlayerID");
                     } else
                     {
-                    
+
                         query = new StringBuilder();
                         query.append(" select * ");
                         query.append(" from Player ");
@@ -194,7 +199,7 @@ public class FootballPlayersJson implements Harnessable {
                             _Logger.info("Too many players found with that name and position to grab the correct one");
                         }
                     }
-                    
+
                     StringBuilder sql = new StringBuilder();
                     sql.append("insert into TempProPlayer ");
                     sql.append("(NFLGameStatsId,Position,LastName,FirstName,Active,TeamID,PositionId,YearsPro,PlayerId) ");
@@ -231,7 +236,7 @@ public class FootballPlayersJson implements Harnessable {
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0");
+            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0 where positionID in (1,2,3,4,5,6,7)");
 
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempProPlayer order by PlayerId");
@@ -264,7 +269,7 @@ public class FootballPlayersJson implements Harnessable {
 
                         sql.append(" ,TeamID = ").append(teamid);
                     }
-                    
+
                     sql.append(" where PlayerID = ").append(playerid);
                     CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
                     _Logger.info(sql.toString());

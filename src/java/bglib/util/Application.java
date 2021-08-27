@@ -1,10 +1,12 @@
 package bglib.util;
 
 import bglib.data.JDBCDatabase;
+import sun.jdbc.rowset.CachedRowSet;
+
+import java.sql.Connection;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import sun.jdbc.rowset.CachedRowSet;
 
 public class Application {
 
@@ -16,8 +18,10 @@ public class Application {
     private static final Map<String, Application> _Instances = new HashMap<String, Application>();
     private static final Map<Integer, Application> _InstancesByID = new HashMap<Integer, Application>();
 
-    public static final AppSettings _GLOBAL_SETTINGS = AppSettings.getInstance(GLOBAL_STR);
+    public static final AppSettings _GLOBAL_SETTINGS = AppSettings.getInstance(BG_ROOT);
     public static final Log _GLOBAL_LOG = Log.getInstance(GLOBAL_STR);
+    public static final DateTimeFormatter _DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter _DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     static {
         _GLOBAL_QUICK_DB = JDBCDatabase.getInstance(_GLOBAL_SETTINGS.getDBConnectionString());
@@ -58,6 +62,7 @@ public class Application {
 
     private Application(int id) throws Exception {
         String query = "select * from Application where ApplicationID = " + id;
+        Connection con = JDBCDatabase.getConnection();
         CachedRowSet crs = _GLOBAL_QUICK_DB.executeQuery(query);
         if (crs.next()) {
             initFromCRS(crs);
@@ -121,7 +126,7 @@ public class Application {
 
     public AppSettings getAppSettings() { return AppSettings.getInstance(_AppPrefix); }
     public Log getLogger() { return Log.getInstance(_AppPrefix); }
-    public JDBCDatabase getQuickDB() { 
+    public JDBCDatabase getQuickDB() {
         return JDBCDatabase.getInstance(getAppSettings().getDBConnectionString());
     }
 }

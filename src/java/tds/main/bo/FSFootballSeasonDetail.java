@@ -1,19 +1,22 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
-import sun.jdbc.rowset.CachedRowSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSFootballSeasonDetail implements Serializable{
-    
+
     // DB FIELDS
     private int _FSSeasonID;
     private int _StartingWeekNumber;
-    private AuDate _TradesEndDate;
+    private LocalDate _TradesEndDate;
     private int _TeamsInLeague;
     private int _NumDivisions;
     private int _MaxNumStarters;
@@ -27,7 +30,7 @@ public class FSFootballSeasonDetail implements Serializable{
     // CONSTRUCTORS
     public FSFootballSeasonDetail() {
     }
-    
+
     public FSFootballSeasonDetail(int seasonID) {
         CachedRowSet crs = null;
         Connection con = null;
@@ -57,11 +60,11 @@ public class FSFootballSeasonDetail implements Serializable{
     public FSFootballSeasonDetail(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public int getFSSeasonID() {return _FSSeasonID;}
     public int getStartingWeekNumber() {return _StartingWeekNumber;}
-    public AuDate getTradesEndDate() {return _TradesEndDate;}
+    public LocalDate getTradesEndDate() {return _TradesEndDate;}
     public int getTeamsInLeague() {return _TeamsInLeague;}
     public int getNumDivisions() {return _NumDivisions;}
     public int getMaxNumStarters() {return _MaxNumStarters;}
@@ -71,11 +74,11 @@ public class FSFootballSeasonDetail implements Serializable{
     public int getNumWeeksPlayoffs() {return _NumWeeksPlayoffs;}
     public int getPlayoffStartWeekNumber() {return _PlayoffStartWeekNumber;}
     public Long getMaxSalaryCap() {return _MaxSalaryCap;}
-    
+
     // SETTERS
     public void setFSSeasonID(int FSSeasonID) {_FSSeasonID = FSSeasonID;}
     public void setStartingWeekNumber(int StartingWeekNumber) {_StartingWeekNumber = StartingWeekNumber;}
-    public void setTradesEndDate(AuDate TradesEndDate) {_TradesEndDate = TradesEndDate;}
+    public void setTradesEndDate(LocalDate TradesEndDate) {_TradesEndDate = TradesEndDate;}
     public void setTeamsInLeague(int TeamsInLeague) {_TeamsInLeague = TeamsInLeague;}
     public void setNumDivisions(int NumDivisions) {_NumDivisions = NumDivisions;}
     public void setMaxNumStarters(int MaxNumStarters) {_MaxNumStarters = MaxNumStarters;}
@@ -87,66 +90,69 @@ public class FSFootballSeasonDetail implements Serializable{
     public void setMaxSalaryCap(Long MaxSalaryCap) {_MaxSalaryCap = MaxSalaryCap;}
 
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) {
                 setFSSeasonID(crs.getInt(prefix + "FSSeasonID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "StartingWeekNumber")) {
                 setStartingWeekNumber(crs.getInt(prefix + "StartingWeekNumber"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TradesEndDate")) {
-                setTradesEndDate(new AuDate(crs.getTimestamp(prefix + "TradesEndDate")));
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "TradesEndDate");
+                if (s != null) {
+                    setTradesEndDate(s.toLocalDate());
+                }
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TeamsInLeague")) {
                 setTeamsInLeague(crs.getInt(prefix + "TeamsInLeague"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "NumDivisions")) {
                 setNumDivisions(crs.getInt(prefix + "NumDivisions"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxNumStarters")) {
                 setMaxNumStarters(crs.getInt(prefix + "MaxNumStarters"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxNumReserves")) {
                 setMaxNumReserves(crs.getInt(prefix + "MaxNumReserves"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxNumInactive")) {
                 setMaxNumInactive(crs.getInt(prefix + "MaxNumInactive"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "NumWeeksRegSeason")) {
                 setNumWeeksRegSeason(crs.getInt(prefix + "NumWeeksRegSeason"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "NumWeeksPlayoffs")) {
                 setNumWeeksPlayoffs(crs.getInt(prefix + "NumWeeksPlayoffs"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PlayoffStartWeekNumber")) {
                 setPlayoffStartWeekNumber(crs.getInt(prefix + "PlayoffStartWeekNumber"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxSalaryCap")) {
                 setMaxSalaryCap((Long) crs.getLong(prefix + "MaxSalaryCap"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSFootballSeasonDetail", "FSSeasonID", getFSSeasonID());
         if (doesExist) { Update(); } else { Insert(); }

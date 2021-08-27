@@ -24,7 +24,7 @@ public class CourseTeeInfo implements Serializable {
     // CONSTRUCTORS
     public CourseTeeInfo() {
     }
-    
+
     public CourseTeeInfo(int courseId, int teeId) {
         CachedRowSet crs = null;
         try {
@@ -36,7 +36,7 @@ public class CourseTeeInfo implements Serializable {
             crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -55,9 +55,9 @@ public class CourseTeeInfo implements Serializable {
     public Double getMensSlope() {return _MensSlope;}
     public Double getWomensRating() {return _WomensRating;}
     public Double getWomensSlope() {return _WomensSlope;}
-    public Course getCourse() {return _Course;} 
-    public Tee getTee() {return _Tee;} 
-    
+    public Course getCourse() {return _Course;}
+    public Tee getTee() {return _Tee;}
+
     // SETTERS
     public void setCourseID(Integer CourseID) {_CourseID = CourseID;}
     public void setTeeID(Integer teeId) {_TeeID = teeId;}
@@ -72,16 +72,16 @@ public class CourseTeeInfo implements Serializable {
 
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("CourseTeeInfo", "CourseID", getCourseID(), "TeeID", getTeeID());
-        if (doesExist) { Update(); } else { Insert(); }        
+        if (doesExist) { Update(); } else { Insert(); }
     }
 
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "CourseID")) { setCourseID(crs.getInt(prefix + "CourseID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "CourseID")) { setCourseID(crs.getInt(prefix + "CourseID")); }
             if (FSUtils.fieldExists(crs, prefix, "TeeID")) { setTeeID(crs.getInt(prefix + "TeeID")); }
             if (FSUtils.fieldExists(crs, prefix, "MensRating")) { setMensRating(crs.getDouble(prefix + "MensRating")); }
             if (FSUtils.fieldExists(crs, prefix, "MensSlope")) { setMensSlope(crs.getDouble(prefix + "MensSlope")); }
@@ -89,7 +89,7 @@ public class CourseTeeInfo implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "WomensSlope")) { setWomensSlope(crs.getDouble(prefix + "WomensSlope")); }
 
             // OBJECTS
-            if (FSUtils.fieldExists(crs, "Course$", "CourseID")) { setCourse(new Course(crs, "Course$")); }            
+            if (FSUtils.fieldExists(crs, "Course$", "CourseID")) { setCourse(new Course(crs, "Course$")); }
             if (FSUtils.fieldExists(crs, "Tee$", "TeeID")) { setTee(new Tee(crs, "Tee$")); }
 
         } catch (Exception e) {
@@ -116,7 +116,7 @@ public class CourseTeeInfo implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     /*  This method updates a record in the DB. */
     private void Update() {

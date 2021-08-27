@@ -31,7 +31,7 @@
     width: 397px;
 }
 
-#innerPromoGame {    
+#innerPromoGame {
     text-align: center;
 }
 
@@ -114,10 +114,10 @@
 
         <div id="header">
             <jsp:include page="inc_header.jsp" />
-        </div> 
-        
-            <jsp:include page="inc_errorMessage.jsp" />            
-        
+        </div>
+
+            <jsp:include page="inc_errorMessage.jsp" />
+
         <div id="mainMenu">
             <jsp:include page="menu/mainMenu.jsp" />
         </div>
@@ -127,23 +127,23 @@
                 <img src="images/byustadium.jpg" />
             </div>
         </div>
-        
+
         <div id="promoGame">
             <div id="innerPromoGame">
-                <h2>Player Love Em & Leave Em</h2>
-                <img src="images/football_money11.jpg"/>
-                <a href="gameSignup.htm?fsGameId=3">Sign Up</a>                    
+                <h2>Fantasy Golf</h2>
+                <img src="images/mastersLogo.jpg"/>
+                <a href="gameSignup.htm?fsGameId=12">Sign Up</a>
                 <ul>
-                    <li>Pick a new team each week</li>
-                    <li>Can only pick each player once the whole season</li>
-                    <li>No head to head competition</li>
-                    <li>Compete against everyone in the league</li>
-                    <li>Total Fantasy Points for the whole season will determine the winners</li>
+                    <li>Pick up to 6 golfers each week</li>
+                    <li>Given $1,000,000 to buy your roster</li>
+                    <li>New game every week - no more season running totals</li>
+                    <li>Compete against everyone in the league every week</li>
+                    <li>Game points awarded based on total money earnings from picked players</li>
                     <li>Create private leagues or compete for prizes in the General league</li>
                 </ul>
             </div>
-        </div>   
-        
+        </div>
+
         <div class="gameSeparation"></div>
 
         <div id="gameBuckets">
@@ -151,7 +151,7 @@
                 <div id="innerBucketGame1">
                     <h3>Salary Cap</h3>
                     <img src="images/football_money11.jpg"/>
-                    <a href="gameSignup.htm?fsGameId=2">Sign Up</a>                    
+                    <a href="gameSignup.htm?fsGameId=2">Sign Up</a>
                     <ul>
                         <li>Pick a new team each week</li>
                         <li>Given $1,000,000 to buy your roster</li>
@@ -161,7 +161,7 @@
                         <li>Game points awarded based on weekly finish amongst all league members</li>
                         <li>Create private leagues or compete for prizes in the General league</li>
                     </ul>
-                    
+
                 </div>
             </div> <!-- bucketGame1 -->
 
@@ -221,7 +221,7 @@
                 <h2>March Madness</h2>
                 <img src="images/march_madness.jpg" alt=""/>
                 <h3>Bracket Challenge</h3>
-                <a href="gameSignup.htm?fsGameId=8">Sign Up!</a>                
+                <a href="gameSignup.htm?fsGameId=8">Sign Up!</a>
                 <ul>
                     <li>Fill out the entire tournament bracket</li>
                     <li>Earn points for every correct pick</li>
@@ -229,14 +229,14 @@
                 </ul>
 
                 <h3>Seed Challenge</h3>
-                <a href="gameSignup.htm?fsGameId=9">Sign Up!</a>                
+                <a href="gameSignup.htm?fsGameId=9">Sign Up!</a>
                 <ul>
                     <li>Choose 8 different tournament teams</li>
                     <li>Each team is represented in a range of seed groups</li>
                     <li>Win by selecting the College tournament winner</li>
                 </ul>
             </div>
-            
+
         </div>
 
         <div id="promoGame">
@@ -250,9 +250,9 @@
                     <li><b>Signup deadline is Sat. Nov. 8th at 11:59 p.m.</b></li>
                     <li>Compete for FREE to win a $50 PF Changs gift card </li>
                     <li>Even newbies to fantasy football can do well</li>
-                    <li>Create multiple teams to increase your odds</li>                    
+                    <li>Create multiple teams to increase your odds</li>
                 </ul>
-               
+
             </div>
         </div>
 
@@ -262,7 +262,7 @@
                 <h2>March Madness</h2>
                 <img src="images/march_madness.jpg" alt=""/>
                 <h3>Bracket Challenge</h3>
-                <a href="gameSignup.htm?fsGameId=8">Sign Up!</a>                
+                <a href="gameSignup.htm?fsGameId=8">Sign Up!</a>
                 <ul>
                     <li>Fill out the entire tournament bracket</li>
                     <li>Earn points for every correct pick</li>
@@ -270,7 +270,7 @@
                 </ul>
 
                 <h3>Seed Challenge</h3>
-                <a href="gameSignup.htm?fsGameId=9">Sign Up!</a>                
+                <a href="gameSignup.htm?fsGameId=9">Sign Up!</a>
                 <ul>
                     <li>Choose 8 different tournament teams</li>
                     <li>Each team is represented in a range of seed groups</li>
@@ -286,12 +286,12 @@
                 <div id="innerBucketGame1">
                     <h3>Salary Cap</h3>
                     <img src="images/football_money11.jpg"/>
-                    <a href="gameSignup.htm?fsGameId=2">Sign Up</a>                    
+                    <a href="gameSignup.htm?fsGameId=2">Sign Up</a>
                     <ul>
                         <li>Pick a new team weekly given $1,000,000</li>
                         <li>Compete against everyone in the league</li>
                     </ul>
-                    
+
                     <div class="gameSeparation"></div>
 
                     <h3>FF Playoff</h3>
@@ -305,9 +305,25 @@
 
         <div id="promoGame">
             <div id="innerPromoGame">
+                <h2>Player Love Em & Leave Em</h2>
+                <img src="images/football_money11.jpg"/>
+                <a href="gameSignup.htm?fsGameId=3">Sign Up</a>
+                <ul>
+                    <li>Pick a new team each week</li>
+                    <li>Can only pick each player once the whole season</li>
+                    <li>No head to head competition</li>
+                    <li>Compete against everyone in the league</li>
+                    <li>Total Fantasy Points for the whole season will determine the winners</li>
+                    <li>Create private leagues or compete for prizes in the General league</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="promoGame">
+            <div id="innerPromoGame">
                 <h2>Fantasy Golf</h2>
                 <img src="images/mastersLogo.jpg"/>
-                <a href="gameSignup.htm?fsGameId=12">Sign Up</a>                    
+                <a href="gameSignup.htm?fsGameId=12">Sign Up</a>
                 <ul>
                     <li>Pick up to 6 golfers each week</li>
                     <li>Given $1,000,000 to buy your roster</li>
@@ -317,6 +333,6 @@
                     <li>Create private leagues or compete for prizes in the General league</li>
                 </ul>
             </div>
-        </div>   
+        </div>
 
---%>        
+--%>

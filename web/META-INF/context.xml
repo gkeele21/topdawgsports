@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/topdawgsports">
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="8" maxIdle="4" name="jdbc/topdawg" password="lakers" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/topdawg" username="root"/>
+  <!--<Resource name="jdbc/topdawg"
+            auth="Container"
+            type="javax.sql.DataSource"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            testWhileIdle="true"
+            testOnBorrow="true"
+            testOnReturn="false"
+            validationQuery="SELECT 1"
+            validationInterval="30000"
+            timeBetweenEvictionRunsMillis="30000"
+            maxActive="100"
+            minIdle="10"
+            maxWait="10000"
+            initialSize="10"
+            removeAbandonedTimeout="60"
+            removeAbandoned="true"
+            logAbandoned="true"
+            minEvictableIdleTimeMillis="30000"
+            jmxEnabled="true"
+            jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
+            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"
+            username="${TOPDAWG_DB_USERNAME}"
+            password="${TOPDAWG_DB_PASSWORD}"
+            driverClassName="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://localhost:${TOPDAWG_DB_PORT}/${TOPDAWG_DB_NAME}"/>-->
 </Context>

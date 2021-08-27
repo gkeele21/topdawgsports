@@ -2,16 +2,18 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSGolfStandings implements Serializable {
 
     // DB FIELDS
-    private int _FSTeamID;    
+    private int _FSTeamID;
     private int _FSSeasonWeekID;
     private double _WeekMoneyEarned;
     private double _TotalMoneyEarned;
@@ -26,7 +28,7 @@ public class FSGolfStandings implements Serializable {
     // OBJECTS
     private FSTeam _FSTeam;
     private FSSeasonWeek _FSSeasonWeek;
-    
+
     // CONSTRUCTORS
     public FSGolfStandings() {
     }
@@ -37,10 +39,10 @@ public class FSGolfStandings implements Serializable {
 
     public FSGolfStandings(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
-    }    
+    }
 
     // GETTERS
-    public int getFSTeamID() {return _FSTeamID;}    
+    public int getFSTeamID() {return _FSTeamID;}
     public int getFSSeasonWeekID() {return _FSSeasonWeekID;}
     public double getWeekMoneyEarned() {return _WeekMoneyEarned;}
     public double getTotalMoneyEarned() {return _TotalMoneyEarned;}
@@ -55,7 +57,7 @@ public class FSGolfStandings implements Serializable {
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
 
     // SETTERS
-    public void setFSTeamID(int fsTeamId) {_FSTeamID = fsTeamId;}    
+    public void setFSTeamID(int fsTeamId) {_FSTeamID = fsTeamId;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
     public void setWeekMoneyEarned(double money) {_WeekMoneyEarned = money;}
     public void setTotalMoneyEarned(double money) {_TotalMoneyEarned = money;}
@@ -70,15 +72,15 @@ public class FSGolfStandings implements Serializable {
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
 
     // PUBLIC METHODS
-    
+
     public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID) {
         return getLeagueStandings(leagueID, fsseasonweekID, "");
     }
-    
+
     public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort) {
         return getLeagueStandings(leagueID, fsseasonweekID, sort, true, false);
     }
-    
+
     public static List<FSGolfStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort, boolean requireStandingsRecords, boolean requireParticipation) {
 
         List<FSGolfStandings> standings = new ArrayList<FSGolfStandings>();
@@ -121,10 +123,10 @@ public class FSGolfStandings implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return standings;
     }
-    
+
     public static List<FSGolfStandings> getLeagueStandingsInProgress(int leagueID, int fsseasonweekID) {
 
         List<FSGolfStandings> standings = new ArrayList<FSGolfStandings>();
@@ -134,7 +136,7 @@ public class FSGolfStandings implements Serializable {
         sql.append(" INNER JOIN FSLeague l ON l.FSLeagueID = t.FSLeagueID ");
         sql.append(" INNER JOIN FSUser u ON u.FSUserID = t.FSUserID ");
         sql.append(" INNER JOIN PGATournamentWeek tw on tw.FSSeasonWeekID = ").append(fsseasonweekID);
-        sql.append(" INNER JOIN PGATournamentWeekPlayer twp on twp.PGATournamentID = tw.PGATournamentID ");
+        sql.append(" INNER JOIN PGATournamentWeekPlayer twp on twp.PGATournamentID = tw.PGATournamentID and twp.FSSeasonWeekID = ").append(fsseasonweekID);
         sql.append(" INNER JOIN FSRoster r on r.FSTeamID = t.FSTeamID and r.FSSeasonWeekID = tw.FSSeasonWeekID and r.PlayerID = twp.PlayerID ");
         sql.append(" WHERE l.FSLeagueID = ").append(leagueID);
         sql.append(" GROUP BY t.FSTeamID ");
@@ -146,12 +148,12 @@ public class FSGolfStandings implements Serializable {
             while (crs.next()) {
                 double money = crs.getDouble("totalMoneyEarned");
                 int teamid = crs.getInt("FSTeamID");
-                
+
                 FSGolfStandings stand = new FSGolfStandings();
                 stand.setFSSeasonWeekID(fsseasonweekID);
                 stand.setFSTeamID(teamid);
                 stand.setWeekMoneyEarned(money);
-                
+
                 standings.add(stand);
             }
         } catch (Exception e) {
@@ -159,14 +161,14 @@ public class FSGolfStandings implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return standings;
     }
 
     public static List<FSGolfStandings> getTeamStandings(int teamID){
         return getTeamStandings(teamID, 0);
     }
-    
+
     public static List<FSGolfStandings> getTeamStandings(int teamID, int fsseasonweekID) {
 
         List<FSGolfStandings> standings = new ArrayList<FSGolfStandings>();
@@ -200,14 +202,14 @@ public class FSGolfStandings implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return standings;
     }
-    
+
     public static FSGolfStandings getStandingsRecord(int fsTeamID, int fsSeasonWeekID) {
         FSGolfStandings weekStandings = null;
         List<FSGolfStandings> standings = getTeamStandings(fsTeamID, fsSeasonWeekID);
-        
+
         if (!standings.isEmpty()) {
             for (FSGolfStandings tempStandings : standings) {
                 int tempFSSeasonWeekID = tempStandings.getFSSeasonWeekID();
@@ -218,12 +220,12 @@ public class FSGolfStandings implements Serializable {
                     break;
                 }
             }
-            
+
         }
-        
+
         return weekStandings;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSGolfStandings", "FSTeamID", getFSTeamID(), "FSSeasonWeekID", getFSSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -232,7 +234,7 @@ public class FSGolfStandings implements Serializable {
     // PRIVATE METHODS
 
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }
@@ -257,7 +259,7 @@ public class FSGolfStandings implements Serializable {
     }
 
     private void Insert() {
-        
+
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO FSGolfStandings ");
@@ -285,7 +287,7 @@ public class FSGolfStandings implements Serializable {
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("UPDATE FSGolfStandings SET ");
         sql.append(FSUtils.UpdateDBFieldValue("WeekMoneyEarned", getWeekMoneyEarned()));
         sql.append(FSUtils.UpdateDBFieldValue("TotalMoneyEarned", getTotalMoneyEarned()));

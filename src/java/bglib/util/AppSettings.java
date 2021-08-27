@@ -1,12 +1,8 @@
 package bglib.util;
 
-import static bglib.util.Application._GLOBAL_LOG;
-import java.io.FileInputStream;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Properties;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This class is for global application settings that can't be stored in the database (e.g., the db connection
@@ -52,6 +48,11 @@ public class AppSettings
     private Properties _Properties = new Properties();
     private String _AppPrefix;
     private String _ConnectionString = "";
+    public static String _Domain = "";
+    public static String _Port = "";
+    public static String _Username = "";
+    public static String _Password = "";
+    public static String _DBName = "";
     private static final Map<String, AppSettings> _Instances = new HashMap<String, AppSettings>();
 
     private AppSettings(String appPrefix) {
@@ -66,16 +67,22 @@ public class AppSettings
             _Instances.put(appPrefix, instance);
         }
 
+        _Domain = System.getenv("TOPDAWG_DB_DOMAIN");
+        _Port = System.getenv("TOPDAWG_DB_PORT");
+        _Username = System.getenv("TOPDAWG_DB_USERNAME");
+        _Password = System.getenv("TOPDAWG_DB_PASSWORD");
+        _DBName = System.getenv("TOPDAWG_DB_NAME");
+
         return instance;
     }
-    
+
 //    public String getAppRoot()
 //    {
 //        String root = System.getenv("TOPDAWG_HOME");
 //        if (AuUtil.isEmpty(root)) {
 //            root = "/home/gkeele/topdawg";
 //        }
-//        
+//
 ////        String root = Application.BG_ROOT;
 ////        File f = new File(root);
 ////        if (!f.exists())
@@ -92,7 +99,7 @@ public class AppSettings
 
 //    private void initSettings() {
 //        String root = getAppRoot();
-//        
+//
 //        String propsFile = root + File.separator + WEBAPP_PROPERTIES;
 //
 //        // load the properties
@@ -120,18 +127,12 @@ public class AppSettings
 //            }
 //        }
 //    }
-    
+
     public String getDBConnectionString() {
         if (_ConnectionString.equals("")) {
-            String domain = System.getenv("TOPDAWG_DB_DOMAIN");
-            String port = System.getenv("TOPDAWG_DB_PORT");
-            String username = System.getenv("TOPDAWG_DB_USERNAME");
-            String password = System.getenv("TOPDAWG_DB_PASSWORD");
-            String dbname = System.getenv("TOPDAWG_DB_NAME");
-
-            _ConnectionString = "jdbc:mysql://" + domain + ":" + port + "/" + dbname + "?user=" + username + "&password=" + password + "&autoReconnect=true";            
+            _ConnectionString = "jdbc:mysql://" + _Domain + ":" + _Port + "/" + _DBName + "?user=" + _Username + "&password=" + _Password + "&autoReconnect=true&characterEncoding=utf8";
         }
-        
+
         return _ConnectionString;
     }
 
@@ -154,4 +155,25 @@ public class AppSettings
         }
         return (val==null) ? "" : val;
     }
+
+    public static String getDomain() {
+        return _Domain;
+    }
+
+    public static String getPort() {
+        return _Port;
+    }
+
+    public static String getUsername() {
+        return _Username;
+    }
+
+    public static String getPassword() {
+        return _Password;
+    }
+
+    public static String getDBName() {
+        return _DBName;
+    }
+
 }

@@ -1,16 +1,17 @@
 package tds.commissioner.control;
 
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.FSLeague;
-import tds.main.bo.FSSeason;
 import tds.main.bo.UserSession;
 import tds.main.control.BaseAction;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+
 public class fsLeagueEditAction extends BaseAction {
-    
+
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
         String nextPage = super.process(request,response);
@@ -44,7 +45,7 @@ public class fsLeagueEditAction extends BaseAction {
             String scheduleName = FSUtils.getRequestParameter(request, "scheduleName", null);
             int isDefaultLeague = FSUtils.getIntRequestParameter(request, "isDefaultLeague", 0);
             String signupType = FSUtils.getRequestParameter(request, "signupType", null);
-                        
+
             fsLeague.setFSSeasonID(fsSeasonID);
             if (leagueName != null)
             {
@@ -70,7 +71,7 @@ public class fsLeagueEditAction extends BaseAction {
             }
             if (draftDateTemp != null)
             {
-                AuDate dt = AuDate.getInstance(draftDateTemp, BGConstants.PLAYDATE_PATTERN);
+                LocalDateTime dt = LocalDateTime.parse(draftDateTemp, Application._DATE_TIME_FORMATTER);
                 fsLeague.setDraftDate(dt);
             }
             fsLeague.setHasPaid(hasPaid);
@@ -89,9 +90,9 @@ public class fsLeagueEditAction extends BaseAction {
                 System.out.println("Error : " + e.getMessage());
                 session.setErrorMessage("Error updating FSLeague.");
             }
-            
+
         }
-        
+
 
         return nextPage;
     }

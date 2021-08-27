@@ -8,20 +8,20 @@ import sun.jdbc.rowset.CachedRowSet;
 import static tds.data.CTColumnLists._Cols;
 
 public class Sport implements Serializable {
-    
+
     // CONSTANTS
     public final static int PRO_FOOTBALL = 1;
     public final static int COLLEGE_FOOTBALL = 2;
     public final static int COLLEGE_BASKETBALL = 3;
-    
+
     // DB FIELDS
     private int _SportID;
     private String _DisplayName;
     private String _Prefix;
-    
+
     // CONSTRUCTORS
     public Sport() {
-        
+
     }
 
     public Sport(int sportID) {
@@ -46,7 +46,7 @@ public class Sport implements Serializable {
         }
 
     }
-    
+
     public Sport(CachedRowSet fields) {
         initFromCRS(fields, "");
     }
@@ -54,12 +54,12 @@ public class Sport implements Serializable {
     public Sport(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public int getSportID() {return _SportID;}
     public String getDisplayName() {return _DisplayName;}
     public String getPrefix() {return _Prefix;}
-    
+
     // SETTERS
     public void setSportID(int SportID) {_SportID = SportID;}
     public void setDisplayName(String DisplayName) {_DisplayName = DisplayName;}
@@ -70,16 +70,16 @@ public class Sport implements Serializable {
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void initFromCRS(CachedRowSet crs, String prefix) {
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "SportID")) {
                 setSportID(crs.getInt(prefix + "SportID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "DisplayName")) {
                 setDisplayName(crs.getString(prefix + "DisplayName"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Prefix")) {
                 setPrefix(crs.getString(prefix + "Prefix"));
             }
@@ -87,5 +87,5 @@ public class Sport implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    } 
+    }
 }

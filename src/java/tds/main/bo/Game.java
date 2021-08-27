@@ -1,49 +1,50 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class Game implements Serializable {
-    
+
     public static final Game BYE_WEEK;
 
     static {
         BYE_WEEK = new Game();
-        BYE_WEEK._GameDate = new AuDate(0);
+        BYE_WEEK._GameDate = LocalDateTime.now();
         BYE_WEEK._IsByeWeek = true;
     }
 
     // DB FIELDS
     private Integer _GameID;
-    private Integer _SeasonWeekID;    
-    private Integer _VisitorID;    
-    private Integer _HomeID;    
-    private AuDate _GameDate;
+    private Integer _SeasonWeekID;
+    private Integer _VisitorID;
+    private Integer _HomeID;
+    private LocalDateTime _GameDate;
     private Integer _WinnerID;
     private Integer _VisitorPts;
     private Integer _HomePts;
     private Integer _FavoredID;
-    private double _Spread;    
+    private double _Spread;
     private String _GameInfo;
     private Integer _NumOTs;
-    
+
     // OBJECTS
     private SeasonWeek _SeasonWeek;
     private Team _Visitor;
     private Team _Home;
-    
+
     // ADDITIONAL FIELDS
     private boolean _IsByeWeek;
-    
+
     // CONSTRUCTORS
     public Game() {
     }
@@ -79,7 +80,7 @@ public class Game implements Serializable {
         }
 
     }
-    
+
     public Game(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -87,13 +88,13 @@ public class Game implements Serializable {
     public Game(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public Integer getGameID() {return _GameID;}
-    public Integer getSeasonWeekID() {return _SeasonWeekID;}    
-    public Integer getVisitorID() {return _VisitorID;}    
-    public Integer getHomeID() {return _HomeID;}    
-    public AuDate getGameDate() {return _GameDate;}
+    public Integer getSeasonWeekID() {return _SeasonWeekID;}
+    public Integer getVisitorID() {return _VisitorID;}
+    public Integer getHomeID() {return _HomeID;}
+    public LocalDateTime getGameDate() {return _GameDate;}
     public Integer getWinnerID() {return _WinnerID;}
     public Team getWinner() {return Team.getInstance(getWinnerID());}
     public Integer getVisitorPts() {return _VisitorPts;}
@@ -104,15 +105,15 @@ public class Game implements Serializable {
     public String getGameInfo() {return _GameInfo;}
     public Integer getNumOTs() {return _NumOTs;}
     public SeasonWeek getSeasonWeek() {if (_SeasonWeek == null && _SeasonWeekID > 0) {_SeasonWeek = new SeasonWeek(_SeasonWeekID);}return _SeasonWeek;}
-    public Team getVisitor() {if (_Visitor == null && _VisitorID > 0) {_Visitor = new Team(_VisitorID);}return _Visitor;}    
-    public Team getHome() {if (_Home == null && _HomeID > 0) {_Home = new Team(_HomeID);}return _Home;}    
+    public Team getVisitor() {if (_Visitor == null && _VisitorID > 0) {_Visitor = new Team(_VisitorID);}return _Visitor;}
+    public Team getHome() {if (_Home == null && _HomeID > 0) {_Home = new Team(_HomeID);}return _Home;}
 
     // SETTERS
     public void setGameID(Integer GameID) {_GameID = GameID;}
     public void setSeasonWeekID(Integer SeasonWeekID) {_SeasonWeekID = SeasonWeekID;}
     public void setVisitorID(Integer VisitorID) {_VisitorID = VisitorID;}
     public void setHomeID(Integer HomeID) {_HomeID = HomeID;}
-    public void setGameDate(AuDate GameDate) {_GameDate = GameDate;}
+    public void setGameDate(LocalDateTime GameDate) {_GameDate = GameDate;}
     public void setWinnerID(Integer WinnerID) {_WinnerID = WinnerID;}
     public void setVisitorPts(Integer VisitorPts) {_VisitorPts = VisitorPts;}
     public void setHomePts(Integer HomePts) {_HomePts = HomePts;}
@@ -124,9 +125,9 @@ public class Game implements Serializable {
     public void setVisitor(Team Visitor) {_Visitor = Visitor;}
     public void setHome(Team Home) {_Home = Home;}
     public void setIsByeWeek(boolean IsByeWeek) {_IsByeWeek = IsByeWeek;}
-    
+
     // PUBLIC METHODS
-    
+
     public static Game getInstance(CachedRowSet crs) throws Exception {
         if (crs.getInt("VisitorID")==0 || crs.getInt("HomeID")==0) {
             return BYE_WEEK;
@@ -161,12 +162,12 @@ public class Game implements Serializable {
     public boolean isBye() { return _IsByeWeek; }
 
     public boolean getGameHasStarted() {
-        AuDate gameDate = getGameDate();
+        LocalDateTime gameDate = getGameDate();
         if (gameDate == null) {
             return false;
         }
-        
-        return new AuDate().after(gameDate, false);
+
+        return LocalDateTime.now().isAfter(gameDate);
     }
 
     public static List<Game> GetWeeklySchedule(int seasonWeekID, boolean justTop25) {
@@ -308,34 +309,40 @@ public class Game implements Serializable {
 
         return games;
    }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Game", "GameID", getGameID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        try {            
+        try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "GameID")) { _GameID = crs.getInt(prefix + "GameID"); }
             if (FSUtils.fieldExists(crs, prefix, "SeasonWeekID")) { _SeasonWeekID = crs.getInt(prefix + "SeasonWeekID"); }
             if (FSUtils.fieldExists(crs, prefix, "VisitorID")) { _VisitorID = crs.getInt(prefix + "VisitorID"); }
             if (FSUtils.fieldExists(crs, prefix, "HomeID")) { _HomeID = crs.getInt(prefix + "HomeID"); }
-            if (FSUtils.fieldExists(crs, prefix, "GameDate")) { _GameDate = new AuDate(crs.getDate(prefix + "GameDate"));
+            if (FSUtils.fieldExists(crs, prefix, "GameDate")) {
+                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "GameDate");
+                if (s != null) {
+                    _GameDate = s;
+                }
+
                 /* Set date to MST */
-                _GameDate.add(Calendar.HOUR_OF_DAY, -2); }
+                _GameDate.minusHours(2);
+            }
             if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { _WinnerID = crs.getInt(prefix + "WinnerID"); }
             if (FSUtils.fieldExists(crs, prefix, "VisitorPts")) { _VisitorPts = crs.getInt(prefix + "VisitorPts"); }
             if (FSUtils.fieldExists(crs, prefix, "HomePts")) { _HomePts = crs.getInt(prefix + "HomePts"); }
             if (FSUtils.fieldExists(crs, prefix, "FavoredID")) { _FavoredID = crs.getInt(prefix + "FavoredID"); }
             if (FSUtils.fieldExists(crs, prefix, "Spread")) { _Spread = crs.getDouble(prefix + "Spread"); }
             if (FSUtils.fieldExists(crs, prefix, "GameInfo")) { _GameInfo = crs.getString(prefix + "GameInfo"); }
-            if (FSUtils.fieldExists(crs, prefix, "NumOTs")) { _NumOTs = crs.getInt(prefix + "NumOTs"); }  
-            if (_VisitorID == 0) { _IsByeWeek = true; }                      
-            
+            if (FSUtils.fieldExists(crs, prefix, "NumOTs")) { _NumOTs = crs.getInt(prefix + "NumOTs"); }
+            if (_VisitorID == 0) { _IsByeWeek = true; }
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "SeasonWeek$", "SeasonWeekID")) { _SeasonWeek = new SeasonWeek(crs, "SeasonWeek$"); }
             if (FSUtils.fieldExists(crs, "VisitorTeam$", "TeamID")) { _Visitor = new Team(crs, "VisitorTeam$"); }
@@ -345,7 +352,7 @@ public class Game implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -356,7 +363,7 @@ public class Game implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue(getVisitorID()));
         sql.append(FSUtils.InsertDBFieldValue(getHomeID()));
-        sql.append(FSUtils.InsertDBFieldValue((getGameDate() == null) ? null : getGameDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue((getGameDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getGameDate()), true));
         sql.append(FSUtils.InsertDBFieldValue(getWinnerID()));
         sql.append(FSUtils.InsertDBFieldValue(getVisitorPts()));
         sql.append(FSUtils.InsertDBFieldValue(getHomePts()));
@@ -373,14 +380,14 @@ public class Game implements Serializable {
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
-        sql.append("UPDATE Game SET ");        
+        sql.append("UPDATE Game SET ");
         sql.append(FSUtils.UpdateDBFieldValue("SeasonWeekID", getSeasonWeekID()));
         sql.append(FSUtils.UpdateDBFieldValue("VisitorID", getVisitorID()));
         sql.append(FSUtils.UpdateDBFieldValue("HomeID", getHomeID()));
-        sql.append(FSUtils.UpdateDBFieldValue("GameDate", (getGameDate() == null) ? null : getGameDate().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("GameDate", (getGameDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getGameDate()), true));
         sql.append(FSUtils.UpdateDBFieldValue("WinnerID", getWinnerID()));
         sql.append(FSUtils.UpdateDBFieldValue("VisitorPts", getVisitorPts()));
         sql.append(FSUtils.UpdateDBFieldValue("HomePts", getHomePts()));

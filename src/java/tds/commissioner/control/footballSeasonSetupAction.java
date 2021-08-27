@@ -1,37 +1,38 @@
 package tds.commissioner.control;
 
-import bglib.util.AuDate;
 import bglib.util.FSUtils;
-import java.util.Calendar;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.*;
 import tds.main.control.BaseAction;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 public class footballSeasonSetupAction extends BaseAction {
-    
+
     private static final int NUM_PRO_WEEKS = 17;
     private static final int NUM_COLLEGE_WEEKS = 15;
-    
+
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
-        
+
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int[] sportIds = {Sport.PRO_FOOTBALL, Sport.COLLEGE_FOOTBALL };
         int[] fantasyGames = {FSGame.HEAD_TO_HEAD, FSGame.SALARY_CAP, FSGame.PRO_PICKEM, FSGame.PRO_LOVEEMLEAVEEM, FSGame.COLLEGE_LOVEEMLEAVEEM, FSGame.COLLEGE_PICKEM};
         String[] fsSeasonNames = {"Head to Head", "Salary Cap", "Pro Pickem", "Pro Love Leave", "College Love Leave", "College Pickem"};
-        
+
         // TODO : Add a UI so this part doesn't have to be hardcoded
-        int[] keeleFantasyLeagueSize = {8,10};        
+        int[] keeleFantasyLeagueSize = {8,10};
         int[] keeperUserIds = {1,2,5,6,7,9,10,36};
         int[] tenmanUserIds = {1,2,4,5,6,7,10,18,36,82};
         String[] keeperOwners = {"Grant", "Bert", "Brian", "Mike", "Case", "Ragz", "Jeremy", "John"};
-        String[] tenmanOwners = {"Grant", "Bert", "Dave", "Brian", "Mike", "Case", "Jeremy", "Scott", "John", "Nick"};        
-        
+        String[] tenmanOwners = {"Grant", "Bert", "Dave", "Brian", "Mike", "Case", "Jeremy", "Scott", "John", "Nick"};
+
         String nextPage = super.process(request,response);
         if (nextPage != null) { return nextPage; }
 
         nextPage = "commissioner/footballSeasonSetup";
-        
+
         // Figure out the next unique ids
         int seasonId = FSUtils.GetHighestIdNumber("Season", "SeasonID") + 1;
         int seasonWeekId = FSUtils.GetHighestIdNumber("SeasonWeek", "SeasonWeekID") + 1;
@@ -39,21 +40,21 @@ public class footballSeasonSetupAction extends BaseAction {
         int fsSeasonWeekId = FSUtils.GetHighestIdNumber("FSSeasonWeek", "FSSeasonWeekID") + 1;
         int fsLeagueId = FSUtils.GetHighestIdNumber("FSLeague", "FSLeagueID") + 1;
         int fsTeamId = FSUtils.GetHighestIdNumber("FSTeam", "FSTeamID") + 1;
-        
-        int nextSeasonWeekId = seasonWeekId;        
-        for (int i=0; i < sportIds.length; i++ ) {                        
-            // SEASON 
+
+        int nextSeasonWeekId = seasonWeekId;
+        for (int i=0; i < sportIds.length; i++ ) {
+            // SEASON
             Season season = new Season();
             season.setSeasonID(seasonId + i);
             season.setSportID(sportIds[i]);
             season.setSeasonName((sportIds[i] == Sport.PRO_FOOTBALL) ? "NFL Football" : (sportIds[i] == Sport.COLLEGE_FOOTBALL) ? "NCAA Football" : null);
             season.setIsActive(true);
             season.setSportYear(year);
-            season.Save();        
-        
+            season.Save();
+
             // SEASON WEEK
             int numWeeks = (sportIds[i] == Sport.PRO_FOOTBALL ? NUM_PRO_WEEKS : NUM_COLLEGE_WEEKS);
-            for (int j=0; j < numWeeks; j++ ) {  
+            for (int j=0; j < numWeeks; j++ ) {
                 SeasonWeek seasonWeek = new SeasonWeek();
                 seasonWeek.setSeasonWeekID(nextSeasonWeekId);
                 seasonWeek.setSeasonID(seasonId + i);
@@ -62,25 +63,25 @@ public class footballSeasonSetupAction extends BaseAction {
                 seasonWeek.setWeekType((j + 1 == 1) ? SeasonWeek.WeekType.INITIAL.toString() : (j + 1 == numWeeks) ? SeasonWeek.WeekType.FINAL.toString() : SeasonWeek.WeekType.MIDDLE.toString());
                 seasonWeek.Save();
                 nextSeasonWeekId += 1;
-            }  
+            }
         }
-        
+
         // FSSEASON
         int nextFSSeasonId = fsSeasonId;
         int nextFSSeasonWeekId = fsSeasonWeekId;
         for (int k=0; k < fantasyGames.length; k++ ) {
             FSSeason fsSeason = new FSSeason();
             fsSeason.setFSSeasonID(nextFSSeasonId);
-            fsSeason.setFSGameID(fantasyGames[k]);                
+            fsSeason.setFSGameID(fantasyGames[k]);
             fsSeason.setSeasonID((fantasyGames[k] == FSGame.COLLEGE_LOVEEMLEAVEEM || fantasyGames[k] == FSGame.COLLEGE_PICKEM ? seasonId + 1 : seasonId));
             fsSeason.setIsActive(true);
             fsSeason.setDisplayTeams(true);
             fsSeason.setSeasonName(year + " " + fsSeasonNames[k]);
-            fsSeason.Save();            
-            
-            // FSSEASONWEEK            
+            fsSeason.Save();
+
+            // FSSEASONWEEK
             int numWeeks = (fantasyGames[k] == FSGame.COLLEGE_PICKEM || fantasyGames[k] == FSGame.COLLEGE_LOVEEMLEAVEEM ? NUM_COLLEGE_WEEKS : NUM_PRO_WEEKS);
-            for (int m=0; m < numWeeks; m++ ) {   
+            for (int m=0; m < numWeeks; m++ ) {
                 FSSeasonWeek fsSeasonWeek = new FSSeasonWeek();
                 fsSeasonWeek.setFSSeasonWeekID(nextFSSeasonWeekId);
                 fsSeasonWeek.setFSSeasonID(nextFSSeasonId);
@@ -93,8 +94,8 @@ public class footballSeasonSetupAction extends BaseAction {
             }
             nextFSSeasonId += 1;
         }
-        
-        // FSLEAGUE      
+
+        // FSLEAGUE
         int nextFSLeagueId = fsLeagueId;
         for (int n=0; n < fantasyGames.length; n++ ) {
             if (fantasyGames[n] == FSGame.HEAD_TO_HEAD) {
@@ -126,14 +127,14 @@ public class footballSeasonSetupAction extends BaseAction {
             fsLeague.Save();
             nextFSLeagueId += 1;
         }
-        
+
         // TODO : Will want to take this out when we change the logic of getting the CurrentFSSeasonID instead of storing it in the FSGame table
-        
+
         // FSGame
         for (int o=0; o < fantasyGames.length; o++ ) {
            FSGame fsGame = new FSGame(fantasyGames[o]);
            fsGame.setCurrentFSSeasonID(fsSeasonId + o);
-           fsGame.Save(); 
+           fsGame.Save();
         }
 
         // TODO: Get a UI for this but for now just create the default leagues and put the keeper league teams and tenman league teams together
@@ -147,10 +148,10 @@ public class footballSeasonSetupAction extends BaseAction {
                 fsTeam.setFSUserID((p==0) ? keeperUserIds[q] : tenmanUserIds[q]);
                 fsTeam.setTeamName((p==0) ? keeperOwners[q] : tenmanOwners[q]);
                 fsTeam.setTeamNo(q+1);
-                fsTeam.setDateCreated(new AuDate());
+                fsTeam.setDateCreated(LocalDateTime.now());
                 fsTeam.Save();
                 nextFSTeamID += 1;
-            }            
+            }
         }
 
         // FSFOOTBALLSEASONDETAIL & FSFOOTBALLROSTERPOSITIONS

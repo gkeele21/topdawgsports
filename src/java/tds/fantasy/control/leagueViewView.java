@@ -21,7 +21,7 @@ import tds.main.control.BaseTeamView;
  * @author grant.keele
  */
 public class leagueViewView extends BaseTeamView {
-    
+
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
@@ -29,9 +29,9 @@ public class leagueViewView extends BaseTeamView {
         if (page != null) {
             return page;
         }
-        
+
         page = htmlPage;
-        
+
         System.out.println("Page : " + page);
 
         FSLeague league = _FSTeam.getFSLeague();
@@ -40,18 +40,18 @@ public class leagueViewView extends BaseTeamView {
         if (fsleagueId == 124 || fsleagueId == 125) {
             return "oldTimersVsPeeWeeHome.htm";
         }
-        
+
         FSSeason fsseason = league.getFSSeason();
-        
+
 //        int currentFSSeasonWeekID = fsseason.getCurrentFSSeasonWeekID();
 //        FSSeasonWeek currFSSeasonWeek = new FSSeasonWeek(currentFSSeasonWeekID);
         FSFootballSeasonDetail details = new FSFootballSeasonDetail(fsseason.getFSSeasonID());
-        
+
         int maxNumWeeks = details.getStartingWeekNumber() + details.getNumWeeksRegSeason() - 1;
         if (maxNumWeeks < 0) {
             maxNumWeeks = 0;
         }
-        
+
         int reqFSSeasonWeekId = FSUtils.getIntRequestParameter(request, "weekid", 0);
         _DisplayFSSeasonWeek = (FSSeasonWeek)_Session.getHttpSession().getAttribute("fantasyDisplayWeek");
 //        _Session.getHttpSession().setAttribute("fsseasonweek",currFSSeasonWeek);
@@ -72,21 +72,21 @@ public class leagueViewView extends BaseTeamView {
                 _CurrentFSSeasonWeek = week;
                 break weeks1;
             }
-            
+
             if (reqFSSeasonWeekId == 0)
             {
                 _DisplayFSSeasonWeek = week;
             }
-            
+
             if (week.getWeekType().equals(FSSeasonWeek.WeekType.INITIAL.toString()) && _DisplayFSSeasonWeek == null) {
                 _DisplayFSSeasonWeek = week;
             }
-            
+
             // If we get to the final week then set it to this as long as the week hasn't been found and the session object didn't have anything (null)
             if (week.getWeekType().equals(FSSeasonWeek.WeekType.FINAL.toString()) && _DisplayFSSeasonWeek == null) {
                 _DisplayFSSeasonWeek = week;
             }
-        }     
+        }
 
         // Set it to be the current week as long as the session object didn't have anything (null)
         if (_DisplayFSSeasonWeek == null)
@@ -95,15 +95,15 @@ public class leagueViewView extends BaseTeamView {
             _DisplayFSSeasonWeek = _CurrentFSSeasonWeek;
         }
         _Session.getHttpSession().setAttribute("fantasyCurrentWeek", _CurrentFSSeasonWeek);
-        
-        // retrieve league standings
-        
 
-        
+        // retrieve league standings
+
+
+
         request.setAttribute("fantasyDisplayWeek", _DisplayFSSeasonWeek);
         request.setAttribute("fantasyCurrentWeek", _CurrentFSSeasonWeek);
-        
-        String sort = "s.Wins desc,s.TotalFantasyPts desc";
+
+        String sort = "s.Wins desc,s.Losses asc, s.TotalFantasyPts desc";
         List<FSFootballStandings> lgStandings = league.GetStandings(_DisplayFSSeasonWeek.getFSSeasonWeekID(),sort);
         if (lgStandings.isEmpty())
         {
@@ -113,22 +113,22 @@ public class leagueViewView extends BaseTeamView {
             {
                 FSFootballStandings stand = new FSFootballStandings();
                 stand.setFSTeam(team);
-                
+
                 lgStandings.add(stand);
             }
         }
         request.setAttribute("leagueStandings",lgStandings);
-        
+
         // retrieve previous results
         List<FSFootballMatchup> results = league.GetResults(_DisplayFSSeasonWeek.getFSSeasonWeekID());
         request.setAttribute("previousResults",results);
 
         String displayWeekType = _DisplayFSSeasonWeek.getWeekType();
         String displayWeekStatus = _DisplayFSSeasonWeek.getStatus();
-        
+
         // retrieve current schedule
         if (displayWeekType.equals("FINAL") && displayWeekStatus.equals("COMPLETED")) {
-            
+
         } else
         {
             List<FSFootballMatchup> schedule = league.GetResults(_CurrentFSSeasonWeek.getFSSeasonWeekID());
@@ -164,8 +164,8 @@ public class leagueViewView extends BaseTeamView {
         }
 
         */
-        
+
         return page;
     }
-    
+
 }

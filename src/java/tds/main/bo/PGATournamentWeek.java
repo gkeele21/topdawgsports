@@ -2,32 +2,35 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class PGATournamentWeek implements Serializable {
-    
+
     static {
     }
 
     // DB FIELDS
     private Integer _PGATournamentID;
     private Integer _FSSeasonWeekID;
-    private AuDate _StartDate;    
-    private AuDate _EndDate;
+    private LocalDate _StartDate;
+    private LocalDate _EndDate;
     private double _TeamFee;
-    
+
     // OBJECTS
     private FSSeasonWeek _FSSeasonWeek;
     private PGATournament _PGATournament;
-    
+
     // CONSTRUCTORS
     public PGATournamentWeek() {
     }
@@ -70,7 +73,7 @@ public class PGATournamentWeek implements Serializable {
         }
 
     }
-    
+
     public PGATournamentWeek(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -78,12 +81,12 @@ public class PGATournamentWeek implements Serializable {
     public PGATournamentWeek(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public Integer getPGATournamentID() {return _PGATournamentID;}
-    public Integer getFSSeasonWeekID() {return _FSSeasonWeekID;}    
-    public AuDate getStartDate() {return _StartDate;}
-    public AuDate getEndDate() { return _EndDate; }
+    public Integer getFSSeasonWeekID() {return _FSSeasonWeekID;}
+    public LocalDate getStartDate() {return _StartDate;}
+    public LocalDate getEndDate() { return _EndDate; }
     public double getTeamFee() { return _TeamFee; }
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public PGATournament getPGATournament() {if (_PGATournament == null && _PGATournamentID > 0) {_PGATournament = new PGATournament(_PGATournamentID);}return _PGATournament;}
@@ -91,25 +94,25 @@ public class PGATournamentWeek implements Serializable {
     // SETTERS
     public void setPGATournamentID(Integer TournamentID) {_PGATournamentID = TournamentID;}
     public void setFSSeasonWeekID(Integer FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
-    public void setStartDate(AuDate StartDate) {_StartDate = StartDate;}
-    public void setEndDate(AuDate EndDate) {_EndDate = EndDate;}
+    public void setStartDate(LocalDate StartDate) {_StartDate = StartDate;}
+    public void setEndDate(LocalDate EndDate) {_EndDate = EndDate;}
     public void setTeamFee(double teamFee) {_TeamFee = teamFee;}
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
     public void setPGATournament(PGATournament PGATournament) {_PGATournament = PGATournament;}
-    
+
     // PUBLIC METHODS
-    
+
     public static PGATournamentWeek getInstance(CachedRowSet crs) throws Exception {
         return new PGATournamentWeek(crs);
     }
 
     public boolean getTournamentHasStarted() {
-        AuDate gameDate = getStartDate();
+        LocalDate gameDate = getStartDate();
         if (gameDate == null) {
             return false;
         }
-        
-        return new AuDate().after(gameDate, false);
+
+        return LocalDate.now().isAfter(gameDate);
     }
 
     public static List<PGATournamentWeek> ReadAllByFSSeason(int fsSeasonID) {
@@ -178,11 +181,11 @@ public class PGATournamentWeek implements Serializable {
     public List<PGATournamentWeekPlayer> GetField() {
         return GetField(null, null, false, 0);
     }
-    
+
     public List<PGATournamentWeekPlayer> GetField(String orderBy) {
         return GetField(null, orderBy, false, 0);
     }
-    
+
     public List<PGATournamentWeekPlayer> GetField(List<PGATournamentWeekPlayer> excludePlayers, String orderBy) {
         return GetField(excludePlayers, orderBy, false, 0);
     }
@@ -204,12 +207,12 @@ public class PGATournamentWeek implements Serializable {
         } else {
             excludeStr = "-1";
         }
-        
+
         if (orderBy == null)
         {
             orderBy = "twp.SalaryValue desc, p.lastName";
         }
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT").append(_Cols.getColumnList("PGATournamentWeekPlayer", "twp.", "PGATournamentWeekPlayer$")).append(", ");
         sql.append(_Cols.getColumnList("Player", "p.", "Player$")).append(", ");
@@ -234,7 +237,7 @@ public class PGATournamentWeek implements Serializable {
                 {
                     player.populateOwners(fsLeagueID);
                 }
-                
+
                 players.add(player);
             }
 
@@ -246,12 +249,12 @@ public class PGATournamentWeek implements Serializable {
 
         return players;
     }
-    
+
     public List<Player> GetPossibleField()
     {
         return GetPossibleField(null);
     }
-    
+
     public List<Player> GetPossibleField(List<PGATournamentWeekPlayer> excludePlayers) {
 
         List<Player> players = new ArrayList<Player>();
@@ -265,13 +268,14 @@ public class PGATournamentWeek implements Serializable {
         } else {
             excludeStr = "-1";
         }
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(", ").append(_Cols.getColumnList("Country", "cnt.", "Country$"));
         sql.append(" FROM Player p ");
         sql.append(" LEFT JOIN Country cnt on cnt.CountryID = p.CountryID ");
         sql.append(" WHERE p.IsActive = 1");
+        sql.append(" AND p.PositionID = 12");
         sql.append(" AND p.PlayerID not in (").append(excludeStr).append(")");
         sql.append(" ORDER BY p.lastName, p.firstName");
 
@@ -292,7 +296,7 @@ public class PGATournamentWeek implements Serializable {
 
         return players;
     }
-    
+
     public List<FSGolfStandings> GetLeagueTeamsEntered(Integer fsLeagueID, String orderBy) {
 
         List<FSGolfStandings> teams = new ArrayList<FSGolfStandings>();
@@ -301,7 +305,7 @@ public class PGATournamentWeek implements Serializable {
         {
             orderBy = "gs.WeekMoneyEarned desc, gs.FSTeamID";
         }
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT").append(_Cols.getColumnList("PGATournamentWeek", "tw.", "PGATournamentWeek$")).append(", ");
         sql.append(_Cols.getColumnList("PGATournament", "t.", "PGATournament$")).append(", ");
@@ -338,17 +342,27 @@ public class PGATournamentWeek implements Serializable {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PGATournamentWeek", "PGATournamentID", getPGATournamentID(), "FSSeasonWeekID", getFSSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        try {            
+        try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "PGATournamentID")) { _PGATournamentID = crs.getInt(prefix + "PGATournamentID"); }
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) { _FSSeasonWeekID = crs.getInt(prefix + "FSSeasonWeekID"); }
-            if (FSUtils.fieldExists(crs, prefix, "StartDate")) { _StartDate = new AuDate(crs.getDate(prefix + "StartDate")); }
-            if (FSUtils.fieldExists(crs, prefix, "EndDate")) { _EndDate = new AuDate(crs.getDate(prefix + "EndDate")); }
+            if (FSUtils.fieldExists(crs, prefix, "StartDate")) {
+                Date s = crs.getDate(prefix + "StartDate");
+                if (s != null) {
+                    _StartDate = s.toLocalDate();
+                }
+            }
+            if (FSUtils.fieldExists(crs, prefix, "EndDate")) {
+                Date s = crs.getDate(prefix + "EndDate");
+                if (s != null) {
+                    _EndDate = s.toLocalDate();
+                }
+            }
             if (FSUtils.fieldExists(crs, prefix, "TeamFee")) { setTeamFee(crs.getDouble(prefix + "TeamFee")); }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) { _FSSeasonWeek = new FSSeasonWeek(crs, "FSSeasonWeek$"); }
             if (FSUtils.fieldExists(crs, "PGATournament$", "PGATournamentID")) { _PGATournament = new PGATournament(crs, "PGATournament$"); }
@@ -357,7 +371,7 @@ public class PGATournamentWeek implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -366,8 +380,8 @@ public class PGATournamentWeek implements Serializable {
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getPGATournamentID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonWeekID()));
-        sql.append(FSUtils.InsertDBFieldValue((getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATE_PATTERN), true));
-        sql.append(FSUtils.InsertDBFieldValue((getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATE_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue((getStartDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getStartDate()), true));
+        sql.append(FSUtils.InsertDBFieldValue((getEndDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getEndDate()), true));
         sql.append(FSUtils.InsertDBFieldValue(getTeamFee()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
@@ -378,14 +392,14 @@ public class PGATournamentWeek implements Serializable {
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
-        sql.append("UPDATE PGATournamentWeek SET ");        
+        sql.append("UPDATE PGATournamentWeek SET ");
         sql.append(FSUtils.UpdateDBFieldValue("PGATournamentID", getPGATournamentID()));
         sql.append(FSUtils.UpdateDBFieldValue("FSSeasonWeekID", getFSSeasonWeekID()));
-        sql.append(FSUtils.UpdateDBFieldValue("StartDate", (getStartDate() == null) ? null : getStartDate().toString(BGConstants.PLAYDATE_PATTERN), true));
-        sql.append(FSUtils.UpdateDBFieldValue("EndDate", (getEndDate() == null) ? null : getEndDate().toString(BGConstants.PLAYDATE_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("StartDate", (getStartDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getStartDate()), true));
+        sql.append(FSUtils.UpdateDBFieldValue("EndDate", (getEndDate() == null) ? null : Application._DATE_TIME_FORMATTER.format(getEndDate()), true));
         sql.append(FSUtils.UpdateDBFieldValue("TeamFee", getTeamFee()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append(" WHERE PGATournamentID = ").append(getPGATournamentID());

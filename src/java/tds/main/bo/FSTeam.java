@@ -1,38 +1,40 @@
 package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
-import bglib.util.AuDate;
-import bglib.util.BGConstants;
+import bglib.util.Application;
 import bglib.util.FSUtils;
+import tds.data.CTDataSetDef;
+import tds.util.CTReturnCode;
+
+import sun.jdbc.rowset.CachedRowSet;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.data.CTDataSetDef;
 import static tds.main.bo.CTApplication._CT_DB;
-import tds.util.CTReturnCode;
 import static tds.util.CTReturnCode.RC_DB_ERROR;
 import static tds.util.CTReturnType.SUCCESS;
 
 public class FSTeam implements Serializable {
-    
+
     // DB FIELDS
     private Integer _FSTeamID;
-    private Integer _FSLeagueID;    
-    private Integer _FSUserID;    
-    private AuDate _DateCreated;
+    private Integer _FSLeagueID;
+    private Integer _FSUserID;
+    private LocalDateTime _DateCreated;
     private String _TeamName;
     private boolean _IsActive;
     private Integer _Division;
     private Integer _TeamNo;
     private Integer _ScheduleTeamNo;
-    private AuDate _LastAccessed;
+    private LocalDateTime _LastAccessed;
     private String _RankDraftMode;
     private boolean _IsAlive;
-    
+
     // OBJECTS
     private FSLeague _FSLeague;
     private FSUser _FSUser;
@@ -72,7 +74,7 @@ public class FSTeam implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public FSTeam(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -83,42 +85,42 @@ public class FSTeam implements Serializable {
 
     // GETTERS
     public Integer getFSTeamID() {return _FSTeamID;}
-    public Integer getFSLeagueID() {return _FSLeagueID;}    
-    public Integer getFSUserID() {return _FSUserID;}    
-    public AuDate getDateCreated() {return _DateCreated;}
+    public Integer getFSLeagueID() {return _FSLeagueID;}
+    public Integer getFSUserID() {return _FSUserID;}
+    public LocalDateTime getDateCreated() {return _DateCreated;}
     public String getTeamName() {return _TeamName;}
     public boolean isIsActive() {return _IsActive;}
     public Integer getDivision() {return _Division;}
     public Integer getTeamNo() {return _TeamNo;}
     public Integer getScheduleTeamNo() {return _ScheduleTeamNo;}
-    public AuDate getLastAccessed() {return _LastAccessed;}
-    public String getRankDraftMode() {return _RankDraftMode;}    
+    public LocalDateTime getLastAccessed() {return _LastAccessed;}
+    public String getRankDraftMode() {return _RankDraftMode;}
     public boolean getIsAlive() {return _IsAlive;}
     public FSLeague getFSLeague() {if (_FSLeague == null && _FSLeagueID > 0) {_FSLeague = new FSLeague(_FSLeagueID);}return _FSLeague;}
     public FSUser getFSUser() {if (_FSUser == null && _FSUserID > 0) {_FSUser = new FSUser(_FSUserID);}return _FSUser;}
-    
+
     // SETTERS
     public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}
     public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
     public void setFSUserID(int FSUserID) {_FSUserID = FSUserID;}
-    public void setDateCreated(AuDate DateCreated) {_DateCreated = DateCreated;}
+    public void setDateCreated(LocalDateTime DateCreated) {_DateCreated = DateCreated;}
     public void setTeamName(String TeamName) {_TeamName = TeamName;}
     public void setIsActive(boolean IsActive) {_IsActive = IsActive;}
     public void setDivision(int Division) {_Division = Division;}
     public void setTeamNo(int TeamNo) {_TeamNo = TeamNo;}
     public void setScheduleTeamNo(int ScheduleTeamNo) {_ScheduleTeamNo = ScheduleTeamNo;}
-    public void setLastAccessed(AuDate LastAccessed) {_LastAccessed = LastAccessed;}
+    public void setLastAccessed(LocalDateTime LastAccessed) {_LastAccessed = LastAccessed;}
     public void setRankDraftMode(String RankDraftMode) {_RankDraftMode = RankDraftMode;}
     public void setIsAlive(boolean IsAlive) {_IsAlive = IsAlive;}
     public void setFSLeague(FSLeague FSLeague) {_FSLeague = FSLeague;}
     public void setFSUser(FSUser FSUser) {_FSUser = FSUser;}
-    
+
     // PUBLIC METHODS
-    
+
     public List<FSRoster> getRoster(int fsseasonweekID) {
         return FSRoster.getRoster(_FSTeamID,fsseasonweekID);
     }
-    
+
     public List<FSRoster> getRoster(int fsseasonweekID,String activeState) {
         return FSRoster.getRoster(_FSTeamID,fsseasonweekID,activeState);
     }
@@ -132,8 +134,8 @@ public class FSTeam implements Serializable {
         String procCall = "FSTeam_lastFSTeam";
 
         int id = _CT_DB.insertDataSet(CTDataSetDef.INSERT_NEW_FSTEAM, procCall, fsleagueid, fsuserid, teamname,
-                new java.sql.Timestamp(new AuDate().getDateInMillis()));
-        
+                LocalDateTime.now());
+
         System.out.println("New fsteamid id : " + id);
         CTReturnCode ret = (id>0) ? new CTReturnCode(SUCCESS, id) : RC_DB_ERROR;
 
@@ -158,7 +160,7 @@ public class FSTeam implements Serializable {
             return RC_DB_ERROR;
         } finally {
         }
-        
+
         return new CTReturnCode(SUCCESS);
     }
 
@@ -194,7 +196,7 @@ public class FSTeam implements Serializable {
                 ptscrs.close();
 
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -219,7 +221,7 @@ public class FSTeam implements Serializable {
             int fsseasonid = getFSLeague().getFSSeasonID();
 
             int posid = pos.startsWith("3") ? 3 : Integer.parseInt(pos);
-            
+
             FSFootballRosterPositions rosterPositions = new FSFootballRosterPositions(fsseasonid, posid, fsleagueid);
             int maxstarters = rosterPositions.getMaxStart();
 
@@ -272,7 +274,7 @@ public class FSTeam implements Serializable {
     public void updateMaxRequests(int fsseasonweekid, int num) {
         CTApplication._CT_DB.updateDataSet(CTDataSetDef.UPDATE_FSFOOTBALLMAXREQUESTS, num, getFSTeamID(), fsseasonweekid);
     }
-    
+
     public int getMaxRequests(int fsseasonweekID) {
         int num = 0;
         CachedRowSet crs = null;
@@ -345,7 +347,7 @@ public class FSTeam implements Serializable {
 
         return teams;
    }
-    
+
     /*public int update() {
 
         int retVal = 0;
@@ -387,18 +389,18 @@ public class FSTeam implements Serializable {
                 }
                 sql.append(" , IsAlive = ").append(_IsAlive);
                 sql.append(" WHERE FSTeamID = ").append(_FSTeamID);
-            
+
                 retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
 
             }
-        
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
 
         return retVal;
     }*/
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSTeam", "FSTeamID", getFSTeamID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -406,10 +408,10 @@ public class FSTeam implements Serializable {
 
     public static boolean isLoveEmPlayerStillAvailable(int fsTeamId, int playerId) {
         boolean available = true;
-        
+
         try {
             List<FSRoster> allPlayers = FSRoster.getRosterAllTime(fsTeamId);
-            
+
             if (allPlayers.size() > 0) {
                 for (FSRoster roster : allPlayers) {
                     if (playerId == roster.getPlayerID()) {
@@ -425,29 +427,29 @@ public class FSTeam implements Serializable {
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
-        try {            
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
+        try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) { setFSLeagueID(crs.getInt(prefix + "FSLeagueID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "FSUserID")) { setFSUserID(crs.getInt(prefix + "FSUserID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "TeamName")) { setTeamName(crs.getString(prefix + "TeamName")); }            
-            if (FSUtils.fieldExists(crs, prefix, "DateCreated")) { setDateCreated(new AuDate(crs.getTimestamp(prefix + "DateCreated"))); }            
-            if (FSUtils.fieldExists(crs, prefix, "LastAccessed")) { setLastAccessed(new AuDate(crs.getTimestamp(prefix + "LastAccessed"))); }            
-            if (FSUtils.fieldExists(crs, prefix, "IsActive")) { setIsActive(crs.getBoolean(prefix + "IsActive")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Division")) { setDivision(crs.getInt(prefix + "Division")); }            
-            if (FSUtils.fieldExists(crs, prefix, "TeamNo")) { setTeamNo(crs.getInt(prefix + "TeamNo")); }            
-            if (FSUtils.fieldExists(crs, prefix, "ScheduleTeamNo")) { setScheduleTeamNo(crs.getInt(prefix + "ScheduleTeamNo")); }            
-            if (FSUtils.fieldExists(crs, prefix, "RankDraftMode")) { setRankDraftMode(crs.getString(prefix + "RankDraftMode")); }            
+            if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }
+            if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) { setFSLeagueID(crs.getInt(prefix + "FSLeagueID")); }
+            if (FSUtils.fieldExists(crs, prefix, "FSUserID")) { setFSUserID(crs.getInt(prefix + "FSUserID")); }
+            if (FSUtils.fieldExists(crs, prefix, "TeamName")) { setTeamName(crs.getString(prefix + "TeamName")); }
+            if (FSUtils.fieldExists(crs, prefix, "DateCreated")) { setDateCreated(LocalDateTime.now()); }
+            if (FSUtils.fieldExists(crs, prefix, "LastAccessed")) { setLastAccessed(LocalDateTime.now()); }
+            if (FSUtils.fieldExists(crs, prefix, "IsActive")) { setIsActive(crs.getBoolean(prefix + "IsActive")); }
+            if (FSUtils.fieldExists(crs, prefix, "Division")) { setDivision(crs.getInt(prefix + "Division")); }
+            if (FSUtils.fieldExists(crs, prefix, "TeamNo")) { setTeamNo(crs.getInt(prefix + "TeamNo")); }
+            if (FSUtils.fieldExists(crs, prefix, "ScheduleTeamNo")) { setScheduleTeamNo(crs.getInt(prefix + "ScheduleTeamNo")); }
+            if (FSUtils.fieldExists(crs, prefix, "RankDraftMode")) { setRankDraftMode(crs.getString(prefix + "RankDraftMode")); }
             if (FSUtils.fieldExists(crs, prefix, "IsAlive")) { setIsAlive(crs.getBoolean(prefix + "IsAlive")); }
             // OBJECTS
-            if (FSUtils.fieldExists(crs, "FSUser$", "FSUserID")) { setFSUser(new FSUser(crs, "FSUser$")); }            
-            if (FSUtils.fieldExists(crs, "FSLeague$", "FSLeagueID")) { setFSLeague(new FSLeague(crs, "FSLeague$")); }            
+            if (FSUtils.fieldExists(crs, "FSUser$", "FSUserID")) { setFSUser(new FSUser(crs, "FSUser$")); }
+            if (FSUtils.fieldExists(crs, "FSLeague$", "FSLeagueID")) { setFSLeague(new FSLeague(crs, "FSLeague$")); }
          } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-        
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -458,8 +460,8 @@ public class FSTeam implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getFSLeagueID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSUserID()));
         sql.append(FSUtils.InsertDBFieldValue(getTeamName(), true));
-        sql.append(FSUtils.InsertDBFieldValue((getDateCreated() == null) ? null : getDateCreated().toString(BGConstants.PLAYDATETIME_PATTERN), true));
-        sql.append(FSUtils.InsertDBFieldValue((getLastAccessed() == null) ? null : getLastAccessed().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.InsertDBFieldValue((getDateCreated() == null) ? null : Application._DATE_TIME_FORMATTER.format(getDateCreated()), true));
+        sql.append(FSUtils.InsertDBFieldValue((getLastAccessed() == null) ? null : Application._DATE_TIME_FORMATTER.format(getLastAccessed()), true));
         sql.append(FSUtils.InsertDBFieldValue(isIsActive()));
         sql.append(FSUtils.InsertDBFieldValue(getDivision()));
         sql.append(FSUtils.InsertDBFieldValue(getTeamNo()));
@@ -482,8 +484,8 @@ public class FSTeam implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("FSLeagueID", getFSLeagueID()));
         sql.append(FSUtils.UpdateDBFieldValue("FSUserID", getFSUserID()));
         sql.append(FSUtils.UpdateDBFieldValue("TeamName", getTeamName(), true));
-        sql.append(FSUtils.UpdateDBFieldValue("DateCreated", (getDateCreated() == null) ? null : getDateCreated().toString(BGConstants.PLAYDATETIME_PATTERN), true));
-        sql.append(FSUtils.UpdateDBFieldValue("LastAccessed", (getLastAccessed() == null) ? null : getLastAccessed().toString(BGConstants.PLAYDATETIME_PATTERN), true));
+        sql.append(FSUtils.UpdateDBFieldValue("DateCreated", (getDateCreated() == null) ? null : Application._DATE_TIME_FORMATTER.format(getDateCreated()), true));
+        sql.append(FSUtils.UpdateDBFieldValue("LastAccessed", (getLastAccessed() == null) ? null : Application._DATE_TIME_FORMATTER.format(getLastAccessed()), true));
         sql.append(FSUtils.UpdateDBFieldValue("IsActive", isIsActive()));
         sql.append(FSUtils.UpdateDBFieldValue("Division", getDivision()));
         sql.append(FSUtils.UpdateDBFieldValue("TeamNo", getTeamNo()));

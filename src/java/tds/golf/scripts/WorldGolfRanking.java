@@ -70,7 +70,7 @@ public class WorldGolfRanking implements Harnessable {
         Connection con = null;
         try {
             con = CTApplication._CT_QUICK_DB.getConn(false);
-            
+
             URL url = new URL(filePath);
 //
 //            InputStream uin = url.openStream();
@@ -80,7 +80,7 @@ public class WorldGolfRanking implements Harnessable {
 //            file.append("<?xml version=\"1.0\"?>\n\r");
 //            file.append("<!DOCTYPE some_name [\n\r");
 //            file.append("<!ENTITY nbsp \" \">\n\r");
-//            file.append("]>\n\r"); 
+//            file.append("]>\n\r");
 //            String line;
             boolean ok = false;
 //            while ((line = in.readLine()) != null) {
@@ -122,51 +122,51 @@ public class WorldGolfRanking implements Harnessable {
             }
             response.append("</table>");
             in.close();
-            
+
             String responseStr = response.toString();
 
             SAXBuilder jdomBuilder = new SAXBuilder();
-            
+
             Document jdomDocument = jdomBuilder.build(new StringReader(responseStr));
-            
+
 //            System.out.println(jdomDocument.getRootElement().getName());
             Element table = jdomDocument.getRootElement();
-            
+
 //            System.out.println(table.getNamespacesIntroduced());
-                      
+
             List<Element> tableChildren = table.getChildren();
-            
+
             Element tBody = tableChildren.get(1);
             List<Element> tBodyChildren = tBody.getChildren();
-            
+
             int numRows = tBodyChildren.size();
-            
+
             for (int i = 0; i < numRows; i++) {
                 Element rowChild = tBodyChildren.get(i);
-                
+
                 String fullId = rowChild.getAttributeValue("id");
 //                System.out.println("ID : " + fullId);
-                
+
                 if (fullId == null)
                 {
                     continue;
                 }
-                
+
                 // parse out the Id to get the PlayerId
                 String statsPlayerId = fullId.replace("playerStatsRow", "");
                 System.out.println("PlayerId : " + statsPlayerId);
-                
+
                 // for each row - get the td children
                 List<Element> rowChildren = rowChild.getChildren();
-                
+
                 int numCols = rowChildren.size();
                 if (numCols > 0) {
                     // col 0 is this week's ranking
                     Element wgrElement = rowChildren.get(0);
-                    
+
                     String wgr = wgrElement.getTextTrim();
                     System.out.print("   WGR : " + wgr);
-                    
+
                     // update this player's WGR for this week
                     int playerId = 0;
                     StringBuilder query = new StringBuilder();
@@ -176,11 +176,11 @@ public class WorldGolfRanking implements Harnessable {
                     if (crs3.next()) {
                         playerId = crs3.getInt("PlayerID");
                     }
-                    
+
                     if (playerId > 0)
                     {
                         PGATournamentWeekPlayer weekPlayer = new PGATournamentWeekPlayer(pgaTournamentId, fsSeasonWeekId, playerId);
-                    
+
                         if (weekPlayer != null && weekPlayer.getID() > 0) {
                             weekPlayer.setWorldGolfRanking(Integer.parseInt(wgr));
                             weekPlayer.Save();
@@ -188,32 +188,32 @@ public class WorldGolfRanking implements Harnessable {
                         } else {
                             System.out.println(" : SKIPPED - not in field.");
                         }
-                        
+
                     } else {
                         Element playerNameElement = rowChildren.get(2);
-                        
+
                         // this has an anchor child that contains the name
                         List<Element> playerChildren = playerNameElement.getChildren();
-                        
+
                         int playerChildrenSize = playerChildren.size();
-                        
+
                         String playerName = "";
                         for (int x = 0; x < playerChildrenSize; x++) {
                             Element pc = playerChildren.get(x);
-                            
+
                             String pcName = pc.getName();
                             if ("a".equals(pcName)) {
                                 playerName = pc.getText().trim();
                             }
-                                
+
                         }
-                        
+
                         String country = rowChildren.get(8).getTextTrim();
                         System.out.println(" : ERROR - No Player found: [" + playerName + "] from [" + country + "] with extId of [" + statsPlayerId + "]");
                     }
                 }
             }
-            
+
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "WorldGolfRanking Update Error : {0}", e.getMessage());
             e.printStackTrace();
@@ -226,26 +226,26 @@ public class WorldGolfRanking implements Harnessable {
     public static void main(String[] args) {
         try {
             WorldGolfRanking ranking = new WorldGolfRanking();
-            
+
             FSGame fsGame = new FSGame(12);
             int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
             FSSeason fsseason = new FSSeason(currentFSSeasonID);
 
             FSSeasonWeek fsSeasonWeek = fsseason.getCurrentFSSeasonWeek();
             int fsSeasonWeekId = fsSeasonWeek.getFSSeasonWeekID();
-            
+
             PGATournamentWeek tournamentWeek = PGATournamentWeek.getTournamentWeek(fsSeasonWeekId);
             int pgaTournamentId = tournamentWeek.getPGATournamentID();
-            
+
             if (args != null && args.length > 0) {
                 try {
                     pgaTournamentId = Integer.parseInt(args[0]);
                     fsSeasonWeekId = Integer.parseInt(args[1]);
                 } catch (Exception e) {
-                    
+
                 }
             }
-            
+
             if (fsSeasonWeekId == 0 || pgaTournamentId == 0)
             {
                 System.out.println("Error: You must pass in PGATournamentID as the 1st param and FSSeasonWeekId as the 2nd param");

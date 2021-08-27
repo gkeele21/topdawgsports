@@ -19,26 +19,27 @@ public class Player implements Serializable {
     public static void setPlayerCache(Map<Integer,Player> aPlayerCache) {
         _PlayerCache = aPlayerCache;
     }
-    
+
     // DB FIELDS
     private int _PlayerID;
-    private int _TeamID;    
-    private int _PositionID;    
+    private int _TeamID;
+    private int _PositionID;
     private String _FirstName;
     private String _LastName;
     private boolean _IsActive;
     private int _StatsPlayerID;
     private String _LiveStatsName;
-    private int _CountryID;    
+    private int _CountryID;
     private String _QuickStatsName;
     private String _NFLGameStatsID;
     private int _YearsPro;
-                
+    private int _StatsPlayerID2;
+
     // OBJECTS
     private Team _Team;
     private Position _Position;
     private Country _Country;
-            
+
     // ADDITIONAL FIELDS
     private PlayerInjury _PlayerInjury;
     private static Map<Integer,Player> _PlayerCache = new HashMap<Integer,Player>();
@@ -58,9 +59,9 @@ public class Player implements Serializable {
 
     // CONSTRUCTORS
     public Player() {
-        
+
     }
-  
+
     public Player(int playerID) {
         CachedRowSet crs = null;
         try {
@@ -97,25 +98,26 @@ public class Player implements Serializable {
 
     // GETTERS
     public int getPlayerID() {return _PlayerID;}
-    public int getTeamID() {return _TeamID;}    
-    public int getPositionID() {return _PositionID;}    
+    public int getTeamID() {return _TeamID;}
+    public int getPositionID() {return _PositionID;}
     public String getFirstName() {return _FirstName;}
     public String getLastName() {return _LastName;}
     public boolean isIsActive() {return _IsActive;}
     public int getStatsPlayerID() {return _StatsPlayerID;}
     public String getLiveStatsName() {return _LiveStatsName;}
-    public int getCountryID() {return _CountryID;}    
+    public int getCountryID() {return _CountryID;}
     public String getQuickStatsName() {return _QuickStatsName;}
     public String getNFLGameStatsID() {return _NFLGameStatsID;}
     public int getYearsPro() {return _YearsPro;}
-    
-    public String getFullName() {return getFirstName() + " " + getLastName();}    
+    public int getStatsPlayerID2() {return _StatsPlayerID2;}
+
+    public String getFullName() {return getFirstName() + " " + getLastName();}
     public Team getTeam() {if (_Team == null && _TeamID > 0) {_Team = new Team(_TeamID);}return _Team;}
     public Position getPosition() {if (_Position == null && _PositionID > 0) {_Position= new Position(_PositionID);}return _Position;}
-    public Country getCountry() {if (_Country == null && _CountryID > 0) {_Country = new Country(_CountryID);}return _Country;}    
+    public Country getCountry() {if (_Country == null && _CountryID > 0) {_Country = new Country(_CountryID);}return _Country;}
     public Map<Integer,FSPlayerValue> getPlayerValueCache() {return _PlayerValueCache;}
     public Map<Integer,FootballStats> getWeeklyStats() {return _WeeklyStats;}
-    
+
     // SETTERS
     public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
     public void setTeamID(int TeamID) {_TeamID = TeamID;}
@@ -132,12 +134,13 @@ public class Player implements Serializable {
     public void setQuickStatsName(String QuickStatsName) {_QuickStatsName = QuickStatsName;}
     public void setNFLGameStatsID(String NFLGameStatsID) {_NFLGameStatsID = NFLGameStatsID;}
     public void setYearsPro(int yearsPro) {_YearsPro = yearsPro;}
-    
+    public void setStatsPlayerID2(int StatsPlayerID) {_StatsPlayerID2 = StatsPlayerID;}
+
     public void setPlayerValueCache(Map<Integer,FSPlayerValue> PlayerValueCache) {_PlayerValueCache = PlayerValueCache;}
     public void setWeeklyStats(Map<Integer,FootballStats> WeeklyStats) {_WeeklyStats = WeeklyStats;}
-    
+
     // PUBLIC METHODS
-    
+
     public static Player createFromStatsID(String statsID) {
         Player player = null;
         CachedRowSet crs = null;
@@ -161,13 +164,13 @@ public class Player implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return player;
 
     }
 
     public static Player getInstance(int playerID) {
-        
+
         Player player = getPlayerCache().get(playerID);
         if (player == null) {
 
@@ -198,12 +201,12 @@ public class Player implements Serializable {
                 JDBCDatabase.closeCRS(crs);
             }
         }
-        
+
         return player;
     }
 
     public FSPlayerValue getFSPlayerValue(int fsseasonweekid) {
-        
+
         FSPlayerValue playerValue = null;
         if (getPlayerValueCache() == null) {
             setPlayerValueCache(new HashMap<Integer,FSPlayerValue>());
@@ -216,10 +219,10 @@ public class Player implements Serializable {
                 getPlayerValueCache().put(fsseasonweekid,playerValue);
             }
         }
-        
+
         return playerValue;
     }
-    
+
     public static List<FSPlayerValue> getPlayerValues(FSSeasonWeek fsseasonweek, int posID, String orderby, List<FSPlayerValue> exceptPlayers) throws Exception {
         List<FSPlayerValue> players = new ArrayList<FSPlayerValue>();
         int fsseasonweekId = fsseasonweek.getFSSeasonWeekID();
@@ -238,7 +241,7 @@ public class Player implements Serializable {
         } else {
             exceptStr = "-1";
         }
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
@@ -294,7 +297,7 @@ public class Player implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return players;
     }
 
@@ -303,14 +306,14 @@ public class Player implements Serializable {
         if (getWeeklyStats() == null || getWeeklyStats().size() <= 1) {
             buildWeeklyStats(null);
         }
-        
+
         if (getWeeklyStats() != null) {
             Iterator keyValuePairs = getWeeklyStats().entrySet().iterator();
             for (int i = 0; i < getWeeklyStats().size(); i++) {
                 Map.Entry entry = (Map.Entry) keyValuePairs.next();
                 Object key = entry.getKey();
                 FootballStats value = (FootballStats)entry.getValue();
-                
+
                 list.add(value);
             }
 
@@ -340,15 +343,15 @@ public class Player implements Serializable {
                 }
             }
         }
-        
+
         return stats;
     }
-    
+
     public FootballStats getTotalFootballStats() {
 //        System.out.println("Here in getTotalFootballStats for playerid : " + this.getPlayerID());
         return getFootballStats(0);
     }
-    
+
     public double getAvgFantasyPts() {
         //return 0;
         FootballStats stats = getTotalFootballStats();
@@ -358,7 +361,7 @@ public class Player implements Serializable {
             return 0;
         }
     }
-    
+
     public double getAvgSalFantasyPts() {
         //return 0;
         FootballStats stats = getTotalFootballStats();
@@ -397,7 +400,7 @@ public class Player implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public void buildWeeklyStats(Connection con) {
         CachedRowSet crs = null;
         try {
@@ -407,7 +410,7 @@ public class Player implements Serializable {
             if (con == null) {
                 con = CTApplication._CT_QUICK_DB.getConn();
             }
-            
+
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FootballStats", "st.", "FootballStats$"));
             sql.append(",").append(_Cols.getColumnList("SeasonWeek", "sw.", "SeasonWeek$"));
@@ -421,7 +424,7 @@ public class Player implements Serializable {
             sql.append(" WHERE st.StatsPlayerID = '").append(getNFLGameStatsID()).append("'");
             sql.append(" AND st.SeasonID = ").append(Season._CurrentSeasonID);
             sql.append(" ORDER BY st.SeasonWeekID");
-            
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FootballStats stats = new FootballStats(crs,"FootballStats$");
@@ -438,9 +441,9 @@ public class Player implements Serializable {
             if (getWeeklyStats() == null) {
                 setWeeklyStats(new TreeMap<Integer,FootballStats>());
             }
-            
+
             if (!"0".equals(getNFLGameStatsID())) {
-                
+
                 StringBuilder sql = new StringBuilder();
                 sql.append(" SELECT ").append(_Cols.getColumnList("FootballStats", "st.", "FootballStats$"));
                 sql.append(",").append(_Cols.getColumnList("SeasonWeek", "sw.", "SeasonWeek$"));
@@ -471,7 +474,7 @@ public class Player implements Serializable {
     }
 
     public void buildWeeklyStats(int seasonWeekID, CachedRowSet crs, String prefix) {
-        
+
         try {
             if (getWeeklyStats() == null) {
                 setWeeklyStats(new TreeMap<Integer,FootballStats>());
@@ -537,18 +540,18 @@ public class Player implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return players;
     }
-    
+
     public static List<Player> ReadGolfers() throws Exception {
         return ReadGolfers(null);
     }
-    
+
     public static List<Player> ReadGolfers(String orderby) throws Exception {
         return ReadGolfers(orderby, false);
     }
-    
+
     public static List<Player> ReadGolfers(String orderby, boolean activeOnly) throws Exception {
         List<Player> players = new ArrayList<Player>();
 
@@ -584,7 +587,7 @@ public class Player implements Serializable {
         } finally {
             JDBCDatabase.closeCRS(crs);
         }
-        
+
         return players;
     }
 
@@ -605,8 +608,8 @@ public class Player implements Serializable {
         sql.append(" order by t.FSTeamID");
 
         CachedRowSet crs = null;
-        try {           
-            
+        try {
+
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
@@ -626,14 +629,14 @@ public class Player implements Serializable {
         if (_PlayerInjury == null) {
             _PlayerInjury = new PlayerInjury(getPlayerID());
         }
-        
+
         return _PlayerInjury;
     }
 
     public void setPlayerInjury(PlayerInjury PlayerInjury) {
         this._PlayerInjury = PlayerInjury;
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
@@ -684,9 +687,13 @@ public class Player implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "NFLGameStatsID")) {
                 setNFLGameStatsID(crs.getString(prefix + "NFLGameStatsID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "YearsPro")) {
                 setYearsPro(crs.getInt(prefix + "YearsPro"));
+            }
+
+            if (FSUtils.fieldExists(crs, prefix, "StatsPlayerID2")) {
+                setStatsPlayerID2(crs.getInt(prefix + "StatsPlayerID2"));
             }
 
             // OBJECTS
@@ -719,17 +726,17 @@ public class Player implements Serializable {
             if (FSUtils.fieldExists(crs, "TotalFootballStats$", "StatsPlayerID")) {
                 buildWeeklyStats(0, crs, "TotalFootballStats$");
             }
- 
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public void Save() throws Exception {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Player", "PlayerID", getPlayerID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     public CTReturnCode Delete() {
         int res = 0;
         StringBuilder sql = new StringBuilder();
@@ -742,15 +749,15 @@ public class Player implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-        
+
         return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
-    
+
     private int Insert() throws Exception {
         int newId = -1;
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO Player ");
-        sql.append("(TeamID, PositionID, FirstName, LastName, IsActive, StatsPlayerID, LiveStatsName, CountryID, QuickStatsName, NFLGameStatsID, YearsPro) ");
+        sql.append("(TeamID, PositionID, FirstName, LastName, IsActive, StatsPlayerID, LiveStatsName, CountryID, QuickStatsName, NFLGameStatsID, YearsPro, StatsPlayerID2) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getTeamID()));
         sql.append(FSUtils.InsertDBFieldValue(getPositionID()));
@@ -763,6 +770,7 @@ public class Player implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getQuickStatsName(), true));
         sql.append(FSUtils.InsertDBFieldValue(getNFLGameStatsID(), true));
         sql.append(FSUtils.InsertDBFieldValue(getYearsPro()));
+        sql.append(FSUtils.InsertDBFieldValue(getStatsPlayerID2()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -771,7 +779,7 @@ public class Player implements Serializable {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error Inserting new Player", e);
         }
-        
+
         return newId;
     }
 
@@ -779,7 +787,7 @@ public class Player implements Serializable {
         int success = -1;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("UPDATE Player SET ");        
+        sql.append("UPDATE Player SET ");
         sql.append(FSUtils.UpdateDBFieldValue("TeamID", getTeamID()));
         sql.append(FSUtils.UpdateDBFieldValue("PositionID", getPositionID()));
         sql.append(FSUtils.UpdateDBFieldValue("FirstName", getFirstName(), true));
@@ -791,6 +799,7 @@ public class Player implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("QuickStatsName", getQuickStatsName(), true));
         sql.append(FSUtils.UpdateDBFieldValue("NFLGameStatsID", getNFLGameStatsID(), true));
         sql.append(FSUtils.UpdateDBFieldValue("YearsPro", getYearsPro()));
+        sql.append(FSUtils.UpdateDBFieldValue("StatsPlayerID2", getStatsPlayerID2()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE PlayerID = ").append(getPlayerID());
 
@@ -801,7 +810,7 @@ public class Player implements Serializable {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error updating Player", e);
         }
-        
+
         return success;
     }
 }
