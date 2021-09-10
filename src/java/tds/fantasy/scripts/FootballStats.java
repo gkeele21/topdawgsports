@@ -10,6 +10,12 @@ import bglib.scripts.ResultCode;
 import bglib.util.Application;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+import tds.main.bo.FSGame;
+import tds.main.bo.FSSeason;
+import tds.main.bo.FSSeasonWeek;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -22,11 +28,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.CTApplication;
-import tds.main.bo.FSGame;
-import tds.main.bo.FSSeason;
-import tds.main.bo.FSSeasonWeek;
 
 /**
  *
@@ -40,7 +41,7 @@ public class FootballStats implements Harnessable {
 //    private static final int _FSSeasonID = 20;
 //    private static final int _SeasonID = 8;
     private static final String _Year = "13";
-    
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -147,7 +148,7 @@ public class FootballStats implements Harnessable {
     public static final String DEFSACKS = "IDPSacks";
     public static final String DEFSACKYARDSLOST = "IDPSackYardsLost";
     public static final String DEFQBHURRIES = "IDPQBHurries";
-    
+
     private static final String[] TEMPPLAYERSTATS = new String[] { PLAYERNAME,PLAYERID,PROTEAM,
         PROTEAMID,POSITION,INJURYSTATUS,STARTED,PLAYED,INACTIVE,PASSCOMP,PASSATT,PASSYARDS,
         PASSINT,PASSTD,PASS2PT,SACKED,SACKEDYARDSLOST,RUSHATT,RUSHYARDS,RUSHTD,RUSH2PT,
@@ -189,7 +190,7 @@ public class FootballStats implements Harnessable {
         try {
             FootballStats stats = new FootballStats();
 //            FootballStats.findStatsPlayerIds();
-            
+
             stats.run();
             /*int seasonid = 4;
             int seasonweekid = 33;
@@ -200,13 +201,13 @@ public class FootballStats implements Harnessable {
         }
 
     }
-    
+
     @Override
     public void run() {
 
         int statsofficial = 1;
         _Logger.info("Starting...");
-        
+
         FSGame fsGame = new FSGame(1);
         int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
         FSSeason currentFSSeason = new FSSeason(currentFSSeasonID);
@@ -220,7 +221,7 @@ public class FootballStats implements Harnessable {
             FSSeasonWeek fsseasonweek = new FSSeasonWeek(fsSeasonWeekID);
             //int seasonweekid = fsseasonweek.getSeasonWeekID();
             int seasonweeknum = fsseasonweek.getFSSeasonWeekNo();
-                    
+
 //
 //            if (_Args.length>0) {
 //                try {
@@ -303,7 +304,6 @@ public class FootballStats implements Harnessable {
             int[] statscolumnspositions = tablename.equals("TempFootballStats") ? TEMPPLAYERSTATSCOLUMNS : TEMPDEFENSESTATSCOLUMNS;
 
             StringTokenizer st = new StringTokenizer(str,"\n");
-            Connection con = CTApplication._CT_QUICK_DB.getConn(false);
             while (st.hasMoreTokens()) {
                 try {
                     String line = st.nextToken();
@@ -351,7 +351,7 @@ public class FootballStats implements Harnessable {
 
                             sql.append(")");
                             _Logger.info(sql.toString());
-                            CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         }
                     }
                 } catch (Exception e) {
@@ -359,10 +359,6 @@ public class FootballStats implements Harnessable {
                     _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
                 }
             }
-            con.commit();
-
-            con.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -376,13 +372,11 @@ public class FootballStats implements Harnessable {
         // clear out existing footballstats
         CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = " + seasonweekid);
 
-        Connection con = CTApplication._CT_QUICK_DB.getConn(false);
-
         // Import Offensive Stats
         StringBuilder sql = new StringBuilder();
         sql.append("select * from TempFootballStats");
 
-        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
         int count = 0;
         while (crs.next()) {
 
@@ -398,7 +392,7 @@ public class FootballStats implements Harnessable {
             int played = crs.getInt(PLAYED);
             Boolean obj = crs.getBoolean(INACTIVE);
             int inactive = obj ? 1 : 0;
-            
+
             int comp = crs.getInt(PASSCOMP);
             int att = crs.getInt(PASSATT);
             int inter = crs.getInt(PASSINT);
@@ -427,7 +421,7 @@ public class FootballStats implements Harnessable {
             int fgover50 = crs.getInt(FG50_);
             int fumbleslost = crs.getInt(FUMBLESLOST);
             String tddistances = crs.getString(TDDISTANCES);
-            
+
             int xtratd = 0;
             int fglengths = 0;
 
@@ -457,7 +451,7 @@ public class FootballStats implements Harnessable {
                 rushyards = 0;
             if (recyards < 0)
                 recyards = 0;
-            
+
             // calculate Player Fantasy Points
 
             double fantasypts = 0.00;
@@ -473,7 +467,7 @@ public class FootballStats implements Harnessable {
             for (int x = 1;x <= inter;x++) {
                 intfantasypts += x;
             }
-            
+
             double fumfantasypts = 0.00;
             for (int x = 1;x <= fumbleslost;x++) {
                 fumfantasypts += x;
@@ -537,7 +531,7 @@ public class FootballStats implements Harnessable {
                         fantasypts + "," +
                         salfantasypts + ")");
             _Logger.info(sql.toString());
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         }
         crs.close();
 
@@ -546,7 +540,7 @@ public class FootballStats implements Harnessable {
         sql = new StringBuilder();
         sql.append("select * from TempFootballStatsIDP");
 
-        crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+        crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
         count = 0;
         while (crs.next()) {
 
@@ -593,13 +587,13 @@ public class FootballStats implements Harnessable {
             // check to see if any of the idp guys already have a record from the offensive stats
             String tempsql = "select * from FootballStats where SeasonWeekID = " + seasonweekid +
                         " and StatsPlayerID = " + playerid;
-            CachedRowSet tempcrs = CTApplication._CT_QUICK_DB.executeQuery(con,tempsql);
+            CachedRowSet tempcrs = CTApplication._CT_QUICK_DB.executeQuery(tempsql);
             if (tempcrs.next()) {
                 // update existing record
-                
+
                 double fantasypts = tempcrs.getDouble("FantasyPts");
                 double salfantasypts = tempcrs.getDouble("SalFantasyPts");
-                
+
                 double deffantpts = 6*((double)intreturntd + (double)fumblereturnsfortd + (double)xtratd) +
                         4*((double)safeties + (double)interceptions + (double)fumblerecoveries) +
                         3*((double)sacks) +
@@ -634,7 +628,7 @@ public class FootballStats implements Harnessable {
                             " and SeasonWeekID = " + seasonweekid);
 
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
             } else {
                 // calculate Player Fantasy Points
@@ -683,22 +677,16 @@ public class FootballStats implements Harnessable {
                             fantasypts + ")");
 
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
-                
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+
             }
-            
+
             tempcrs.close();
-            
+
         }
 
         crs.close();
 
-        con.commit();
-
-        //CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FootballStats where Games < 1 and Year = " + season.getYear());
-        //con.commit();
-
-        con.close();
     }
 
     private void processMissingPlayers() {
@@ -818,11 +806,11 @@ public class FootballStats implements Harnessable {
                         // Add player to MissingPlayers list
                         MissingPlayer missing = new MissingPlayer(statsplayerid);
                         missingPlayers.add(missing);
-                        
+
                     }
-                    
+
                     crs22.close();
-                    
+
                 }
 
                 crs2.close();
@@ -831,7 +819,7 @@ public class FootballStats implements Harnessable {
             crs.close();
 
             processMissingPlayers();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
@@ -843,7 +831,7 @@ public class FootballStats implements Harnessable {
         Connection con = null;
         Statement stmt = null;
         ResultSet crs = null;
-        
+
         try {
             // clear out existing footballstats
             CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = 0  and seasonid = " + seasonid);
@@ -877,17 +865,17 @@ public class FootballStats implements Harnessable {
             System.out.println("Total Stats : " + sql);
             stmt = con.createStatement();
             crs = stmt.executeQuery(sql.toString());
-            
+
             int count = 0;
             while (crs.next()) {
                 //System.out.println("Processing...");
-                
+
                 count++;
                 int playerid = crs.getInt(PLAYERID);
                 String started = crs.getString(STARTED);
                 int played = crs.getInt(PLAYED);
                 int inactive = crs.getInt(INACTIVE);
-                
+
                 int comp = crs.getInt(PASSCOMP);
                 int att = crs.getInt(PASSATT);
                 int inter = crs.getInt(PASSINT);
@@ -935,7 +923,7 @@ public class FootballStats implements Harnessable {
                 double fantasypts = crs.getDouble("FantasyPts");
                 double salfantasypts = crs.getDouble("SalFantasyPts");
 
-                
+
                 _Logger.info("PlayerID : " + playerid + ",Total Fantasy Pts : " + fantasypts);
 
                 // Insert record into FootballStats table for TotalFantasyPts (seasonweekid = 0)
@@ -1001,10 +989,10 @@ public class FootballStats implements Harnessable {
                         fantasypts + "," +
                         salfantasypts + ")");
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             }
             con.commit();
-            
+
         } catch (Exception exception) {
         } finally {
             if (crs!=null) {
@@ -1024,20 +1012,18 @@ public class FootballStats implements Harnessable {
         // clear out existing footballstats
         CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = " + seasonweekid);
 
-        Connection con = CTApplication._CT_QUICK_DB.getConn(false);
-
         // Import Offensive Stats
         StringBuilder sql = new StringBuilder();
         sql.append("select * from Player where IsActive = 1");
 
-        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
         int count = 0;
         while (crs.next()) {
 
             count++;
             int playerid = crs.getInt(PLAYERID);
             double fantasypts = 0;
-            
+
             _Logger.info("PlayerID : " + playerid + ",Fantasy Pts : " + fantasypts);
 
             // Insert record into FootballStats table
@@ -1050,18 +1036,12 @@ public class FootballStats implements Harnessable {
                         fantasypts + "," +
                         fantasypts + ")");
             _Logger.info(sql.toString());
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         }
         crs.close();
 
-        con.commit();
-
-        //CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FootballStats where Games < 1 and Year = " + season.getYear());
-        //con.commit();
-
-        con.close();
     }
-    
+
     public static void findStatsPlayerIds() throws Exception
     {
         StringBuilder sql = new StringBuilder();
@@ -1082,35 +1062,35 @@ public class FootballStats implements Harnessable {
             String proTeam = crs.getString(PROTEAM);
             proTeam = proTeam.trim();
             int tempId = crs.getInt("TempID");
-            
+
             sql = new StringBuilder();
             sql.append(" SELECT * FROM Player p ");
             sql.append(" INNER JOIN Team t ON t.TeamID = p.TeamID");
             sql.append(" WHERE concat(firstName,' ',lastName) = '").append(name).append("'");
             sql.append(" AND t.Abbreviation = '").append(proTeam).append("'");
-            
+
 //            System.out.println("SQL : " + sql.toString());
             Statement stmt2 = con.createStatement();
             ResultSet crs2 = stmt2.executeQuery(sql.toString());
-            
+
             if (crs2.next())
             {
                 int playerid = crs2.getInt("playerId");
                 int statsPlayerId = crs2.getInt("statsPlayerId");
 //                System.out.println("[" + name + "] Stats PlayerID : " + statsPlayerId);
-                
+
                 sql = new StringBuilder();
                 sql.append(" UPDATE TempFootballStats set StatsPlayerID = ").append(statsPlayerId);
                 sql.append(" WHERE TempID = ").append(tempId);
-                
+
                 System.out.println(sql.toString() + ";");
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 //                System.out.println("=================================");
-                
+
             }
         }
     }
-    
+
     static class MissingPlayer {
         String fullName = "";
         String teamName = "";

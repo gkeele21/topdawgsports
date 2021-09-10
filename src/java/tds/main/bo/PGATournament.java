@@ -2,11 +2,13 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class PGATournament implements Serializable {
@@ -41,7 +43,7 @@ public class PGATournament implements Serializable {
             sql.append("FROM PGATournament t ");
             sql.append("WHERE t.PGATournamentID = ").append(tournamentID);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -186,7 +188,7 @@ public class PGATournament implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            newId = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            newId = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error Inserting new PGATournament", e);
@@ -212,7 +214,7 @@ public class PGATournament implements Serializable {
         sql.append("WHERE PGATournamentID = ").append(getPGATournamentID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             success = 0;
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

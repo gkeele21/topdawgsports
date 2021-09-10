@@ -9,15 +9,6 @@ import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.sql.Connection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -25,6 +16,15 @@ import sun.jdbc.rowset.CachedRowSet;
 import tds.constants.Position;
 import tds.constants.Team;
 import tds.main.bo.CTApplication;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -72,13 +72,11 @@ public class GolfPlayers implements Harnessable {
         final String playersFilePath = "https://www.pgatour.com/data/players/player.json";
 //        final String playersFilePath = "http://202.78.83.137/data/players/player.json";
         StringBuilder sb = new StringBuilder();
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
             String s;
 
             URL url = new URL(playersFilePath);
-            
+
             HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
             int responseCode = urlcon.getResponseCode();
             System.out.println("\nSending 'GET' request to URL : " + url);
@@ -93,23 +91,23 @@ public class GolfPlayers implements Harnessable {
             in.close();
             //print in String
 //            System.out.println(response.toString());
-            
+
 //            InputStream istream = url.openStream();
 ////            DataInputStream dis = new DataInputStream(new BufferedInputStream(istream));
 ////            BufferedInputStream bis = new BufferedInputStream(istream);
 ////            InputStream is = new URL(url).openStream();
 //            BufferedReader rd = new BufferedReader(new InputStreamReader(istream, Charset.forName("UTF-8")));
-//            
-//            String tempText = readAll(rd);            
+//
+//            String tempText = readAll(rd);
 //            while ((s = dis.readUTF()) != null) {
 //                sb.append(s);
 //            }
-            
+
             // clear out the temp table
             StringBuilder clear = new StringBuilder();
             clear.append("delete from TempProPlayer");
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(clear.toString());
 
             JSONObject objs = (JSONObject) JSONValue.parse(response.toString());
 
@@ -123,7 +121,7 @@ public class GolfPlayers implements Harnessable {
                 {
                     continue;
                 }
-                
+
                 // check to see if he played in 2014 or 2015
                 JSONArray yearsArr = (JSONArray)player.get("yrs");
 
@@ -135,25 +133,25 @@ public class GolfPlayers implements Harnessable {
                         active = true;
                     }
                 }
-                
+
                 if (!active)
                 {
                     continue playerLoop;
                 }
-                
+
                 String lastName = player.get("nameL").toString();
                 String country = player.get("ct").toString();
                 int externalPlayerId = Integer.parseInt(player.get("pid").toString());
-                
+
                 // grab the playerId
                 int playerId = 0;
                 StringBuilder query = new StringBuilder();
                 query.append("select * from Player where StatsPlayerId = '").append(externalPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
-                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
                 _Logger.info(query.toString());
                 if (crs3.next()) {
                     playerId = crs3.getInt("PlayerID");
-                } 
+                }
 
                 StringBuilder sql = new StringBuilder();
                 sql.append("insert into TempProPlayer ");
@@ -165,32 +163,27 @@ public class GolfPlayers implements Harnessable {
                 sql.append(", ").append(playerId).append(" )");
 
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
             }
-            con.commit();
             System.out.println("Players updated.");
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "Golfers Update Error : {0}", e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
     }
 
     public void updatePGAPlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0 where PositionID = 12");
+            CTApplication._CT_QUICK_DB.executeUpdate("update Player set isActive = 0 where PositionID = 12");
 
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempProPlayer order by PlayerId");
 
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 int playerid = crs.getInt("PlayerId");
@@ -204,12 +197,12 @@ public class GolfPlayers implements Harnessable {
                 StringBuilder tempSql2 = new StringBuilder();
                 tempSql2.append("select * from ").append(CTApplication.TBL_PREF).append("Player where PlayerID = ").append(playerid);
                 _Logger.info(tempSql2.toString());
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql2.toString());
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(tempSql2.toString());
                 if (crs2.next() && playerid > 0) {
                     // no need to update currently
                     StringBuilder updateSql = new StringBuilder();
                     updateSql.append("update Player set isActive = 1 where PlayerId = " + playerid);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,updateSql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(updateSql.toString());
                 } else {
 
                     // get the countryId based on the country
@@ -218,7 +211,7 @@ public class GolfPlayers implements Harnessable {
                         StringBuilder tempSql3 = new StringBuilder();
                         tempSql3.append("select * from ").append(CTApplication.TBL_PREF).append("Country where Country = '").append(country).append("'");
                         _Logger.info(tempSql3.toString());
-                        CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql3.toString());
+                        CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(tempSql3.toString());
                         if (crs3.next()) {
                             countryId = crs3.getInt("CountryID");
                         } else
@@ -229,19 +222,19 @@ public class GolfPlayers implements Harnessable {
                             sql.append("values('").append(FSUtils.fixupUserInputForDB(country)).append("')");
 
                             _Logger.info(sql.toString());
-                            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
-                            
+                            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+
                             tempSql3 = new StringBuilder();
                             tempSql3.append("select * from ").append(CTApplication.TBL_PREF).append("Country where Country = '").append(country).append("'");
                             _Logger.info(tempSql3.toString());
-                            crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql3.toString());
+                            crs3 = CTApplication._CT_QUICK_DB.executeQuery(tempSql3.toString());
                             if (crs3.next()) {
                                 countryId = crs3.getInt("CountryID");
                             }
-                            
+
                         }
                     }
-                    
+
                     int active = 1;
                     sql = new StringBuilder();
                     sql.append("insert into ").append(CTApplication.TBL_PREF).append("Player(TeamID,FirstName,LastName,StatsPlayerID,CountryID,PositionID,IsActive) ");
@@ -254,7 +247,7 @@ public class GolfPlayers implements Harnessable {
                     sql.append(", ").append(active).append(")");
 
                     _Logger.info(sql.toString());
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                 }
 
@@ -263,12 +256,10 @@ public class GolfPlayers implements Harnessable {
 
             crs.close();
 
-            con.commit();
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE, "Error in GolfPlayers : {0}", e.getMessage());
         } finally {
-            con.close();
         }
     }
 
@@ -280,7 +271,7 @@ public class GolfPlayers implements Harnessable {
         }
         return sb.toString();
     }
-    
+
     public static void main(String[] args) {
         try {
             GolfPlayers players = new GolfPlayers();

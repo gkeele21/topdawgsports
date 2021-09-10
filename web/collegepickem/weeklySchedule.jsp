@@ -16,44 +16,44 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/script.js" ></script>
     <script src="../js/jquery.ui.touch-punch.min.js"></script>
-    
+
     <style type="text/css">
         h2 { text-align: center; }
         select { background-color: #F2BC57; }
         table { border-collapse: separate; }
 
-        #container { overflow: hidden; }        
+        #container { overflow: hidden; }
         #schedule { clear: both; width: 100%; }
         #innerSchedule a { color: #1C5953; text-decoration: none; }
         #innerSchedule a:hover { color: #BF8339; }
         #innerSchedule th { color: #103B40; text-align: left; text-transform:  uppercase; }
         #innerSchedule th:first-child { text-align: right; }
-                
+
         #leftPH { float: left; }
         #leftPH h2 { color: #103B40; display:inline; }
         #leftPH label { color: #BF8339; font-size: 1.4em; margin-left: 10px; }
         #rightPH { float: right; }
-        
+
         #weekNumLinks { clear: both; }
         #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
         #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
         #weekNumLinks a:hover { color: #BF8339; }
         #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-        
+
         #confidencePtsToAssign { clear: both; text-align: center; display: inline;}
-        #confidencePtsToAssign td { border: 2px solid #103B40; margin-left: 3px; text-align: center; width: 31px; }     
+        #confidencePtsToAssign td { border: 2px solid #103B40; margin-left: 3px; text-align: center; width: 31px; }
         #confidencePtsToAssign label { color: #731702; cursor:pointer; font-size: 2em; }
-   
+
         #byeTeams { clear: both; }
         #byeTeams img { height : 60px; width : 75px; }
         #byeTeams hr { border: medium solid black; margin: 20px 10px; }
         #byeTeams table{ width: auto; }
         #byeTeams th { font-size: 1.8em; }
         #byeTeams td { color: blue; }
-        
+
         img[id*=helmet] { height : 60px; width : 75px; }
 
-        .assignedPts, .correctPick, .missedPick { border: 2px solid #103B40; font-size: 2.3em; text-align: center; width: 31px; }        
+        .assignedPts, .correctPick, .missedPick { border: 2px solid #103B40; font-size: 2.3em; text-align: center; width: 31px; }
         .assignedPts label { color: #731702; cursor: pointer; }
         .blankPtsDesc { font-size: .6em; }
         .checkmark { height: 30px; width: 30px; }
@@ -70,38 +70,38 @@
                              ; }
         .vName { text-align: right; }
         .winnerPts { color: darkgreen; }
-        
+
         #dialog label { border: 2px solid #103B40; color: #731702; display: inline-block; font-size: 2em; text-align: center; width: 44px; }
     </style>
-    
+
     <script type="text/javascript">
-        
+
         var fsTeamId, displayTeamId, fsSeasonWeekId, selectedGameId, prevAssignedPts;
-            
+
         $(document).ready(function () {
-            
+
             fsTeamId = $("#fsTeamId").val();
             displayTeamId = $("#displayTeamId").val();
             fsSeasonWeekId = $("#displayWeekId").val();
-                   
+
             // Only allow the saving of points and picks for of the team that is logged in.
             if (fsTeamId != displayTeamId) {
                 $('tr[id*=gameMatchup][gs=false] img').removeClass("pickedTeam");
                 return;
-            }            
-            
-            $('tr[id*=gameMatchup][gs=false] img').css("cursor","pointer");                    
+            }
+
+            $('tr[id*=gameMatchup][gs=false] img').css("cursor","pointer");
             $('tr[id*=gameMatchup][gs=false] img[id*=helmet]').click(function() {
                 handleHelmetClick($(this))
             });
             $("div[id^=confidencePtsToAssign] label").draggable( { revert: true });
             $("td[id^=assignedPts] label").draggable( { revert: true });
             $("td[id^=assignedPts]").droppable( { drop : handleDrop });
-            
+
             $("tr[gs=false] td[id^=assignedPts]").click(function() {
                 handleAssignPtsClick($(this));
             });
-            
+
             $("#dialog").dialog( {
                 autoOpen: false,
                 title: "Assign Confidence Pts"
@@ -119,7 +119,7 @@
 
                     if (ptsToAssign == prevAssignedPts) { return; } // Won't override pts assignment with a blank
                     if (isNaN(ptsToAssign)) { return; } // Couldn't retrieve the pts to assign
-                    if (isNaN(srcGameId)) { srcGameId = 0;} 
+                    if (isNaN(srcGameId)) { srcGameId = 0;}
                     if (isNaN(prevAssignedPts)) { prevAssignedPts = 0;}
                     selectedGameId = $(this).attr('gid');
 
@@ -130,54 +130,54 @@
                 }
             }
         });
-        
+
         function handleAssignPtsClick(ui) {
             $("#dialog").dialog('open');
             selectedGameId = parseInt(ui.attr('gid'));
-            prevAssignedPts = parseInt(ui.text());            
+            prevAssignedPts = parseInt(ui.text());
         }
-        
+
         function handleDialogClick(ui) {
             var ptsToAssign = parseInt(ui.text());
             if (isNaN(ptsToAssign)) { return; }
-            
-            var srcGameId = 0;            
-            var existingNumber = $("td[id^='assignedPts_'] label").filter(function() {  
+
+            var srcGameId = 0;
+            var existingNumber = $("td[id^='assignedPts_'] label").filter(function() {
                 return $(this).text() == ptsToAssign;
             });
-            if (existingNumber.length > 0 ) {                
+            if (existingNumber.length > 0 ) {
                 srcGameId = existingNumber.parent().attr('gid');
             }
-            
+
             saveConfidencePoints(ptsToAssign, srcGameId);
             $("#dialog").dialog('close');
         }
-        
+
         function handleHelmetClick(ui) {
-            
+
             var gameId = ui.parent().parent().attr('gid');
             var teamPickedId = ui.attr('tp');
             var opponentId = ui.attr('opp');
-                        
+
             $.ajax({
                 url:"ajaxCall.ajax",
                 dataType: "xml",
                 type:"POST",
                 data:"method=SavePickemPick&fsg=7&fst="+fsTeamId+"&wk="+fsSeasonWeekId+"&gid="+gameId+"&tp="+teamPickedId,
                 success: function(data){
-                    if ($(data).text() == 'Success') {
-                        $('#helmet_'+teamPickedId).addClass("pickedTeam");                                
+                    // if ($(data).text() == 'Success') {
+                        $('#helmet_'+teamPickedId).addClass("pickedTeam");
                         $('#helmet_'+opponentId).removeClass('pickedTeam');
-                    } else {
-                        alert("Data Error, please try again.");
-                    }
+                    // } else {
+                    //     alert("Data Error, please try again.");
+                    // }
                 },
                 error: function(){
                     alert("Function error");
                 }
             });
         }
-        
+
         function saveConfidencePoints(ptsToAssign, srcGameId) {
 
             $.ajax({
@@ -186,8 +186,8 @@
                 type:"POST",
                 data:"method=SavePickemConfidencePts&fsg=7&wk="+fsSeasonWeekId+"&fst="+fsTeamId+"&gid="+selectedGameId+"&pts="+ptsToAssign+"&sgid="+srcGameId,
                 success: function(data){
-                    if ($(data).text() == 'Success') {
-                        
+                    // if ($(data).text() == 'Success') {
+
                         // Update the new spot
                         $("td[id^='assignedPts_"+selectedGameId+"'] label").html(ptsToAssign);
                         $("td[id^='assignedPts_"+selectedGameId+"']").removeClass("blankPtsDesc");
@@ -196,27 +196,27 @@
                         /* Clear out the spot we dragged from. Note: Using srcGameId to determine if it's coming from the available section or the already assigned section */
                         if (srcGameId > 0) {
                             $("td[id^='assignedPts_"+srcGameId+"'] label").html('Click or drag a number here');
-                            $("td[id^='assignedPts_"+srcGameId+"']").addClass('blankPtsDesc');                            
+                            $("td[id^='assignedPts_"+srcGameId+"']").addClass('blankPtsDesc');
                         }
                         else {
                             $("#availPts_"+ptsToAssign).html('&nbsp;');
                         }
-                        
+
                         // if a number was already in the new spot, need to make it visible again in the available section
-                        if (prevAssignedPts > 0) { 
-                            $("#availPts_"+prevAssignedPts).html(prevAssignedPts); 
-                            $("#dialogPts_"+prevAssignedPts).removeClass('pointsAssigned'); 
+                        if (prevAssignedPts > 0) {
+                            $("#availPts_"+prevAssignedPts).html(prevAssignedPts);
+                            $("#dialogPts_"+prevAssignedPts).removeClass('pointsAssigned');
                         }
-                        
-                    } else {
-                        alert("Data Error, please try again.");
-                    }
+
+                    // } else {
+                    //     alert("Data Error, please try again.");
+                    // }
                 },
                 error: function(){
                     alert("Function error");
                 }
             });
-        
+
         }
     </script>
   </head>
@@ -229,7 +229,7 @@
 
         <div id="content">
             <div id="innerContent">
-                
+
                 <input id="fsTeamId" type="hidden" value="${fsteam.FSTeamID}" />
                 <input id="displayTeamId" type="hidden" value="${displayTeam.FSTeamID}" />
                 <input id="displayWeekId" type="hidden" value="${displayWeek.FSSeasonWeekID}" />
@@ -239,15 +239,15 @@
 
                 <%-- Page Header --%>
                 <div id="pageHeader">
-                
+
                     <div id="leftPH">
                         <h2>${displayTeam.teamName}</h2>
                         <c:if test="${displayWeek.status == 'COMPLETED'}" >
                             <label>(<fmt:formatNumber value="${fsStandings.gamePoints}" maxFractionDigits="0" /> pts)</label>
                         </c:if>
-                        
+
                     </div>
-                
+
                     <div id="rightPH">
                         <form action="weeklySchedule.htm">
                             <select id="allTeams" name="dtid" >
@@ -257,11 +257,11 @@
                                             selected="selected"
                                         </c:if>
                                     >${team.teamName}</option>
-                                </c:forEach>                               
+                                </c:forEach>
                             </select>
                             <input id="showTeam" type="submit" value="Show" />
                             <input type="hidden" name="wk" value="${displayWeek.FSSeasonWeekID}"></input>
-                        </form>                        
+                        </form>
                     </div>
 
                 </div>
@@ -273,16 +273,16 @@
                         <a <c:if test="${week.FSSeasonWeekID == displayWeek.FSSeasonWeekID}">class="currWeek"</c:if>
                             href="weeklySchedule.htm?wk=${week.FSSeasonWeekID}&dtid=${displayTeam.FSTeamID}">${week.FSSeasonWeekNo}
                         </a>
-                    </c:forEach>                    
+                    </c:forEach>
                 </div>
-                
-                <%-- Confidence Pts to Assign --%>    
+
+                <%-- Confidence Pts to Assign --%>
                 <c:if test="${showConfidencePts}" >
                     <div id="confidencePtsToAssign">
                         <table title="Assign each matchup a specific number of confidence points. You will earn that many game points if you correctly choose the winning team.">
                             <thead>Confidence Points</thead>
                             <tr>
-                                <c:forEach var="ptsNum" begin="1" end="${picks.size()}" > 
+                                <c:forEach var="ptsNum" begin="1" end="${picks.size()}" >
                                     <td>
                                         <label id="availPts_${ptsNum}">
                                             <c:choose>
@@ -292,7 +292,7 @@
                                                 <c:otherwise>
                                                     &nbsp;
                                                 </c:otherwise>
-                                            </c:choose>                       
+                                            </c:choose>
                                         </label>
                                     </td>
                                 </c:forEach>
@@ -304,12 +304,12 @@
                 <%-- Weekly Schedule --%>
                 <div id="schedule">
                     <div id="innerSchedule">
-                        
+
                         <label class="gameNote">*All games are displayed in Mountain Standard Time</label>
                         <h2>Week #${displayWeek.FSSeasonWeekNo}</h2>
-                        
-                        <table>                            
-                            <thead>                            
+
+                        <table>
+                            <thead>
                                 <th>Visitor Team</th>
                                 <th></th>
                                 <th></th>
@@ -318,15 +318,17 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
-                                <th>Home Team</th>                            
+                                <th>Home Team</th>
                             </thead>
-                            
+
                             <c:forEach items="${picks}" var="pick">
-                                    
+
                                 <%-- Game Date --%>
                                 <c:if test="${pick.game.gameDate != prevGameDate || pick.game.gameInfo != null}">
                                     <tr>
-                                        <td class="gameDate" colspan="8"><fmt:formatDate value="${pick.game.gameDate.time}" pattern="EEEE, MMM. d - h:mm a"/>
+                                        <td class="gameDate" colspan="8">
+                                            <fmt:parseDate  value="${pick.game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="EEEE, MMM. d - h:mm a" timeZone="America/Denver" />
                                             <c:if test="${pick.game.gameInfo != null}">
                                                 <label class="gameNote">&nbsp;${pick.game.gameInfo}</label>
                                             </c:if>
@@ -336,7 +338,7 @@
                                 </c:if>
 
                                 <tr id="gameMatchup_${pick.game.gameID}" gid="${pick.game.gameID}" gs="${pick.game.gameHasStarted}">
-                                    
+
                                     <%-- Visitor Name and Record --%>
                                     <td class="vName">
                                         <a href="javascript:viewTeamSchedule('/topdawgsports/collegeTeamSchedule.htm?tid=${pick.game.visitorID}')">
@@ -361,13 +363,13 @@
 
                                     <%-- Visitor Helmet --%>
                                     <td>
-                                        <img id="helmet_${pick.game.visitorID}" 
+                                        <img id="helmet_${pick.game.visitorID}"
                                              <c:if test="${pick.teamPickedID == pick.game.visitorID}"> class="pickedTeam" </c:if>
                                              src="/topdawgsports/images/Helmets/Color/${pick.game.visitorID}.gif" alt=""
-                                             tp="${pick.game.visitorID}" opp="${pick.game.homeID}"                                              
+                                             tp="${pick.game.visitorID}" opp="${pick.game.homeID}"
                                         />
                                     </td>
-                                        
+
                                     <%-- Visitor Score --%>
                                     <td
                                         <c:choose>
@@ -385,7 +387,7 @@
                                     </td>
 
                                     <%-- Result / Confidence Pts --%>
-                                    <td id="assignedPts_${pick.game.gameID}" gid="${pick.game.gameID}" 
+                                    <td id="assignedPts_${pick.game.gameID}" gid="${pick.game.gameID}"
                                         <c:choose>
                                             <c:when test="${pick.game.gameHasStarted}">
                                                 <c:choose>
@@ -425,7 +427,7 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:when>
-                                            <c:otherwise>                                                
+                                            <c:otherwise>
                                                 <c:choose>
                                                     <c:when test="${showConfidencePts}">
                                                         class="assignedPts
@@ -441,12 +443,12 @@
                                                     <c:otherwise>
                                                         "><label>AT</label>
                                                     </c:otherwise>
-                                                </c:choose>                                                        
+                                                </c:choose>
                                             </c:otherwise>
-                                        </c:choose>                                        
+                                        </c:choose>
                                     </td>
 
-                                        <%-- Home Score --%>   
+                                        <%-- Home Score --%>
                                     <td
                                         <c:choose>
                                             <c:when test="${pick.game.homeID == pick.game.winnerID}">
@@ -461,10 +463,10 @@
                                             ${pick.game.homePts}
                                         </c:if>
                                     </td>
-                                    
+
                                     <%-- Home Helmet --%>
                                     <td>
-                                        <img id="helmet_${pick.game.homeID}" 
+                                        <img id="helmet_${pick.game.homeID}"
                                              <c:if test="${pick.teamPickedID == pick.game.homeID}"> class="pickedTeam" </c:if>
                                              src="/topdawgsports/images/Helmets/Color/${pick.game.homeID}.gif" alt=""
                                              tp="${pick.game.homeID}" opp="${pick.game.visitorID}"
@@ -497,13 +499,13 @@
                         </table>
                     </div> <%-- inner schedule --%>
                 </div> <%-- schedule --%>
-                
+
                 <%-- BYE TEAMS --%>
                 <c:if test="${!empty byeTeams}">
                     <div id="byeTeams">
                         <hr />
                         <h3>Bye Teams:</h3>
-                        <table>                           
+                        <table>
                             <tr>
                                 <c:forEach items="${byeTeams}" var="team">
                                     <td><img src="/topdawgsports/images/Helmets/Color/${team.homeID}.gif" alt="" /></td>
@@ -521,23 +523,23 @@
                         </table>
                     </div>
                 </c:if>
-                
+
                 <%-- Dialog Window if using confidence pts --%>
                 <c:if test="${showConfidencePts}" >
                     <div id="dialog" title="Basic dialog">
-                        <c:forEach var="ptsNum" begin="1" end="${picks.size()}" > 
-                            <label id="dialogPts_${ptsNum}"                                
+                        <c:forEach var="ptsNum" begin="1" end="${picks.size()}" >
+                            <label id="dialogPts_${ptsNum}"
                                 <c:if test="${!empty assignedPts[ptsNum]}">
                                     class="pointsAssigned"
                                 </c:if>
-                            >${ptsNum}</label>                                    
+                            >${ptsNum}</label>
                         </c:forEach>
                     </div>
                 </c:if>
-                
+
             </div> <%-- inner content --%>
         </div> <%-- content --%>
     </div> <%-- container --%>
-     
+
 </body>
 </html>

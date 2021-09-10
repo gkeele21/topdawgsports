@@ -36,17 +36,19 @@
             <div id="innerContent">
 
                 <div id="vendorContent" class="game">
-                  
-                    <!-- #BeginEditable "content" --> 
+
+                    <!-- #BeginEditable "content" -->
                   <div id="instructions" />
                   Please select up to 6 golfers from the list below. All golfers on your team will
-                  count.  Your total golfer salaries may not exceed the salary 
-                  cap of $1,000,000. Players will not carry over from week to 
+                  count.  Your total golfer salaries may not exceed the salary
+                  cap of $1,000,000. Players will not carry over from week to
                   week. You can add or remove any player until we have recorded that
                   the player has completed the first hole of the tournament.
                   </div><br />
+                <fmt:parseDate value="${tournamentWeek.FSSeasonWeek.startersDeadline}" type="both" pattern="yyyy-MM-dd'T'HH:mm" var="startersDeadline" />
                   <script>
-                      console.log('Starters Deadline : ${tournamentWeek.FSSeasonWeek.startersDeadline.time}');
+
+                      console.log('Starters Deadline : ${startersDeadline}');
                       console.log('Deadline Passed? : ${deadlinePassed}');
                       console.log('Today : ${today}');
                   </script>
@@ -62,8 +64,14 @@
                             <tr class="rowData">
                                 <td><c:out value="${fantasyCurrentWeek.FSSeasonWeekNo}" /><script>console.log('FSSeasonWeekID : ' + ${fantasyCurrentWeek.FSSeasonWeekID});</script></td>
                                 <td><c:out value="${tournamentWeek.PGATournament.tournamentName}" /><script>console.log('PGATournamentID : ' + ${tournamentWeek.PGATournament.PGATournamentID});</script></td>
-                                <td><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
-                                <td><fmt:formatDate value="${tournamentWeek.FSSeasonWeek.startersDeadline.time}" pattern="E MM/dd h:mm a"/></td>
+                                <td>
+                                    <fmt:parseDate  value="${tournamentWeek.startDate}" type="date" pattern="yyyy-MM-dd" var="startDate" />
+                                    <fmt:parseDate  value="${tournamentWeek.endDate}" type="date" pattern="yyyy-MM-dd" var="endDate" />
+                                    <fmt:formatDate value="${startDate}" pattern="E MM/dd"/> - <fmt:formatDate value="${endDate}" pattern="E MM/dd"/>
+                                </td>
+                                <td>
+                                    <fmt:formatDate value="${startersDeadline}" type="both" pattern="E MM/dd h:mm a" timeZone="America/Denver" />
+                                </td>
                             </tr>
                           </table>
                           <br />
@@ -134,7 +142,7 @@
                                             <td><fmt:formatNumber value="${roster.PGATournamentWeekPlayer.round2}" maxFractionDigits="0" /></td>
                                             <td><fmt:formatNumber value="${roster.PGATournamentWeekPlayer.round3}" maxFractionDigits="0" /></td>
                                             <td><fmt:formatNumber value="${roster.PGATournamentWeekPlayer.round4}" maxFractionDigits="0" /></td>
-                                            <td><c:out value="${roster.PGATournamentWeekPlayer.finalScore}" /></td>                                            
+                                            <td><c:out value="${roster.PGATournamentWeekPlayer.finalScore}" /></td>
                                             <td><fmt:formatNumber type="currency" value="${roster.PGATournamentWeekPlayer.moneyEarned}" maxFractionDigits="0" /></td>
                                         </tr>
                                     </jsp:attribute>
@@ -155,11 +163,11 @@
                                     </jsp:attribute>
                                 </tds:tableRows>
                             </table>
-                          
+
                           <br />
                           <input class="smallImage" type="image" name="btnSubmit" src="../images/submit.png" />
                           <br /><br />
-                          
+
                           <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                                 <tds:tableRows items="${weekPlayers}" var="puPlayer" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                                     <jsp:attribute name="rowTitle">
@@ -183,7 +191,7 @@
                                                 <%--<c:if test="${puPlayer.finalScore < 1}">--%>
                                                     <input type="checkbox" name="pickup" value="${puPlayer.playerID}_${puPlayer.salaryValue}" />
                                                 </c:if>
-                                            </td>                                                    
+                                            </td>
                                             <td><c:out value="${puPlayer.player.firstName}" /> <c:out value="${puPlayer.player.lastName}" /> (<c:out value="${puPlayer.player.country.country}" />)</td>
                                             <td><fmt:formatNumber type="currency" value="${puPlayer.salaryValue}" maxFractionDigits="0" /></td>
                                         </tr>
@@ -194,8 +202,8 @@
                                         </tr>
                                     </jsp:attribute>
                                 </tds:tableRows>
-                            </table>	
-                          <input class="smallImage" type="image" name="btnSubmit" src="../images/submit.png" /> 
+                            </table>
+                          <input class="smallImage" type="image" name="btnSubmit" src="../images/submit.png" />
                           </center>
                   </form>
                   <!-- #EndEditable -->

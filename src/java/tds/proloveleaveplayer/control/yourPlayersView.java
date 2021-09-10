@@ -2,17 +2,18 @@ package tds.proloveleaveplayer.control;
 
 import bglib.util.AuTimer;
 import bglib.util.FSUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 import tds.main.bo.*;
 import tds.main.control.BaseTeamView;
 import tds.util.CTReturnCode;
 import tds.util.CTReturnType;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,7 @@ public class yourPlayersView extends BaseTeamView {
         AuTimer.init();
         String timerName = "yourPlayersView";
         AuTimer.start(timerName);
-        
+
         String page = super.process(request, response);
         if (page != null) {
             return page;
@@ -39,7 +40,7 @@ public class yourPlayersView extends BaseTeamView {
 
         System.out.println("Timer[" + timerName + "] - After parent process : " + AuTimer.elapsedTime(timerName));
         // Retrieve players
-        
+
         FSLeague league = _FSTeam.getFSLeague();
         FSSeason season = league.getFSSeason();
         if (season == null) {
@@ -79,9 +80,9 @@ public class yourPlayersView extends BaseTeamView {
 
             System.out.println("Timer[" + timerName + "] - After creating Position : " + AuTimer.elapsedTime(timerName));
             FSFootballSeasonDetail seasonDetail = new FSFootballSeasonDetail(season.getFSSeasonID());
-            
+
             _Session.getHttpSession().setAttribute("seasonDetail", seasonDetail);
-            
+
             System.out.println("Timer[" + timerName + "] - After getting Season Detail : " + AuTimer.elapsedTime(timerName));
             // Nav links
             int startingRowNum = FSUtils.getIntRequestParameter(request,"start",1);
@@ -118,7 +119,7 @@ public class yourPlayersView extends BaseTeamView {
 //                if (week.getWeekType().equals(FSSeasonWeek.WeekType.FINAL.toString()) && _DisplayFSSeasonWeek == null) {
 //                    _DisplayFSSeasonWeek = week;
 //                }
-//            }     
+//            }
 //
 //            // Set it to be the current week as long as the session object didn't have anything (null)
 //            if (_DisplayFSSeasonWeek == null)
@@ -132,9 +133,9 @@ public class yourPlayersView extends BaseTeamView {
             _DisplayFSSeasonWeek = (FSSeasonWeek) _Session.getHttpSession().getAttribute("saldisplayfsseasonweek");
             request.setAttribute("salDisplayWeek", _DisplayFSSeasonWeek);
             request.setAttribute("salCurrentWeek", _CurrentFSSeasonWeek);
-            
+
             if (playerID > 0) {
-                
+
                 addPlayer(_Session, playerID,_CurrentFSSeasonWeek.getFSSeasonWeekID(), true);
                 System.out.println("Timer[" + timerName + "] - After adding Player to session : " + AuTimer.elapsedTime(timerName));
 //                String temp = updateRoster(_Session);
@@ -166,7 +167,7 @@ public class yourPlayersView extends BaseTeamView {
             // to see if this team already has players from the Database.
             if (curRosterList.size() < 1) {
                 List<FSRoster> roster = _FSTeam.getRoster(_CurrentFSSeasonWeek.getFSSeasonWeekID());
-                
+
                 // clear out session info
                 _Session.getHttpSession().removeAttribute("QB1");
                 _Session.getHttpSession().removeAttribute("RB1");
@@ -175,7 +176,7 @@ public class yourPlayersView extends BaseTeamView {
                 _Session.getHttpSession().removeAttribute("WR2");
                 _Session.getHttpSession().removeAttribute("TE1");
                 _Session.getHttpSession().removeAttribute("PK1");
-                
+
                 System.out.println("Timer[" + timerName + "] - After getting Roster : " + AuTimer.elapsedTime(timerName));
 //                if (roster.size() < 1) {
 //                    // Try to get this team's players from last week
@@ -191,7 +192,7 @@ public class yourPlayersView extends BaseTeamView {
                 }
             }
 
-            
+
             System.out.println("Timer[" + timerName + "] - After checking roster size : " + AuTimer.elapsedTime(timerName));
             try {
 //                List<FSRoster> allTimeRoster = FSRoster.getRosterAllTime(_FSTeam.getFSTeamID());
@@ -239,11 +240,11 @@ public class yourPlayersView extends BaseTeamView {
     }
 
     public static String updateRoster(UserSession session) {
-        
+
         String nextPage = "";
-        
+
 //        RoomView room = (RoomView)session.getHttpSession().getAttribute("postRoom");
-        
+
         List<FSPlayerValue> playerValues = getRosterListFromSession(session);
         CTReturnCode rc = CTReturnCode.RC_SUCCESS;
 //        FSReturnCode rc = User.checkPostConditions(room, players);
@@ -292,7 +293,7 @@ public class yourPlayersView extends BaseTeamView {
 
         return nextPage;
     }
-    
+
     private void addPlayer(UserSession session, int playerID, int fsseasonweekid, boolean insertPlayer) {
         try {
             Player player = Player.getInstance(playerID);
@@ -312,7 +313,7 @@ public class yourPlayersView extends BaseTeamView {
                 FSPlayerValue existingValue = (FSPlayerValue)session.getHttpSession().getAttribute(attrName);
                 if (existingValue==null) {
                     session.getHttpSession().setAttribute(attrName, playerValue);
-                    
+
                     if (insertPlayer)
                     {
                         StringBuilder sql = new StringBuilder();
@@ -324,11 +325,11 @@ public class yourPlayersView extends BaseTeamView {
                         sql.append(",'").append("starter");
                         sql.append("','").append("active").append("')");
 
-                        CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                         System.out.println("Adding player");
                     }
-                    
+
                     return;
                 } else if (insertPlayer && existingValue.getPlayer().getPlayerID() == player.getPlayerID()) { // Note: there is a tiny crack in the algorithm that could still allow for a duplicate player on the roster, but the db will still not allow it, so we don't worry about it
                     session.setErrorMessage("Error: " + player.getFullName() + " is already on your roster");
@@ -361,14 +362,14 @@ public class yourPlayersView extends BaseTeamView {
                 FSPlayerValue existingValue = (FSPlayerValue)session.getHttpSession().getAttribute(attrName);
                 if (existingValue != null && existingValue.getPlayerID()==playerID) {
                     session.getHttpSession().removeAttribute(attrName);
-                    
+
                     StringBuilder sql = new StringBuilder();
                     sql.append(" DELETE FROM FSRoster ");
                     sql.append(" WHERE FSTeamID = ").append(this._FSTeam.getFSTeamID());
                     sql.append(" AND PlayerID = ").append(player.getPlayerID());
                     sql.append(" AND FSSeasonWeekID = ").append(currFSSeasonWeek.getFSSeasonWeekID());
-                    
-                    int result = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+
+                    int result = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                     return;
                 }
@@ -377,7 +378,7 @@ public class yourPlayersView extends BaseTeamView {
         }
 
         session.setErrorMessage(player.getFullName() + " is not on your roster.");
-        
+
     }
 
     static List<FSPlayerValue> getRosterListFromSession(UserSession session) {
@@ -407,7 +408,7 @@ public class yourPlayersView extends BaseTeamView {
         Collection<Position> allPositions = Position.getAllPositions();
         HttpSession httpSession = session.getHttpSession();
         FSSeasonWeek currFSSeasonWeek = session.getCurrentSalWeek();
-        
+
         for (Position pos : allPositions) {
             FSFootballRosterPositions rosterPosition = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonWeekID(),pos.getPositionID());
 

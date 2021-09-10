@@ -18,53 +18,53 @@
             input[name*=Wins], input[name*=Losses] { background-color: lightgreen; width: 20px; }
             input[name*=Score] { background-color: yellow; width: 20px; }
             input[name*=Ranking] { color: red; width: 20px; }
-            
+
             #weekNumLinks { font-size: 1.1em; }
             #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
             #weekNumLinks a:hover { color: #BF8339; }
             #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-            
+
             #byeTeams { clear: both; }
             #byeTeams img { height : 60px; width : 75px; }
             #byeTeams hr { border: medium solid black; margin: 20px 10px; }
             #byeTeams table{ width: auto; }
             #byeTeams th { font-size: 1.8em; }
-            
+
             #weekHeading { font-size: 1.8em; font-weight: bold; margin-top: 20px; }
             .bottomTeam { color: #731702; font-weight: bold; }
             .final { background-color: #F2BC57; text-align: center; }
             .gameDate { font-weight: bold; text-align: left; }
             .gameNote { color: #731702; }
             .topTeam { color: #1C5953; font-weight: bold; }
-         
+
         </style>
-        
+
         <script>
-            
+
             $(document).ready(function () {
 
                 /* PRO AND COLLEGE UPDATE SCORE */
                 $("input[type=button]").click(function() {
-                    saveGameMatchup($(this));                    
+                    saveGameMatchup($(this));
                 })
-                                
+
                 /* MARCH MADNESS UPDATE SCORE */
                 $("button[id*=updateScore]").click(function() {
                     updateMarchMadnessScore($(this));
                 });
-                
+
                 /* FINISH OFF THE WEEK */
                 $("button[id=finishWeek]").click(function() {
                     finalizeWeek($(this), 1);
                 });
-                
+
                 /* RECALCULATE STANDINGS */
                 $("button[id=recalculateStandings]").click(function() {
                     finalizeWeek($(this), 0);
                 });
-                
+
             });
-            
+
             function finalizeWeek(me, finishOffWeek) {
                 me.hide();
 
@@ -80,10 +80,10 @@
                 })
 
                 me.show();
-                
+
                 location.reload(true);
             }
-            
+
             function saveGameMatchup(me) {
                 me.hide();
 
@@ -115,13 +115,13 @@
 
                 me.show();
             }
-            
+
             function updateMarchMadnessScore(me) {
                 me.hide();
 
                 var t1pts = $("#txtTeam1Pts_"+me.attr('gid')).val();
                 var t2pts = $("#txtTeam2Pts_"+me.attr('gid')).val();
-               
+
                 $.ajax({
                     url:"ajaxCall.ajax",
                     dataType: "xml",
@@ -138,7 +138,7 @@
 
                 me.show();
             }
-            
+
         </script>
     </head>
 
@@ -158,24 +158,24 @@
                     href="gameMaintenance.htm?swid=${week.seasonWeekID}&spid=${sportId}&yr=${yr}">${week.weekNo}
                 </a>
             </c:forEach>
-  
+
         </div>
 
         <br />
         <label id="weekHeading">Week #${displayWeek.weekNo} - ${displayWeek.status}</label>
-        
+
         <c:if test="${sportId == 1 || sportId == 2}">
             <form action="updateTop25.htm">
                 <button name="sw" value="${displayWeek.seasonWeekID}">Update Top 25</button>
             </form>
-        </c:if>        
-            
+        </c:if>
+
         <button id="recalculateStandings" sw="${displayWeek.seasonWeekID}" spid="${sportId}">Recalculate Standings</button>
         <c:if test="${displayWeek.status == 'CURRENT'}">
             <button id="finishWeek" sw="${displayWeek.seasonWeekID}" spid="${sportId}">Finish off the week</button>
-        </c:if>        
+        </c:if>
         <br />
-        
+
         <%-- PRO/COLLEGE FOOTBALL --%>
         <c:if test="${sportId == 1 || sportId == 2}">
             <%-- Initialize Varibales --%>
@@ -195,7 +195,10 @@
 
                         <tr>
                             <%-- Game Date --%>
-                            <td><input type="text" name="gameDate_${game.gameID}" value="<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" timeZone="US/Eastern" value="${game.gameDate.time}"/>" /></td>
+                            <td>
+                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                <input type="text" name="gameDate_${game.gameID}" value="<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" timeZone="America/Denver" value="${gameDate}"/>" />
+                            </td>
 
                             <%-- Visitor Name --%>
                             <td class="visitorTeamName" title="${game.visitorID}">${game.visitor.fullName} ${game.visitor.mascot}</td>
@@ -215,7 +218,7 @@
 
                                 <input type="text" name="visitorWins_${game.gameID}" value="${wins}" />
                                 -
-                                <input type="text" name="visitorLosses_${game.gameID}" value="${losses}" />                            
+                                <input type="text" name="visitorLosses_${game.gameID}" value="${losses}" />
                             </td>
 
                             <%-- Visitor Ranking--%>
@@ -253,7 +256,7 @@
 
                                 <input type="text" name="homeWins_${game.gameID}" value="${wins}" />
                                 -
-                                <input type="text" name="homeLosses_${game.gameID}" value="${losses}" />                            
+                                <input type="text" name="homeLosses_${game.gameID}" value="${losses}" />
                             </td>
 
                             <%-- Home Name --%>
@@ -270,7 +273,7 @@
                 <div id="byeTeams">
                     <hr />
                     <h3>Bye Teams:</h3>
-                    <table>                           
+                    <table>
                         <tr>
                             <c:forEach items="${byeTeams}" var="team">
                                 <td><img src="${path}${team.homeID}.gif" alt="" /></td>
@@ -281,7 +284,7 @@
                                 <c:forEach items="${byeTeams}" var="team">
                                     <c:if test="${!empty apRankings[team.homeID]}">
                                         #${apRankings[team.homeID].overallRanking}
-                                    </c:if>                            
+                                    </c:if>
                                 </c:forEach>
                             </tr>
                         </c:if>
@@ -289,7 +292,7 @@
                 </div>
             </c:if>
         </c:if>
-        
+
         <%-- MARCH MADNESS --%>
         <c:if test="${sportId == 3}">
             <table>
@@ -302,14 +305,14 @@
                         <td>
                             <input id="txtTeam1Pts_${game.gameID}" type="text" size="2"
                                 <c:if test="${game.team1Pts > 0}">
-                                    value="<fmt:formatNumber value="${game.team1Pts}" maxFractionDigits="0" />" class="final" 
+                                    value="<fmt:formatNumber value="${game.team1Pts}" maxFractionDigits="0" />" class="final"
                                 </c:if>
                             />
                         </td>
                         <td>
                             <input id="txtTeam2Pts_${game.gameID}" type="text" size="2"
                                 <c:if test="${game.team2Pts > 0}">
-                                    value="<fmt:formatNumber value="${game.team2Pts}" maxFractionDigits="0" />" class="final" 
+                                    value="<fmt:formatNumber value="${game.team2Pts}" maxFractionDigits="0" />" class="final"
                                 </c:if>
                             />
                         </td>

@@ -6,7 +6,7 @@ import sun.jdbc.rowset.CachedRowSet;
 import tds.data.CTDataSetDef;
 import tds.util.CTReturnCode;
 
-import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ public class FSFootballTransactionRequest {
 
     public FSFootballTransactionRequest(int transactionID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -53,8 +52,7 @@ public class FSFootballTransactionRequest {
             sql.append(" INNER JOIN FSSeasonWeek fsw ON fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append(" WHERE r.RequestID = ").append(transactionID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "FSFootballTransactionRequest$");
             }
@@ -62,14 +60,12 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
     }
 
     public FSFootballTransactionRequest(int fsTeamID, int fsSeasonWeekID, int rank) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTeam", "tm.", "FSTeam$"));
@@ -84,7 +80,7 @@ public class FSFootballTransactionRequest {
             sql.append(" AND r.FSSeasonWeekID = ").append(fsSeasonWeekID);
             sql.append(" AND r.Rank = ").append(rank);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "FSFootballTransactionRequest$");
             }
@@ -164,10 +160,8 @@ public class FSFootballTransactionRequest {
         sql.append(" ORDER BY r.Rank");
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 requests.add(new FSFootballTransactionRequest(crs,"FSFootballTransactionRequest$"));
             }
@@ -176,7 +170,6 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return requests;
@@ -201,10 +194,8 @@ public class FSFootballTransactionRequest {
         sql.append(" ORDER BY fto.OrderNumber, r.Rank");
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery( sql.toString());
             while (crs.next()) {
                 requests.add(new FSFootballTransactionRequest(crs,"FSFootballTransactionRequest$"));
             }
@@ -213,7 +204,6 @@ public class FSFootballTransactionRequest {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return requests;
@@ -291,9 +281,9 @@ public class FSFootballTransactionRequest {
             }
 
             if (FSUtils.fieldExists(crs, prefix, "RequestDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "RequestDate");
+                Timestamp s = crs.getTimestamp(prefix + "RequestDate");
                 if (s != null) {
-                    setRequestDate(s);
+                    setRequestDate(s.toLocalDateTime());
                 }
             }
 

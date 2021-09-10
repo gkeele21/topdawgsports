@@ -7,6 +7,7 @@ import sun.jdbc.rowset.CachedRowSet;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Game implements Serializable {
     private double _Spread;
     private String _GameInfo;
     private Integer _NumOTs;
+    private Integer _ExternalGameID;
 
     // OBJECTS
     private SeasonWeek _SeasonWeek;
@@ -104,6 +106,7 @@ public class Game implements Serializable {
     public boolean isIsByeWeek() {return _IsByeWeek;}
     public String getGameInfo() {return _GameInfo;}
     public Integer getNumOTs() {return _NumOTs;}
+    public Integer getExternalGameID() {return _ExternalGameID;}
     public SeasonWeek getSeasonWeek() {if (_SeasonWeek == null && _SeasonWeekID > 0) {_SeasonWeek = new SeasonWeek(_SeasonWeekID);}return _SeasonWeek;}
     public Team getVisitor() {if (_Visitor == null && _VisitorID > 0) {_Visitor = new Team(_VisitorID);}return _Visitor;}
     public Team getHome() {if (_Home == null && _HomeID > 0) {_Home = new Team(_HomeID);}return _Home;}
@@ -121,6 +124,7 @@ public class Game implements Serializable {
     public void setSpread(double Spread) {_Spread = Spread;}
     public void setGameInfo(String GameInfo) {_GameInfo = GameInfo;}
     public void setNumOTs(Integer NumOTs) {_NumOTs = NumOTs;}
+    public void setExternalGameID(Integer ExternalGameID) {_ExternalGameID = ExternalGameID;}
     public void setSeasonWeek(SeasonWeek SeasonWeek) {_SeasonWeek = SeasonWeek;}
     public void setVisitor(Team Visitor) {_Visitor = Visitor;}
     public void setHome(Team Home) {_Home = Home;}
@@ -326,13 +330,13 @@ public class Game implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "VisitorID")) { _VisitorID = crs.getInt(prefix + "VisitorID"); }
             if (FSUtils.fieldExists(crs, prefix, "HomeID")) { _HomeID = crs.getInt(prefix + "HomeID"); }
             if (FSUtils.fieldExists(crs, prefix, "GameDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "GameDate");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "GameDate");
                 if (s != null) {
-                    _GameDate = s;
+                    _GameDate = s.toLocalDateTime();
                 }
 
                 /* Set date to MST */
-                _GameDate.minusHours(2);
+//                _GameDate.minusHours(2);
             }
             if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { _WinnerID = crs.getInt(prefix + "WinnerID"); }
             if (FSUtils.fieldExists(crs, prefix, "VisitorPts")) { _VisitorPts = crs.getInt(prefix + "VisitorPts"); }
@@ -341,6 +345,7 @@ public class Game implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "Spread")) { _Spread = crs.getDouble(prefix + "Spread"); }
             if (FSUtils.fieldExists(crs, prefix, "GameInfo")) { _GameInfo = crs.getString(prefix + "GameInfo"); }
             if (FSUtils.fieldExists(crs, prefix, "NumOTs")) { _NumOTs = crs.getInt(prefix + "NumOTs"); }
+            if (FSUtils.fieldExists(crs, prefix, "ExternalGameID")) { _ExternalGameID = crs.getInt(prefix + "ExternalGameID"); }
             if (_VisitorID == 0) { _IsByeWeek = true; }
 
             // OBJECTS

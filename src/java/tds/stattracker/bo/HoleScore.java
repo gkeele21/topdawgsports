@@ -2,12 +2,14 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.CTApplication;
 
 public class HoleScore implements Serializable {
 
@@ -24,7 +26,7 @@ public class HoleScore implements Serializable {
     private Integer _UpDownAtt;
     private Integer _UpDownMade;
     private Integer _SandSaveAtt;
-    private Integer _SandSaveMade;    
+    private Integer _SandSaveMade;
     private String _Notes;
 
     // OBJECTS
@@ -35,7 +37,7 @@ public class HoleScore implements Serializable {
     // CONSTRUCTORS
     public HoleScore() {
     }
-    
+
     public HoleScore(int golferRoundId, int holeId) {
         CachedRowSet crs = null;
         try {
@@ -44,11 +46,11 @@ public class HoleScore implements Serializable {
             sql.append("FROM HoleScore");
             sql.append("WHERE GolferRoundID = ").append(golferRoundId).append(" AND HoleID = ").append(holeId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -62,12 +64,12 @@ public class HoleScore implements Serializable {
     }
 
     // GETTERS
-    public Integer getGolferRoundID() {return _GolferRoundID;}    
+    public Integer getGolferRoundID() {return _GolferRoundID;}
     public Integer getHoleID() {return _HoleID;}
     public Integer getGolfScoreID() {return _GolfScoreID;}
     public Integer getStrokes() {return _Strokes;}
     public Integer getPutts() {return _Putts;}
-    public Integer getHitFairway() {return _HitFairway;} 
+    public Integer getHitFairway() {return _HitFairway;}
     public Integer getGIR() {return _GIR;}
     public Integer getFinalPuttDistance() {return _FinalPuttDistance;}
     public Integer getPenaltyStrokes() {return _PenaltyStrokes;}
@@ -76,10 +78,10 @@ public class HoleScore implements Serializable {
     public Integer getSandSaveAtt() {return _SandSaveAtt;}
     public Integer getSandSaveMade() {return _SandSaveMade;}
     public String getNotes() {return _Notes;}
-    public GolferRound getGolferRound() {return _GolferRound;} 
-    public Hole getHole() {return _Hole;} 
-    public GolfScore getGolfScore() {return _GolfScore;} 
-    
+    public GolferRound getGolferRound() {return _GolferRound;}
+    public Hole getHole() {return _Hole;}
+    public GolfScore getGolfScore() {return _GolfScore;}
+
     // SETTERS
     public void setGolferRoundID(Integer golferRoundID) {_GolferRoundID = golferRoundID;}
     public void setHoleID(Integer HoleID) {_HoleID = HoleID;}
@@ -93,14 +95,14 @@ public class HoleScore implements Serializable {
     public void setUpDownAtt(Integer UpDownAtt) {_UpDownAtt = UpDownAtt;}
     public void setUpDownMade(Integer UpDownMade) {_UpDownMade = UpDownMade;}
     public void setSandSaveAtt(Integer SandSaveAtt) {_SandSaveAtt = SandSaveAtt;}
-    public void setSandSaveMade(Integer SandSaveMade) {_SandSaveMade = SandSaveMade;}    
+    public void setSandSaveMade(Integer SandSaveMade) {_SandSaveMade = SandSaveMade;}
     public void setNotes(String Notes) {_Notes = Notes;}
     public void setGolferRound(GolferRound GolferRound) {_GolferRound = GolferRound;}
     public void setHole(Hole Hole) {_Hole = Hole;}
     public void setGolfScore(GolfScore GolfScore) {_GolfScore = GolfScore;}
 
     // PUBLIC METHODS
-    
+
     /* Retrieves all of the scores for each hole of a particular Round of a Golfer */
     public static List<HoleScore> GetGolferRoundScores(Integer golferRoundId) {
         List<HoleScore> scores = new ArrayList<HoleScore>();
@@ -120,7 +122,7 @@ public class HoleScore implements Serializable {
             sql.append("WHERE r.GolferRoundID = ").append(golferRoundId).append(" ");
             sql.append("ORDER BY h.HoleNumber");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 HoleScore objHoleScore = new HoleScore(crs,"");
                 scores.add(objHoleScore);
@@ -134,32 +136,32 @@ public class HoleScore implements Serializable {
 
         return scores;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("HoleScore", "GolferRoundID", getGolferRoundID(), "HoleID", getHoleID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-   
+
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "GolferRoundID")) { setGolferRoundID(crs.getInt(prefix + "GolferRoundID")); }
-            if (FSUtils.fieldExists(crs, prefix, "HoleID")) { setHoleID(crs.getInt(prefix + "HoleID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "HoleID")) { setHoleID(crs.getInt(prefix + "HoleID")); }
             if (FSUtils.fieldExists(crs, prefix, "Strokes")) { setStrokes(crs.getInt(prefix + "Strokes")); }
             if (FSUtils.fieldExists(crs, prefix, "GolfScoreID")) { setGolfScoreID(crs.getInt(prefix + "GolfScoreID")); }
             if (FSUtils.fieldExists(crs, prefix, "GIR")) { setGIR(crs.getInt(prefix + "GIR")); }
             if (FSUtils.fieldExists(crs, prefix, "Putts")) { setPutts(crs.getInt(prefix + "Putts")); }
-            if (FSUtils.fieldExists(crs, prefix, "HitFairway")) { setHitFairway(crs.getInt(prefix + "HitFairway")); }            
+            if (FSUtils.fieldExists(crs, prefix, "HitFairway")) { setHitFairway(crs.getInt(prefix + "HitFairway")); }
             if (FSUtils.fieldExists(crs, prefix, "UpDownAtt")) { setUpDownAtt(crs.getInt(prefix + "UpDownAtt")); }
             if (FSUtils.fieldExists(crs, prefix, "UpDownMade")) { setUpDownMade(crs.getInt(prefix + "UpDownMade")); }
             if (FSUtils.fieldExists(crs, prefix, "SandSaveAtt")) { setSandSaveAtt(crs.getInt(prefix + "SandSaveAtt")); }
             if (FSUtils.fieldExists(crs, prefix, "SandSaveMade")) { setSandSaveMade(crs.getInt(prefix + "SandSaveMade")); }
-            if (FSUtils.fieldExists(crs, prefix, "PenaltyStrokes")) { setPenaltyStrokes(crs.getInt(prefix + "PenaltyStrokes")); }            
+            if (FSUtils.fieldExists(crs, prefix, "PenaltyStrokes")) { setPenaltyStrokes(crs.getInt(prefix + "PenaltyStrokes")); }
             if (FSUtils.fieldExists(crs, prefix, "FinalPuttDistance")) { setFinalPuttDistance(crs.getInt(prefix + "FinalPuttDistance")); }
-            if (FSUtils.fieldExists(crs, prefix, "Notes")) { setNotes(crs.getString(prefix + "Notes")); }            
+            if (FSUtils.fieldExists(crs, prefix, "Notes")) { setNotes(crs.getString(prefix + "Notes")); }
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "GolferRound$", "GolferRoundID")) { setGolferRound(new GolferRound(crs, "GolferRound$")); }
@@ -170,8 +172,8 @@ public class HoleScore implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
-    private void Insert() {       
+
+    private void Insert() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO HoleScore ");
@@ -192,13 +194,13 @@ public class HoleScore implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSandSaveMade()));
         sql.append(FSUtils.InsertDBFieldValue(getNotes()));
         sql.deleteCharAt(sql.length()-1).append(")");
-        
+
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -207,7 +209,7 @@ public class HoleScore implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("GolfScoreID", getGolfScoreID()));
         sql.append(FSUtils.UpdateDBFieldValue("Strokes", getStrokes()));
         sql.append(FSUtils.UpdateDBFieldValue("Putts", getPutts()));
-        sql.append(FSUtils.UpdateDBFieldValue("HitFairway", getHitFairway()));    
+        sql.append(FSUtils.UpdateDBFieldValue("HitFairway", getHitFairway()));
         sql.append(FSUtils.UpdateDBFieldValue("GIR", getGIR()));
         sql.append(FSUtils.UpdateDBFieldValue("FinalPuttDistance", getFinalPuttDistance()));
         sql.append(FSUtils.UpdateDBFieldValue("PenaltyStrokes", getPenaltyStrokes()));
@@ -220,7 +222,7 @@ public class HoleScore implements Serializable {
         sql.append("WHERE GolferRoundID = ").append(getGolferRoundID()).append(" AND HoleID = ").append(getHoleID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

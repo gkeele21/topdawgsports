@@ -15,43 +15,43 @@
     <style type="text/css">
         h2 { text-align: center; }
         select { background-color: #F2BC57; }
-        
+
         #container { overflow: hidden; }
-        
+
         #leftPH { float: left; }
         #leftPH h2 { color: #103B40; display:inline; }
         #leftPH label { color: #BF8339; font-size: 1.4em; margin-left: 10px; }
         #rightPH { float: right; }
-        
+
         #weekNumLinks { clear: both; }
         #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
         #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
         #weekNumLinks a:hover { color: #BF8339; }
         #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-        
+
         #byeTeams { clear: both; }
         #byeTeams img { height : 60px; width : 75px; }
         #byeTeams hr { border: medium solid black; margin: 20px 10px; }
         #byeTeams table{ width: auto; }
         #byeTeams th { font-size: 1.8em; }
-        
+
         #schedule { clear:both; width: 100%; }
-        #innerSchedule a { color: #1C5953; text-decoration: none; }        
+        #innerSchedule a { color: #1C5953; text-decoration: none; }
         #innerSchedule a:hover { color: #BF8339; }
         #innerSchedule th { color: #103B40; text-align: left; text-transform:  uppercase; }
         #innerSchedule th:first-child { text-align: right; }
-        #weeklyPicks { clear: both; width: 100%; }        
-        #innerWeeklyPicks { margin: 5px; }        
+        #weeklyPicks { clear: both; width: 100%; }
+        #innerWeeklyPicks { margin: 5px; }
         #innerWeeklyPicks td, #innerWeeklyPicks img { height : 35px; width : 45px; }
-        #innerWeeklyPicks .checkmark { height: 25px; width: 25px; } 
+        #innerWeeklyPicks .checkmark { height: 25px; width: 25px; }
         #innerWeeklyPicks a { color: #1C5953; font-size: 1.3em; text-decoration: underline; }
-        #innerWeeklyPicks a:hover { color: #BF8339; }        
-        #innerWeeklyPicks a.highlightedWeek { color: #BF8339; font-size: 1.7em; text-decoration: none; }        
-        #innerWeeklyPicks table { border: solid black thick; }        
+        #innerWeeklyPicks a:hover { color: #BF8339; }
+        #innerWeeklyPicks a.highlightedWeek { color: #BF8339; font-size: 1.7em; text-decoration: none; }
+        #innerWeeklyPicks table { border: solid black thick; }
         #innerWeeklyPicks td { border-bottom: 1px solid black; border-right: 1px solid black; }
-        
+
         img[id*=helmet] { height : 60px; width : 75px; }
-        
+
         .checkmark { height: 30px; width: 30px; }
         .gameDate { font-weight: bold; text-align: left; }
         .gameNote { color: #731702; }
@@ -61,31 +61,31 @@
         .pickedTeam { border: thick solid #731702; }
         .vName { text-align: right; }
         .winnerPts { color: darkgreen; }
-        
+
     </style>
   </head>
 
 <body>
     <div id="container">
-        
+
         <div id="header"><jsp:include page="../inc_header.jsp" /></div>
         <div id="mainMenu"><jsp:include page="../menu/mainMenu.jsp" /></div>
         <div id="leftMenu"><div id="innerLeftMenu"><jsp:include page="../menu/inc_leftMenu.jsp" /></div></div>
 
         <div id="content">
             <div id="innerContent">
-                
+
                 <%-- Page Header --%>
                 <div id="pageHeader">
-                
+
                     <div id="leftPH">
                         <h2>${displayTeam.teamName}</h2>
                         <c:if test="${displayWeek.status == 'COMPLETED'}" >
                             <label>(<fmt:formatNumber value="${fsStandings.gamePoints}" maxFractionDigits="0" /> pts)</label>
                         </c:if>
-                        
+
                     </div>
-                
+
                     <div id="rightPH">
                         <form action="weeklySchedule.htm">
                             <select id="allTeams" name="dtid" >
@@ -95,11 +95,11 @@
                                             selected="selected"
                                         </c:if>
                                     >${team.teamName}</option>
-                                </c:forEach>                               
+                                </c:forEach>
                             </select>
                             <input id="showTeam" type="submit" value="Show" />
                             <input type="hidden" name="wk" value="${displayWeek.FSSeasonWeekID}"></input>
-                        </form>                        
+                        </form>
                     </div>
 
                 </div>
@@ -111,22 +111,22 @@
                         <a <c:if test="${week.FSSeasonWeekID == displayWeek.FSSeasonWeekID}">class="currWeek"</c:if>
                             href="weeklySchedule.htm?wk=${week.FSSeasonWeekID}&dtid=${displayTeam.FSTeamID}">${week.FSSeasonWeekNo}
                         </a>
-                    </c:forEach>                    
+                    </c:forEach>
                 </div>
- 
+
                 <div id="weeklyPicks">
                     <div id="innerWeeklyPicks">
-                        
+
                         <%-- Initialize variables --%>
                         <c:set var="prevGameDate" value="" />
-                
+
                         <table>
                             <tr>
                                 <c:forEach items="${picks}" var="pick">
-                                    <td>${pick.FSSeasonWeek.FSSeasonWeekNo}</td>                                    
+                                    <td>${pick.FSSeasonWeek.FSSeasonWeekNo}</td>
                                 </c:forEach>
                             </tr>
-                            
+
                             <tr>
                                 <c:forEach items="${picks}" var="pick">
                                     <td>
@@ -154,22 +154,22 @@
                 <%-- Game Matchup --%>
                 <div id="schedule">
                     <div id="innerSchedule">
-                        
+
                         <label class="gameNote">*All games are displayed in Mountain Standard Time</label>
                         <h2>Week #${displayWeek.FSSeasonWeekNo}</h2>
-                        
+
                         <table>
-                            
-                            <thead>                            
+
+                            <thead>
                                 <th>Visitor Team</th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
-                                <th>Home Team</th>                                
+                                <th>Home Team</th>
                             </thead>
-                            
+
                             <c:forEach items="${games}" var="game">
 
                                 <%-- Set initial variables --%>
@@ -178,13 +178,16 @@
                                 <%-- Game Date --%>
                                 <c:if test="${game.gameDate != prevGameDate}">
                                     <tr>
-                                        <td class="gameDate" colspan="8"><fmt:formatDate value="${game.gameDate.time}" pattern="EEEE, MMM. d - h:mm a"/></td>
+                                        <td class="gameDate" colspan="8">
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="EEEE, MMM. d - h:mm a" timeZone="America/Denver" />
+                                        </td>
                                         <c:set var="prevGameDate" value="${game.gameDate}" />
                                     </tr>
                                 </c:if>
 
                                 <tr id="gameMatchup_${game.gameID}">
-                                    
+
                                     <%-- Visitor Name and Record --%>
                                     <td class="vName">
                                         <a href="javascript:viewTeamSchedule('/topdawgsports/proTeamSchedule.htm?tid=${game.visitorID}')">
@@ -199,7 +202,7 @@
                                             </c:choose>
                                         </a>
                                     </td>
-                                         
+
                                     <%-- Visitor Helmet --%>
                                     <td>
                                         <%-- See if the helmet should be in color or grayscale --%>
@@ -211,7 +214,7 @@
                                                 <c:set var="visitorTeamPath" value = "/topdawgsports/images/Helmets/Picked/${game.visitorID}" />
                                             </c:otherwise>
                                         </c:choose>
-                                        
+
                                         <c:choose>
                                             <c:when test="${!game.gameHasStarted && empty expiredTeams[game.visitorID] && fsteam.FSTeamID == displayTeam.FSTeamID}">
                                                 <a href="weeklySchedule.do?gid=${game.gameID}&tp=${game.visitorID}&fst=${displayTeam.FSTeamID}&wk=${displayWeek.FSSeasonWeekID}">
@@ -223,7 +226,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
-                                        
+
                                     <%-- Visitor Score --%>
                                     <td
                                         <c:choose>
@@ -239,7 +242,7 @@
                                             ${game.visitorPts}
                                         </c:if>
                                     </td>
-                                    
+
                                     <%-- Result --%>
                                     <td class="versusLabel">
                                         <c:choose>
@@ -265,8 +268,8 @@
                                                 </c:otherwise>
                                         </c:choose>
                                     </td>
-                                    
-                                    <%-- Home Score --%>   
+
+                                    <%-- Home Score --%>
                                     <td
                                         <c:choose>
                                             <c:when test="${game.homeID == game.winnerID}">
@@ -293,7 +296,7 @@
                                                 <c:set var="homeTeamPath" value = "/topdawgsports/images/Helmets/Picked/${game.homeID}" />
                                             </c:otherwise>
                                         </c:choose>
-                                        
+
                                         <c:choose>
                                             <c:when test="${!game.gameHasStarted && empty expiredTeams[game.homeID] && fsteam.FSTeamID == displayTeam.FSTeamID}">
                                                 <a href="weeklySchedule.do?gid=${game.gameID}&tp=${game.homeID}&fst=${displayTeam.FSTeamID}&wk=${displayWeek.FSSeasonWeekID}">
@@ -325,13 +328,13 @@
                         </table>
                     </div> <%-- inner schedule --%>
                 </div> <%-- schedule --%>
-                
+
                 <%-- BYE TEAMS --%>
                 <c:if test="${!empty byeTeams}">
                     <div id="byeTeams">
                         <hr />
                         <h3>Bye Teams:</h3>
-                        <table>                           
+                        <table>
                             <tr>
                                 <c:forEach items="${byeTeams}" var="team">
                                     <td><img src="/topdawgsports/images/Helmets/Color/${team.homeID}.gif" alt="" /></td>
@@ -344,6 +347,6 @@
             </div> <%-- inner content--%>
         </div> <%-- content --%>
     </div> <%-- container --%>
-       
+
 </body>
 </html>

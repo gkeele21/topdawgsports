@@ -37,7 +37,7 @@
 
         <div id="content">
             <div id="innerContent">
-                
+
                 <%-- Week Number Links --%>
                 <div id="weekNumLinks">
                     <label>Week #</label>
@@ -45,8 +45,8 @@
                         <a <c:if test="${week.FSSeasonWeekID == displayWeek.FSSeasonWeekID}">class="currWeek"</c:if>
                             href="transactions.htm?wk=${week.FSSeasonWeekID}">${week.FSSeasonWeekNo}
                         </a>
-                    </c:forEach>                    
-                </div>     
+                    </c:forEach>
+                </div>
 
                 <div id="leagueTransactions">
                     <div id="innerLeagueTransactions">
@@ -77,7 +77,10 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
                                     <tr ${highlightRow1} class="rowData">
-                                        <td><fmt:formatDate value="${transaction.transactionDate.time}" pattern="E MM/dd HH:mm"/></td>
+                                        <td>
+                                            <fmt:parseDate  value="${transaction.transactionDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="transactionDate" />
+                                            <fmt:formatDate value="${transactionDate}" pattern="E MM/dd HH:mm" timeZone="America/Denver" />
+                                        </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
                                         <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>

@@ -23,19 +23,19 @@
             #innerTeamSchedule a:hover { color: #BF8339; }
         </style>
     </head>
-    
+
 <body>
 
     <div id="teamSchedule">
         <div id="innerTeamSchedule">
-            
+
             <h2>${team.fullName} ${team.mascot}</h2>
-            
+
             <form action="proTeamSchedule.htm" method="post">
-                
+
                 Year:
                 <select name="year" >
-                    
+
                     <c:forEach items="${allYears}" var="year">
                         <option value="${year}"
                             <c:if test="${year == schedYear}">
@@ -44,16 +44,16 @@
                         >${year}
                         </option>
                     </c:forEach>
-                    
+
                 </select>
-                
+
                 <input type="hidden" name="tid" value="${team.teamID}" />
                 <input type="submit" value="Show" />
 
             </form>
-            
+
             <table>
-                
+
                 <!-- Table Headers -->
                 <tr>
                     <td>Week</td>
@@ -62,9 +62,9 @@
                     <td>Result</td>
                     <td>Score</td>
                 </tr>
-                               
+
                 <c:forEach items="${games}" var="game">
-                    
+
                     <!-- Initialize Variables -->
                     <c:set var="oppId" value="${game.visitorID}" />
                     <c:set var="oppName" value="${game.visitor.fullName} ${game.visitor.mascot}" />
@@ -72,7 +72,7 @@
                     <c:set var="teamPts" value="${game.homePts}" />
                     <c:set var="result" value="L" />
                     <c:set var="versus" value="" />
-                    
+
                     <!-- Override defaults (doing it this way so there aren't so many choose when otherwise statements -->
                     <c:if test="${team.teamID == game.visitorID}">
                         <c:set var="oppId" value="${game.homeID}" />
@@ -81,15 +81,18 @@
                         <c:set var="teamPts" value="${game.visitorPts}" />
                         <c:set var="versus" value="@" />
                     </c:if>
-                    
+
                     <c:if test="${team.teamID == game.winnerID}">
                         <c:set var="result" value="W" />
                     </c:if>
-                    
+
                     <tr>
                         <td>${game.seasonWeek.weekNo}</td>
-                        <td><fmt:formatDate value="${game.gameDate.time}" pattern="MMM. d"/></td>
-                        
+                        <td>
+                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                            <fmt:formatDate value="${gameDate}" pattern="MMM. d" timeZone="America/Denver" />
+                        </td>
+
                         <c:choose>
                             <c:when test="${game.visitorID == 0}">
                                 <td colspan="4">BYE</td>
@@ -111,15 +114,15 @@
                                 </c:choose>
                             </c:otherwise>
                         </c:choose>
-                                        
+
                     </tr>
-                        
+
                 </c:forEach>
-                    
+
             </table>
-            
+
         </div> <!-- innerTeamSchedule -->
     </div> <!-- teamSchedule -->
-    
+
 </body>
 </html>

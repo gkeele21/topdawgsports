@@ -8,11 +8,11 @@ package tds.sal.scripts;
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
-import java.sql.Connection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -57,21 +57,18 @@ public class FootballSalariesTemp implements Harnessable {
 
     public void updatePlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempSalaryPlayers ");
 
             _Logger.info(sql.toString());
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 int positionid = crs.getInt("PositionID");
                 String name = crs.getString("Name").trim();
                 String team = crs.getString("Team").trim();
                 int id = crs.getInt("TempID");
-                
+
                 if (name.indexOf("'") > 0) {
                     continue;
                 }
@@ -81,31 +78,29 @@ public class FootballSalariesTemp implements Harnessable {
                             " and CONCAT(p.FirstName,' ',p.LastName) = '" + name.trim() + "'" +
                             " and p.IsActive = 1" +
                             " and t.Abbreviation = '" + team + "'";
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,sql2);
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(sql2);
                 if (crs2.next()) {
                     int playerid = crs2.getInt("PlayerID");
-                    
+
                     name = FSUtils.fixupUserInputForDB(name);
                     String sql3 = "update TempSalaryPlayers " +
                                 " set PlayerID = " + playerid +
                                 " where TempID = " + id;
                     _Logger.info(sql3);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql3);
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql3);
                 } else {
                     _Logger.warning(sql2);
                 }
-                
+
                 crs2.close();
             }
 
             crs.close();
-            
-            con.commit();
+
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "FootballPlayers Update Error : {0}", e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;
@@ -113,26 +108,23 @@ public class FootballSalariesTemp implements Harnessable {
 
     public void insertSalaries() throws Exception {
 
-        Connection con = null;
 //        int fsseasonweekid = 447;
         int fsseasonweekid = 1298;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
+            CTApplication._CT_QUICK_DB.executeUpdate("delete from FSPlayerValue where FSSeasonWeekID = " + fsseasonweekid);
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FSPlayerValue where FSSeasonWeekID = " + fsseasonweekid);
-            
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempSalaryPlayers where PlayerID is not null");
 
             _Logger.info(sql.toString());
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 int positionid = crs.getInt("PositionID");
 //                String name = crs.getString("Name");
 //                int id = crs.getInt("TempID");
                 int points = crs.getInt("Points");
 //                String team = crs.getString("Team");
-                
+
 //                int multiplier = 1000;
 //                switch (positionid) {
 //                    case 1 :
@@ -164,7 +156,7 @@ public class FootballSalariesTemp implements Harnessable {
 //                    case 11 :
 //                        multiplier = 700;
 //                        break;
-//                    
+//
 //                }
                 int multiplier = 800;
                 switch (positionid) {
@@ -197,29 +189,27 @@ public class FootballSalariesTemp implements Harnessable {
                     case 11 :
 //                        multiplier = 700;
                         break;
-                    
+
                 }
                 int salary = points * multiplier;
                 int playerid = crs.getInt("PlayerID");
-                
+
                 StringBuilder sql3 = new StringBuilder();
                 sql3.append("insert into FSPlayerValue (PlayerID,FSSeasonWeekID,Value) ");
                 sql3.append(" values (").append(playerid);
                 sql3.append(",").append(fsseasonweekid);
                 sql3.append(",").append(salary).append(")");
                 _Logger.info(sql3.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql3.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql3.toString());
 
             }
 
             crs.close();
-            
-            con.commit();
+
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "FootballPlayers Update Error : {0}", e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;
@@ -227,41 +217,36 @@ public class FootballSalariesTemp implements Harnessable {
 
     public void newWeek(int oldfsseasonweekid) throws Exception {
 
-        Connection con = null;
         int newfsseasonweekid = oldfsseasonweekid + 1;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
+            CTApplication._CT_QUICK_DB.executeUpdate("delete from FSPlayerValue where FSSeasonWeekID = " + newfsseasonweekid);
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FSPlayerValue where FSSeasonWeekID = " + newfsseasonweekid);
-            
             StringBuilder sql = new StringBuilder();
             sql.append("select * from FSPlayerValue where FSSeasonWeekID = ").append(oldfsseasonweekid);
 
             _Logger.info(sql.toString());
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 int playerid = crs.getInt("PlayerID");
                 double value = crs.getDouble("Value");
-                
-                
+
+
                 StringBuilder sql3 = new StringBuilder();
                 sql3.append("insert into FSPlayerValue (PlayerID,FSSeasonWeekID,Value) ");
                 sql3.append(" values (").append(playerid);
                 sql3.append(",").append(newfsseasonweekid);
                 sql3.append(",").append(value).append(")");
                 _Logger.info(sql3.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql3.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql3.toString());
 
             }
 
             crs.close();
-            
-            con.commit();
+
         } catch (Exception e) {
             _Logger.log(Level.SEVERE, "FootballPlayers Update Error : {0}", e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;

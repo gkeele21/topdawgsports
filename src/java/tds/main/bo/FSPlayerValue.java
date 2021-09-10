@@ -2,23 +2,24 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.text.DecimalFormat;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSPlayerValue implements Serializable {
-    
+
     // DB FIELDS
     private int _PlayerID;
     private int _FSSeasonWeekID;
-    private double _Value;    
-    
+    private double _Value;
+
     // OBJECTS
     private Player _Player;
     private FSSeasonWeek _FSSeasonWeek;
-    
+
     // ADDITIONAL FIELDS
     private Game _Game;
     private FootballStats _FootballStats;
@@ -27,7 +28,7 @@ public class FSPlayerValue implements Serializable {
     // CONSTRUCTORS
     public FSPlayerValue() {
     }
-    
+
     public FSPlayerValue(int playerID, int fsseasonweekID) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ").append(_Cols.getColumnList("FSPlayerValue", "pv.", "PlayerValue$"));
@@ -49,10 +50,8 @@ public class FSPlayerValue implements Serializable {
         sql.append(" AND pv.FSSeasonWeekID = ").append(fsseasonweekID);
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "PlayerValue$");
             }
@@ -60,10 +59,9 @@ public class FSPlayerValue implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
     }
-    
+
     public FSPlayerValue(CachedRowSet fields) {
         initFromCRS(fields, "PlayerValue$");
     }
@@ -71,17 +69,17 @@ public class FSPlayerValue implements Serializable {
     public FSPlayerValue(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public int getPlayerID() {return _PlayerID;}
     public int getFSSeasonWeekID() {return _FSSeasonWeekID;}
-    public double getValue() {return _Value;}    
+    public double getValue() {return _Value;}
     public Player getPlayer() {if (_Player == null && _PlayerID > 0) {_Player = Player.getInstance(_PlayerID);}return _Player;}
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public Game getGame() {return _Game;}
     public FootballStats getFootballStats() {return _FootballStats;}
     public FootballStats getTotalFootballStats() {return _TotalFootballStats;}
-    
+
     // SETTERS
     public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
@@ -91,13 +89,13 @@ public class FSPlayerValue implements Serializable {
     public void setGame(Game Game) {_Game = Game;}
     public void setFootballStats(FootballStats FootballStats) {_FootballStats = FootballStats;}
     public void setTotalFootballStats(FootballStats TotalFootballStats) {_TotalFootballStats = TotalFootballStats;}
-    
+
     // PUBLIC METHODS
 
     public static void setPlayerValue(int playerid, int fsseasonweekid, double value) throws Exception {
 
         try {
-            
+
             StringBuilder sql = new StringBuilder();
 
             sql.append("DELETE FROM FSPlayerValue ");
@@ -105,7 +103,7 @@ public class FSPlayerValue implements Serializable {
             sql.append(" AND FSSeasonWeekID = ").append(fsseasonweekid);
 
             CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
-            
+
             sql = new StringBuilder();
             DecimalFormat twoDForm = new DecimalFormat("#.##");
             value = Double.valueOf(twoDForm.format(value));
@@ -116,33 +114,33 @@ public class FSPlayerValue implements Serializable {
             sql.append(",").append(value).append(")");
 
             CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
-            
+
         } catch (Exception e) {
-            
+
         }
 
     }
-    
+
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
                 setPlayerID(crs.getInt(prefix + "PlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) {
                 setFSSeasonWeekID(crs.getInt(prefix + "FSSeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Value")) {
                 setValue(crs.getDouble(prefix + "Value"));
             }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "Player$", "PlayerID")) {
                 setPlayer(new Player(crs, "Player$"));
@@ -155,7 +153,7 @@ public class FSPlayerValue implements Serializable {
                     tempSeasonWeek--;
                 }
             }
-            
+
             if (FSUtils.fieldExists(crs, "TotalFootballStats$", "StatsPlayerID")) {
                 setTotalFootballStats(new FootballStats(crs, "TotalFootballStats$"));
             }
@@ -167,5 +165,5 @@ public class FSPlayerValue implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    } 
+    }
 }

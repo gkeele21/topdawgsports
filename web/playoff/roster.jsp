@@ -36,7 +36,7 @@
             <div id="innerContent">
 
                 <jsp:include page="../inc_errorMessage.jsp" />
-                
+
                 <div id="salaryRoster">
                     <div id="innerSalaryRoster">
 
@@ -54,14 +54,14 @@
                                 <td>Salary</td>
                                 <td>Avg Pts</td>
                                 <td>Opp</td>
-                                <td>Game Time</td>                                
+                                <td>Game Time</td>
                             </tr>
 
                             <%-- QUARTERBACK --%>
                             <tr class="rowData2">
                                 <c:set var="game" value="${tds:getGame(fsseasonweek.seasonWeekID,QB1.player.team.teamID)}" />
                                 <c:set var="opp" value="${tds:getOpponentString(game,QB1.player.team.teamID)}" />
-                                
+
                                 <td><a href="roster.htm?pos=1">QB</a></td>
                                 <c:if test="${QB1 != null}">
                                     <td>${QB1.player.team.abbreviation}</td>
@@ -78,9 +78,10 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${QB1!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
-                                    </td>                                    
+                                    </td>
                                 </c:if>
                                 <c:if test="${QB1 == null}">
                                     <td colspan="7"></td>
@@ -108,7 +109,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${RB1!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -138,7 +140,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${RB2!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -168,7 +171,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${WR1!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -198,7 +202,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${WR2!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -228,7 +233,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${TE1!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -236,7 +242,7 @@
                                     <td colspan="7"></td>
                                 </c:if>
                             </tr>
-                            
+
                             <%-- KICKER --%>
                             <tr class="rowData2">
                                 <c:set var="game" value="${tds:getGame(fsseasonweek.seasonWeekID,PK1.player.team.teamID)}" />
@@ -258,7 +264,8 @@
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${PK1!=null && opp!='BYE'}">
-                                            <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                         </c:if>
                                     </td>
                                 </c:if>
@@ -280,7 +287,7 @@
                                 <td><fmt:formatNumber type="currency" value="${salaryCap - (QB1.value + RB1.value + RB2.value + WR1.value + WR2.value + TE1.value + PK1.value )}" maxFractionDigits="0" /></td>
                             </tr>
                         </table>
-                                
+
                         <p> NOTE : Your picks are automatically saved after each selection.  Your roster is required to have a player selected in each positional slot.
                             Failure to meet the requirements of a full roster or failure to stay under the salary cap allotted will result in 0 Fantasy Pts.
                         </p>
@@ -293,12 +300,12 @@
                             <a href="roster.htm?pos=4">TE</a>
                             <a href="roster.htm?pos=5">PK</a>
                         </div>
-                                    
+
                         <!-- NFL Players -->
-                        <table>                            
+                        <table>
                             <tds:tableRows displayRows="25" items="${playerSalaries}" var="playervalue" startingRowNum="${startingRowNum}" tableNumber="1">
                                 <jsp:attribute name="rowInfo">
-                                    
+
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
@@ -306,7 +313,7 @@
                                         <td>
                                             <a href="roster.htm?sort=2${(listSort=="2") ? "_d" : ""}">Team</a>
                                             <img src="${(listSort=="2") ? "/topdawgsports/images/arrow_up.gif" : ((listSort=="2_d") ? "/topdawgsports/images/arrow_down.gif" : "/topdawgsports/images/spacer.gif")}" alt="" />
-                                        </td>                                        
+                                        </td>
                                         <td colspan="2">
                                             <a href="roster.htm?sort=1${(listSort=="1") ? "_d" : ""}">Player</a>
                                             <img src="${(listSort=="1") ? "/topdawgsports/images/arrow_up.gif" : ((listSort=="1_d") ? "/topdawgsports/images/arrow_down.gif" : "/topdawgsports/images/spacer.gif")}" alt="" />
@@ -317,7 +324,7 @@
                                         </td>
                                         <td>Avg Pts</td>
                                         <td>Opp</td>
-                                        <td>Game Time</td>                                                                            
+                                        <td>Game Time</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData" >
@@ -335,7 +342,7 @@
                                                 </a>
                                            </c:if>
                                         </td>
-                                        <td class="playerName">                                            
+                                        <td class="playerName">
                                             <tds:player player="${playervalue.player}" displayStatsLink="true" displayInjury="false" />
                                         </td>
                                         <td><fmt:formatNumber type="currency" value="${playervalue.value}" maxFractionDigits="0" /></td>
@@ -343,7 +350,8 @@
                                         <td>${opp}</td>
                                         <td>
                                             <c:if test="${opp != 'BYE'}">
-                                                <fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/>
+                                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                                <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                             </c:if>
                                         </td>
                                         <%--<td><fmt:formatNumber type="number" value="${playervalue.totalFootballStats.salFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>--%>

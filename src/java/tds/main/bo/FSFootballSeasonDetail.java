@@ -5,9 +5,8 @@ import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.io.Serializable;
-import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static tds.data.CTColumnLists._Cols;
 
@@ -33,22 +32,19 @@ public class FSFootballSeasonDetail implements Serializable{
 
     public FSFootballSeasonDetail(int seasonID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballSeasonDetail", "sd.", ""));
             sql.append(" FROM FSFootballSeasonDetail sd ");
             sql.append(" WHERE sd.FSSeasonID = ").append(seasonID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             initFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
     }
@@ -106,9 +102,9 @@ public class FSFootballSeasonDetail implements Serializable{
             }
 
             if (FSUtils.fieldExists(crs, prefix, "TradesEndDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "TradesEndDate");
+                Timestamp s = crs.getTimestamp(prefix + "TradesEndDate");
                 if (s != null) {
-                    setTradesEndDate(s.toLocalDate());
+                    setTradesEndDate(s.toLocalDateTime().toLocalDate());
                 }
             }
 

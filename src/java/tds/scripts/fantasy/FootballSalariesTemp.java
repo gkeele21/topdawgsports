@@ -5,19 +5,13 @@
 
 package tds.scripts.fantasy;
 
-import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.sql.Connection;
-import java.util.StringTokenizer;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
 
 /**
  *
@@ -56,15 +50,12 @@ public class FootballSalariesTemp {
 
     public void updatePlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             StringBuffer sql = new StringBuffer();
             sql.append("select * from ct_temp.TempSalaryPlayers ");
 
             _Logger.info(sql.toString());
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 int positionid = crs.getInt("PositionID");
                 String name = crs.getString("Name");
@@ -75,7 +66,7 @@ public class FootballSalariesTemp {
                 }
                 String sql2 = "select * from Player where PositionID = " + positionid +
                             " and String(FirstName,' ',LastName) = '" + name + "'";
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,sql2);
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(sql2);
                 if (crs2.next()) {
                     int playerid = crs2.getInt("PlayerID");
 
@@ -84,7 +75,7 @@ public class FootballSalariesTemp {
                                 " set PlayerID = " + playerid +
                                 " where ID = " + id;
                     _Logger.info(sql3);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql3);
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql3);
                 }
 
                 crs2.close();
@@ -92,12 +83,10 @@ public class FootballSalariesTemp {
 
             crs.close();
 
-            con.commit();
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;
@@ -105,18 +94,15 @@ public class FootballSalariesTemp {
 
     public void insertSalaries() throws Exception {
 
-        Connection con = null;
         int fsseasonweekid = 69;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FSPlayerValue where FSSeasonWeekID = " + fsseasonweekid);
+            CTApplication._CT_QUICK_DB.executeUpdate("delete from FSPlayerValue where FSSeasonWeekID = " + fsseasonweekid);
 
             StringBuffer sql = new StringBuffer();
             sql.append("select * from ct_temp.TempSalaryPlayers ");
 
             _Logger.info(sql.toString());
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 int positionid = crs.getInt("PositionID");
                 String name = crs.getString("Name");
@@ -156,18 +142,16 @@ public class FootballSalariesTemp {
                 String sql3 = "insert into FSPlayerValue (PlayerID,FSSeasonWeekID,Value) " +
                             " values (" + playerid + "," + fsseasonweekid + "," + salary + ")";
                 _Logger.info(sql3);
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql3);
+                CTApplication._CT_QUICK_DB.executeUpdate(sql3);
 
             }
 
             crs.close();
 
-            con.commit();
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;

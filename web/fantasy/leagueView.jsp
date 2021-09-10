@@ -242,7 +242,10 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
                                     <tr ${highlightRow1} class="rowData">
-                                        <td><fmt:formatDate value="${transaction.transactionDate.time}" pattern="E MM/dd HH:mm"/></td>
+                                        <td>
+                                            <fmt:parseDate  value="${transaction.transactionDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="transactionDate" />
+                                            <fmt:formatDate value="${transactionDate}" pattern="E MM/dd HH:mm" timeZone="America/Denver" />
+                                        </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
                                         <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
@@ -286,7 +289,10 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
                                     <tr ${highlightRow1} class="rowData">
-                                        <td><fmt:formatDate value="${transaction.transactionDate.time}" pattern="E MM/dd HH:mm"/></td>
+                                        <td>
+                                            <fmt:parseDate  value="${transaction.transactionDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="transactionDate" />
+                                            <fmt:formatDate value="${transactionDate}" pattern="E MM/dd HH:mm" timeZone="America/Denver" />
+                                        </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
                                         <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>

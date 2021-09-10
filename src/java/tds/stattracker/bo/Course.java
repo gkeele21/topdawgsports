@@ -2,10 +2,12 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class Course implements Serializable {
 
@@ -20,11 +22,11 @@ public class Course implements Serializable {
 
     // OBJECTS
     private GolfCourse _GolfCourse;
-    
+
     // CONSTRUCTORS
     public Course() {
     }
-    
+
     public Course(int courseId) {
         CachedRowSet crs = null;
         try {
@@ -33,10 +35,10 @@ public class Course implements Serializable {
             sql.append("FROM Course");
             sql.append("WHERE CourseID = ").append(courseId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -56,8 +58,8 @@ public class Course implements Serializable {
     public Integer getNumHoles() {return _NumHoles;}
     public Integer getMensPar() {return _MensPar;}
     public Integer getWomensPar() {return _WomensPar;}
-    public GolfCourse getGolfCourse() {return _GolfCourse;} 
-    
+    public GolfCourse getGolfCourse() {return _GolfCourse;}
+
     // SETTERS
     public void setCourseID(Integer courseId) {_CourseID = courseId;}
     public void setGolfCourseID(Integer GolfCourseID) {_GolfCourseID = GolfCourseID;}
@@ -69,16 +71,16 @@ public class Course implements Serializable {
     public void setGolfCourse(GolfCourse golfCourse) {_GolfCourse = golfCourse;}
 
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Course", "CourseID", getCourseID());
         if (doesExist) { Update(); } else { Insert(); }
     }
 
     // PRIVATE METHODS
-    
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "CourseID")) { setCourseID(crs.getInt(prefix + "CourseID")); }
@@ -112,11 +114,11 @@ public class Course implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -132,7 +134,7 @@ public class Course implements Serializable {
         sql.append("WHERE CourseID = ").append(getCourseID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

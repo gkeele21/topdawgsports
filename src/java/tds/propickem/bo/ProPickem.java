@@ -2,12 +2,14 @@ package tds.propickem.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.*;
 
 public class ProPickem implements Serializable {
 
@@ -26,7 +28,7 @@ public class ProPickem implements Serializable {
     private Team _TeamPicked;
 
     // ADDITIONAL FIELDS
-    private boolean _isPickCorrect;   
+    private boolean _isPickCorrect;
 
     // CONSTRUCTORS
     public ProPickem() {
@@ -48,7 +50,7 @@ public class ProPickem implements Serializable {
     public Game getGame() {if (_Game == null && _GameID > 0) {_Game = new Game(_GameID);}return _Game;}
     public Team getTeamPicked() {if (_TeamPicked == null && _TeamPickedID > 0) {_TeamPicked = new Team(_TeamPickedID);}return _TeamPicked;}
     public boolean getIsPickCorrect() {return _isPickCorrect;}
-    
+
     // SETTERS
     public void setProPickemID(int ProPickemID) {_ProPickemID = ProPickemID;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
@@ -66,7 +68,7 @@ public class ProPickem implements Serializable {
 
     /*  This method calculates the standings for all leagues and teams for the given FSSeasonWeek */
     public static int CalculateStandings(FSSeasonWeek week) {
-        
+
         int retVal = 0;
         List<FSLeague> fsLeagues = null;
         List<FSTeam> fsTeams = null;
@@ -83,7 +85,7 @@ public class ProPickem implements Serializable {
         int teamPickedId = 0;
 
         try {
-            
+
             // Grab all the active leagues for the pro pickem season
             fsLeagues = FSLeague.GetLeagues(week.getFSSeasonID());
 
@@ -99,18 +101,18 @@ public class ProPickem implements Serializable {
                 else {
                     priorFSSeasonWeekId = new FSSeasonWeek(week.getFSSeasonID(),week.getFSSeasonWeekNo() - 1).getFSSeasonWeekID();
                     priorStandings = FSFootballStandings.GetWeeklyStandings(priorFSSeasonWeekId);
-                }                
+                }
 
                 for (int teamCount=0; teamCount < fsTeams.size(); teamCount++) {
-                    
-                    FSFootballStandings standings = new FSFootballStandings();                    
+
+                    FSFootballStandings standings = new FSFootballStandings();
                     gamePoints = 0;
                     gamesCorrect = 0;
                     gamesWrong = 0;
                     prevGamePointsTotal = 0;
                     prevGamesCorrectTotal = 0;
                     prevGamesWrongTotal = 0;
-                    
+
                     fsTeamId = fsTeams.get(teamCount).getFSTeamID();
 
                     // Grab the user's picks for the week
@@ -119,14 +121,14 @@ public class ProPickem implements Serializable {
                     for (int j=0; j < picks.size(); j++) {
 
                         teamPickedId = picks.get(j).getTeamPickedID();
-                        
+
                         // Calculate weekly points
                         if (teamPickedId > 0 && picks.get(j).getGame().getWinnerID().equals(teamPickedId)) {
                             gamePoints += (picks.get(j).getConfidencePts() > 0) ? picks.get(j).getConfidencePts() : 1;
-                            gamesCorrect += 1;                                                                
+                            gamesCorrect += 1;
                         }
                         else {
-                            gamesWrong += 1;  
+                            gamesWrong += 1;
                         }
                     }
 
@@ -151,18 +153,18 @@ public class ProPickem implements Serializable {
                     standings.setTotalGamePoints(prevGamePointsTotal + gamePoints);
                     standings.setTotalGamesCorrect(prevGamesCorrectTotal + gamesCorrect);
                     standings.setTotalGamesWrong(prevGamesWrongTotal + gamesWrong);
-                    standings.Save();                 
+                    standings.Save();
                 }
-                
+
                 FSFootballStandings.CalculateRank(fsLeagues.get(i).getFSLeagueID(), week.getFSSeasonWeekID(), "TotalGamePoints desc");
             }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
- 
+
         return retVal;
     }
-    
+
     /*  This method is used to get a user's picks for a specific week. */
     public static List<ProPickem> GetWeeklyPicks(int fsSeasonWeekId, int fsTeamId) {
 
@@ -196,7 +198,7 @@ public class ProPickem implements Serializable {
 
         return picks;
    }
-    
+
     public static int SaveConfidencePoints(int fsSeasonWeekId, int fsTeamId, int gameId, int confidencePts) {
 
         int retVal = -1;
@@ -218,7 +220,7 @@ public class ProPickem implements Serializable {
 
         return retVal;
     }
-    
+
     public static int SavePick(int fsSeasonWeekId, int fsTeamId, int gameId, int teamPickedId) {
 
         int retVal = -1;
@@ -250,7 +252,7 @@ public class ProPickem implements Serializable {
         return retVal;
     }
 
-    // PRIVATE METHODS   
+    // PRIVATE METHODS
 
     /*  This method determines if the user has already made a pick for a specific matchup.
         It's main purposes is to determine if we need to update or insert the pick into the DB. */
@@ -267,7 +269,7 @@ public class ProPickem implements Serializable {
             sql.append("WHERE FSTeamID = ").append(fsTeamId).append(" AND GameID = ").append(gameId).append(" ");
 
             // Execute Query
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 retVal = crs.getInt("ProPickemID");
             }
@@ -282,7 +284,7 @@ public class ProPickem implements Serializable {
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
 
             // DB FIELDS
@@ -305,7 +307,7 @@ public class ProPickem implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "TeamPickedID")) {
                 setTeamPickedID(crs.getInt(prefix + "TeamPickedID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "ConfidencePts")) {
                 setConfidencePts(crs.getInt(prefix + "ConfidencePts"));
             }
@@ -344,7 +346,7 @@ public class ProPickem implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private static int InsertConfidencePoints(int fsSeasonWeekId, int fsTeamId, int gameId, int confidencePts) {
 
         int retVal = -1;
@@ -357,7 +359,7 @@ public class ProPickem implements Serializable {
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -378,14 +380,14 @@ public class ProPickem implements Serializable {
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
 
         return retVal;
     }
-    
+
     private static int UpdateConfidencePoints(int proPickemId, int confidencePts) {
 
         int retVal = -1;
@@ -393,19 +395,19 @@ public class ProPickem implements Serializable {
 
         // Create SQL statement
         sql.append("UPDATE ProPickem ");
-        sql.append("SET ConfidencePts = ").append(confidencePts).append(" ");        
+        sql.append("SET ConfidencePts = ").append(confidencePts).append(" ");
         sql.append("WHERE ProPickemID = ").append(proPickemId);
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
 
         return retVal;
     }
-    
+
     /*  This method updates a record in the DB. */
     private static int UpdatePick(int proPickemId, int teamPickedId) {
 
@@ -414,12 +416,12 @@ public class ProPickem implements Serializable {
 
         // Create SQL statement
         sql.append("UPDATE ProPickem ");
-        sql.append("SET TeamPickedID = ").append(teamPickedId).append(" ");        
+        sql.append("SET TeamPickedID = ").append(teamPickedId).append(" ");
         sql.append("WHERE ProPickemID = ").append(proPickemId);
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

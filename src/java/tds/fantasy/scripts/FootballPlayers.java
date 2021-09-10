@@ -8,16 +8,16 @@ package tds.fantasy.scripts;
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.CTApplication;
 
 /**
  *
@@ -72,15 +72,12 @@ public class FootballPlayers implements Harnessable {
         final int teamidpos = 36;
         final int positionpos = 41;
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // clear out the temp table
             StringBuilder clear = new StringBuilder();
             clear.append("delete from TempProPlayer");
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(clear.toString());
 
             URL url = new URL(playersurl);
 
@@ -157,7 +154,7 @@ public class FootballPlayers implements Harnessable {
                         sql.append(", '").append(FSUtils.fixupUserInputForDB(playername.trim())).append("' )");
 
                         _Logger.info(sql.toString());
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                     }
                 }
@@ -165,13 +162,11 @@ public class FootballPlayers implements Harnessable {
 
             in.close();
 
-            con.commit();
             System.out.println("Players updated.");
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         return;
@@ -179,16 +174,13 @@ public class FootballPlayers implements Harnessable {
 
     public void updateNFLPlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0");
+            CTApplication._CT_QUICK_DB.executeUpdate("update Player set isActive = 0");
 
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempProPlayer where StatsPlayerID <> 0 order by StatsPlayerid");
 
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 String playerid = crs.getString("StatsPlayerID");
@@ -206,7 +198,7 @@ public class FootballPlayers implements Harnessable {
                 StringBuilder tempSql2 = new StringBuilder();
                 tempSql2.append("select * from ").append(CTApplication.TBL_PREF).append("Player where StatsPlayerID = ").append(playerid);
                 _Logger.info(tempSql2.toString());
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql2.toString());
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(tempSql2.toString());
                 if (crs2.next()) {
 
                     int currentteam = crs2.getInt("TeamID");
@@ -217,14 +209,14 @@ public class FootballPlayers implements Harnessable {
 
                         sql.append(" ,TeamID = ").append(teamid);
                     }
-                    
+
                     sql.append(" where StatsPlayerID = ").append(playerid);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                     _Logger.info(sql.toString());
                 } else {
 
                     // Get the PositionID based on the position
-                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from " + CTApplication.TBL_PREF + "Position where PositionName = '" + pos + "'");
+                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery("select * from " + CTApplication.TBL_PREF + "Position where PositionName = '" + pos + "'");
                     if (crs3.next()) {
                         String posid = crs3.getString("PositionID");
                         //int active = teamid > 0 ? 1 : 0;
@@ -237,7 +229,7 @@ public class FootballPlayers implements Harnessable {
                         sql.append(FSUtils.fixupUserInputForDB(last)).append("', '").append(FSUtils.fixupUserInputForDB(quickstatsname)).append("',").append(playerid).append(",").append(active).append(")");
 
                         _Logger.info(sql.toString());
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                     }
 
@@ -248,13 +240,10 @@ public class FootballPlayers implements Harnessable {
             }
 
             crs.close();
-
-            con.commit();
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE,"Error in FootballPlayers : " + e.getMessage());
         } finally {
-            con.close();
         }
     }
 

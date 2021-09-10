@@ -2,13 +2,14 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.util.CTReturnCode;
+
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.util.CTReturnCode;
 
 public class FSGame implements Serializable {
 
@@ -23,10 +24,10 @@ public class FSGame implements Serializable {
     public final static int BRACKET_CHALLENGE = 8;
     public final static int SEED_CHALLENGE = 9;
     public final static int FF_PLAYOFF = 10;
-    
+
     // DB FIELDS
     private int _FSGameID;
-    private int _SportID;    
+    private int _SportID;
     private String _GameName;
     private String _GameNameShort;
     private String _GamePrefix;
@@ -36,7 +37,7 @@ public class FSGame implements Serializable {
     private String _HomeURL;
     private String _DisplayName;
     private String _HomeURLShort;
-    
+
     // OBJECTS
     private Sport _Sport;
 
@@ -46,25 +47,22 @@ public class FSGame implements Serializable {
 
     public FSGame(int gameID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSGame", "g.", ""));
             sql.append(" FROM FSGame g ");
             sql.append(" WHERE g.FSGameID = ").append(gameID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
     }
-    
+
     public FSGame(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -72,7 +70,7 @@ public class FSGame implements Serializable {
     public FSGame(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public int getFSGameID() {return _FSGameID;}
     public int getSportID() {return _SportID;}
@@ -86,7 +84,7 @@ public class FSGame implements Serializable {
     public String getDisplayName() {return _DisplayName;}
     public String getHomeURLShort() {return _HomeURLShort;}
     public Sport getSport() {if (_Sport == null && _SportID > 0) {_Sport = new Sport(_SportID);}return _Sport;}
-    
+
     // SETTERS
     public void setFSGameID(int FSGameID) {_FSGameID = FSGameID;}
     public void setSportID(int SportID) {_SportID = SportID;}
@@ -126,29 +124,27 @@ public class FSGame implements Serializable {
 
         return (res>0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
-   
+
     public static List<FSGame> getFSGames() {
         return getFSGames(0);
     }
-    
+
     public static List<FSGame> getFSGames(int sportID) {
         List<FSGame> fsgames = new ArrayList<FSGame>();
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
-            
+
             sql.append(" SELECT ").append(_Cols.getColumnList("FSGame", "g.", ""));
             sql.append(" FROM FSGame g ");
-            
+
             if (sportID > 0)
             {
                 sql.append(" WHERE SportID = ").append(sportID);
             }
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 fsgames.add(new FSGame(crs));
             }
@@ -156,41 +152,40 @@ public class FSGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return fsgames;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSGame", "FSGameID", getFSGameID());
         if (doesExist) { Update(); } else { Insert(); }
     }
 
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
-        try {            
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
+        try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "SportID")) { setSportID(crs.getInt(prefix + "SportID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "GameName")) { setGameName(crs.getString(prefix + "GameName")); }            
-            if (FSUtils.fieldExists(crs, prefix, "GameNameShort")) { setGameNameShort(crs.getString(prefix + "GameNameShort")); }            
-            if (FSUtils.fieldExists(crs, prefix, "GamePrefix")) { setGamePrefix(crs.getString(prefix + "GamePrefix")); }            
-            if (FSUtils.fieldExists(crs, prefix, "ScoringStyle")) { setScoringStyle(crs.getString(prefix + "ScoringStyle")); }            
-            if (FSUtils.fieldExists(crs, prefix, "GroupingStyle")) { setGroupingStyle(crs.getString(prefix + "GroupingStyle")); }            
-            if (FSUtils.fieldExists(crs, prefix, "CurrentFSSeasonID")) { setCurrentFSSeasonID(crs.getInt(prefix + "CurrentFSSeasonID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "HomeURL")) { setHomeURL(crs.getString(prefix + "HomeURL")); }            
-            if (FSUtils.fieldExists(crs, prefix, "HomeURLShort")) { setHomeURLShort(crs.getString(prefix + "HomeURLShort")); }            
+            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }
+            if (FSUtils.fieldExists(crs, prefix, "SportID")) { setSportID(crs.getInt(prefix + "SportID")); }
+            if (FSUtils.fieldExists(crs, prefix, "GameName")) { setGameName(crs.getString(prefix + "GameName")); }
+            if (FSUtils.fieldExists(crs, prefix, "GameNameShort")) { setGameNameShort(crs.getString(prefix + "GameNameShort")); }
+            if (FSUtils.fieldExists(crs, prefix, "GamePrefix")) { setGamePrefix(crs.getString(prefix + "GamePrefix")); }
+            if (FSUtils.fieldExists(crs, prefix, "ScoringStyle")) { setScoringStyle(crs.getString(prefix + "ScoringStyle")); }
+            if (FSUtils.fieldExists(crs, prefix, "GroupingStyle")) { setGroupingStyle(crs.getString(prefix + "GroupingStyle")); }
+            if (FSUtils.fieldExists(crs, prefix, "CurrentFSSeasonID")) { setCurrentFSSeasonID(crs.getInt(prefix + "CurrentFSSeasonID")); }
+            if (FSUtils.fieldExists(crs, prefix, "HomeURL")) { setHomeURL(crs.getString(prefix + "HomeURL")); }
+            if (FSUtils.fieldExists(crs, prefix, "HomeURLShort")) { setHomeURLShort(crs.getString(prefix + "HomeURLShort")); }
             // OBJECTS
 //            if (FSUtils.fieldExists(crs, "Sport$", "SportID")) { setSport(new Sport(crs, "Sport$")); }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }        
+        }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 

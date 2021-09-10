@@ -7,28 +7,25 @@
  * and open the template in the editor.
  */
 
-package tds.commissioner.control;
+package tds.commissioner.fantasy.control;
 
 import bglib.tags.ListBoxItem;
 import bglib.util.FSUtils;
-import java.util.ArrayList;
+import tds.main.bo.*;
 import tds.main.control.BaseView;
-import tds.main.bo.UserSession;
-import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import tds.main.bo.FSFootballDraft;
-import tds.main.bo.FSLeague;
-import tds.main.bo.FSTeam;
-import tds.main.bo.Player;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author grant.keele
  */
 public class fsLeague_modifyDraftView extends BaseView {
-    
+
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
@@ -36,12 +33,12 @@ public class fsLeague_modifyDraftView extends BaseView {
         if (page != null) {
             return page;
         }
-        
+
         page = htmlPage;
-        
+
         UserSession userSession = UserSession.getUserSession(request, response);
         HttpSession session = userSession.getHttpSession();
-        
+
         int fsLeagueID = FSUtils.getIntSessionAttribute(session, "commFSLeagueID", 0);
         if (fsLeagueID <= 0)
         {
@@ -50,17 +47,17 @@ public class fsLeague_modifyDraftView extends BaseView {
 
         }
         FSLeague fsLeague = (FSLeague)session.getAttribute("commFSLeague");
-        
+
         String action = FSUtils.getRequestParameter(request, "action", "");
         if (action.equals("delete"))
         {
             int round = FSUtils.getIntRequestParameter(request, "round", 0);
             int place = FSUtils.getIntRequestParameter(request, "place", 0);
-            
+
             if (round > 0 && place > 0)
             {
                 FSFootballDraft draftEntry = new FSFootballDraft(fsLeagueID, round, place);
-                
+
                 int retVal = draftEntry.deletePick();
             }
         }
@@ -105,5 +102,5 @@ public class fsLeague_modifyDraftView extends BaseView {
         }
         return page;
     }
-    
+
 }

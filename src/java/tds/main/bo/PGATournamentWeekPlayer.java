@@ -2,19 +2,21 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.util.CTReturnCode;
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.util.CTReturnCode;
 
 public class PGATournamentWeekPlayer implements Serializable {
-    
+
     // DB FIELDS
     private int _ID;
-    private int _PGATournamentID;    
+    private int _PGATournamentID;
     private int _FSSeasonWeekID;
     private int _PlayerID;
     private String _FinalScore;
@@ -31,13 +33,13 @@ public class PGATournamentWeekPlayer implements Serializable {
     private int _SortOrder;
     private int _Thru;
     private int _TodayRound;
-      
+
     // OBJECTS
     private Player _Player;
     private FSSeasonWeek _FSSeasonWeek;
     private PGATournament _PGATournament;
     private List<FSTeam> _Owners = new ArrayList();
-    
+
     // CONSTRUCTORS
     public PGATournamentWeekPlayer() {
     }
@@ -54,7 +56,7 @@ public class PGATournamentWeekPlayer implements Serializable {
     {
         this(null, ID);
     }
-    
+
     public PGATournamentWeekPlayer(Connection con, int ID)
     {
         StringBuilder sql = new StringBuilder();
@@ -70,7 +72,7 @@ public class PGATournamentWeekPlayer implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "PGATournamentWeekPlayer$");
             }
@@ -80,13 +82,13 @@ public class PGATournamentWeekPlayer implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
 
-    }    
+    }
 
     public PGATournamentWeekPlayer(int tournamentID, int fsSeasonWeekID, int playerID)
     {
         this(null, tournamentID, fsSeasonWeekID, playerID);
     }
-    
+
     public PGATournamentWeekPlayer(Connection con, int tournamentID, int fsSeasonWeekID, int playerID)
     {
         StringBuilder sql = new StringBuilder();
@@ -104,7 +106,7 @@ public class PGATournamentWeekPlayer implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "PGATournamentWeekPlayer$");
             }
@@ -114,7 +116,7 @@ public class PGATournamentWeekPlayer implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
 
-    }    
+    }
 
     // GETTERS
     public int getID() {return _ID;}
@@ -140,7 +142,7 @@ public class PGATournamentWeekPlayer implements Serializable {
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public PGATournament getPGATournament() {if (_PGATournament == null && _PGATournamentID > 0) {_PGATournament = new PGATournament(_PGATournamentID);}return _PGATournament;}
     public List<FSTeam> getOwners() {if (_Owners == null) {_Owners = new ArrayList();}return _Owners;}
-    
+
     // SETTERS
     public void setID(int ID) {_ID = ID;}
     public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
@@ -160,12 +162,12 @@ public class PGATournamentWeekPlayer implements Serializable {
     public void setSortOrder(int order) {_SortOrder = order;}
     public void setThru(int thru) {_Thru = thru;}
     public void setTodayRound(int todayRound) {_TodayRound = todayRound;}
-    
+
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
     public void setPGATournament(PGATournament tourney) {_PGATournament = tourney;}
     public void setPlayer(Player player) {_Player = player;}
 
-    // PUBLIC METHODS    
+    // PUBLIC METHODS
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
@@ -177,99 +179,99 @@ public class PGATournamentWeekPlayer implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "ID")) {
                 setID(crs.getInt(prefix + "ID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
                 setPlayerID(crs.getInt(prefix + "PlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")){
                 setFSSeasonWeekID(crs.getInt(prefix + "FSSeasonWeekID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PGATournamentID")){
                 setPGATournamentID(crs.getInt(prefix + "PGATournamentID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FinalScore")) {
                 setFinalScore(crs.getString(prefix + "FinalScore"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RelativeToPar")) {
                 setRelativeToPar(crs.getInt(prefix + "RelativeToPar"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MoneyEarned")) {
                 setMoneyEarned(crs.getDouble(prefix + "MoneyEarned"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TournamentRank")) {
                 setTournamentRank(crs.getString(prefix + "TournamentRank"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round1")) {
                 setRound1(crs.getString(prefix + "Round1"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round2")) {
                 setRound2(crs.getString(prefix + "Round2"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round3")) {
                 setRound3(crs.getString(prefix + "Round3"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round4")) {
                 setRound4(crs.getString(prefix + "Round4"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round5")) {
                 setRound5(crs.getString(prefix + "Round5"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "WorldGolfRanking")) {
                 setWorldGolfRanking(crs.getInt(prefix + "WorldGolfRanking"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SalaryValue")) {
                 setSalaryValue(crs.getDouble(prefix + "SalaryValue"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SortOrder")) {
                 setSortOrder(crs.getInt(prefix + "SortOrder"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Thru")) {
                 setThru(crs.getInt(prefix + "Thru"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TodayRound")) {
                 setTodayRound(crs.getInt(prefix + "TodayRound"));
             }
-            
+
             // OBJECTS
-            
+
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) {
                 setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "PGATournament$", "PGATournamentID")) {
                 setPGATournament(new PGATournament(crs, "PGATournament$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "Player$", "PlayerID")) {
                 setPlayer(new Player(crs, "Player$"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public void Save() throws Exception {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PGATournamentWeekPlayer", "ID", getID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     public CTReturnCode Delete() {
         int res = 0;
         StringBuilder sql = new StringBuilder();
@@ -278,14 +280,14 @@ public class PGATournamentWeekPlayer implements Serializable {
         sql.append("WHERE ID = ").append(getID());
 
         try {
-            res = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            res = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-        
+
         return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
-    
+
     private int Insert() throws Exception {
         int newId = -1;
         StringBuilder sql = new StringBuilder();
@@ -312,12 +314,12 @@ public class PGATournamentWeekPlayer implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            newId = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            newId = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error Inserting new PGATournamentWeekPlayer", e);
         }
-        
+
         return newId;
     }
 
@@ -325,7 +327,7 @@ public class PGATournamentWeekPlayer implements Serializable {
         int success = -1;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("UPDATE PGATournamentWeekPlayer SET ");        
+        sql.append("UPDATE PGATournamentWeekPlayer SET ");
         sql.append(FSUtils.UpdateDBFieldValue("PGATournamentID", getPGATournamentID()));
         sql.append(FSUtils.UpdateDBFieldValue("FSSeasonWeekID", getFSSeasonWeekID()));
         sql.append(FSUtils.UpdateDBFieldValue("PlayerID", getPlayerID()));
@@ -347,16 +349,16 @@ public class PGATournamentWeekPlayer implements Serializable {
         sql.append("WHERE ID = ").append(getID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             success = 0;
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
             throw new Exception("Error updating PGATournamentWeekPlayer", e);
         }
-        
+
         return success;
     }
-    
+
     public void populateOwners(int fsLeagueID)
     {
         _Owners.clear();
@@ -378,7 +380,7 @@ public class PGATournamentWeekPlayer implements Serializable {
         }
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FSTeam team = new FSTeam(crs, "FSTeam$");
                 if (team != null)
@@ -394,7 +396,7 @@ public class PGATournamentWeekPlayer implements Serializable {
         }
 
     }
-    
+
     public boolean hasStartedTournament()
     {
         boolean started = false;
@@ -405,12 +407,12 @@ public class PGATournamentWeekPlayer implements Serializable {
         } catch (Exception e)
         {
         }
-        
+
         if (score > 0)
         {
             started = true;
         }
-        
+
         return started;
     }
 

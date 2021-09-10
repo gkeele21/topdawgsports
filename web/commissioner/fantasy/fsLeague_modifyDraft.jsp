@@ -10,22 +10,22 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="../css/styles.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="../css/frontpage.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="../css/registration.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/styles.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/frontpage.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/registration.css" media="screen" />
         <title>TopDawgSports - Modify Draft</title>
     </head>
     <body>
         <div id="container">
-        
-            <jsp:include page="inc_header.jsp" />
 
-            <jsp:include page="inc_mainmenu.jsp" />
+            <jsp:include page="../inc_header.jsp" />
+
+            <jsp:include page="../inc_mainmenu.jsp" />
 
             <%--<jsp:include page="../inc_submenu.jsp" />--%>
 
             <c:if test="${validUser != null}" >
-                <jsp:include page="inc_errorMessage.jsp" />
+                <jsp:include page="../inc_errorMessage.jsp" />
             </c:if>
 
             <div class="colmask outside">
@@ -107,7 +107,7 @@
                             </jsp:attribute>
                             <jsp:attribute name="rowNavigation">
                                 <c:set var="colspan" value="2" />
-                                <tr><td height="10" colspan="8"><img src="../images/spacer.gif" /></td></tr>
+                                <tr><td height="10" colspan="8"><img src="../../images/spacer.gif" /></td></tr>
                                 <tr>
                                     <td colspan="8">
                                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -128,7 +128,7 @@
                 </div> <!-- main -->
             </div> <!-- colmask outside -->
 
-            <jsp:include page="inc_footer.jsp" />
+            <jsp:include page="../inc_footer.jsp" />
 
         </div> <!-- container -->
 

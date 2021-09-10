@@ -23,8 +23,8 @@ public class footballSeasonSetupAction extends BaseAction {
 
         // TODO : Add a UI so this part doesn't have to be hardcoded
         int[] keeleFantasyLeagueSize = {8,10};
-        int[] keeperUserIds = {1,2,5,6,7,9,10,36};
-        int[] tenmanUserIds = {1,2,4,5,6,7,10,18,36,82};
+        int[] keeperUserIds = {1,2,5,6,143,9,10,36};
+        int[] tenmanUserIds = {1,2,4,5,6,143,10,18,36,82};
         String[] keeperOwners = {"Grant", "Bert", "Brian", "Mike", "Case", "Ragz", "Jeremy", "John"};
         String[] tenmanOwners = {"Grant", "Bert", "Dave", "Brian", "Mike", "Case", "Jeremy", "Scott", "John", "Nick"};
 

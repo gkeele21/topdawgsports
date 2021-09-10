@@ -11,6 +11,7 @@ RUN mv apache-tomcat-7.0.99/* /opt/tomcat/.
 RUN yum -y install java
 RUN java -version
 COPY ["context.xml","/opt/tomcat/conf/"]
+COPY ["mysql-connector-java-5.0.8-bin.jar","/opt/tomcat/lib/"]
 
 COPY out/artifacts/topdawgsports/topdawgsports.war /opt/tomcat/webapps
 

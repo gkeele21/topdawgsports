@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,10 +71,7 @@ public class FinalScores implements Harnessable {
     public void importFinalScores(int pgaTournamentId, int fsSeasonWeekId) throws Exception {
 
         StringBuilder sb = new StringBuilder();
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // get Tournament external id
             PGATournamentWeek tournamentWeek = new PGATournamentWeek(pgaTournamentId, fsSeasonWeekId);
 
@@ -136,7 +132,7 @@ public class FinalScores implements Harnessable {
                 int playerId = 0;
                 StringBuilder query = new StringBuilder();
                 query.append("select * from Player where StatsPlayerId = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
-                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
 //                    _Logger.info(query.toString());
                 if (crs3.next()) {
                     playerId = crs3.getInt("PlayerID");
@@ -264,10 +260,7 @@ public class FinalScores implements Harnessable {
 
     public void importFinalScoresJsonFromPGATour(int pgaTournamentId, int fsSeasonWeekId, String exp, String hmac) throws Exception {
 
-        Connection con;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // get Tournament external id
             PGATournamentWeek tournamentWeek = new PGATournamentWeek(pgaTournamentId, fsSeasonWeekId);
 
@@ -325,7 +318,7 @@ public class FinalScores implements Harnessable {
                 int playerId = 0;
                 StringBuilder query = new StringBuilder();
                 query.append("select * from Player where StatsPlayerId = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
-                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
 //                    _Logger.info(query.toString());
                 if (crs3.next()) {
                     playerId = crs3.getInt("PlayerID");
@@ -460,10 +453,7 @@ public class FinalScores implements Harnessable {
     public void importFinalScoresJsonFromFoxSports(int pgaTournamentId, int fsSeasonWeekId) throws Exception {
 
         StringBuilder sb = new StringBuilder();
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // get Tournament external id
             PGATournamentWeek tournamentWeek = new PGATournamentWeek(pgaTournamentId, fsSeasonWeekId);
 
@@ -541,7 +531,7 @@ public class FinalScores implements Harnessable {
                             int playerId = 0;
                             StringBuilder query = new StringBuilder();
                             query.append("select * from Player where StatsPlayerId2 = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
-                            CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                            CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
 //                    _Logger.info(query.toString());
                             if (crs3.next()) {
                                 playerId = crs3.getInt("PlayerID");

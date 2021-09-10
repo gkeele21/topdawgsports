@@ -2,20 +2,22 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 
-public class GolfEventGolfer implements Serializable { 
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
+
+public class GolfEventGolfer implements Serializable {
 
     // DB FIELDS
     private Integer _GolfEventID;
     private Integer _GolferID;
-    private Integer _Rank;    
+    private Integer _Rank;
     private Double _Handicap;
     private Double _TotalEarnings;
-    private Integer _FinalPosition;    
+    private Integer _FinalPosition;
 
     // OBJECTS
     private GolfEvent _GolfEvent;
@@ -24,7 +26,7 @@ public class GolfEventGolfer implements Serializable {
     // CONSTRUCTORS
     public GolfEventGolfer() {
     }
-    
+
     public GolfEventGolfer(int golfEventId, int golferId) {
         CachedRowSet crs = null;
         try {
@@ -33,10 +35,10 @@ public class GolfEventGolfer implements Serializable {
             sql.append("FROM GolfEventGolfer");
             sql.append("WHERE GolfEventID = ").append(golfEventId).append(" AND GolferID = ").append(golferId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -55,43 +57,43 @@ public class GolfEventGolfer implements Serializable {
     public Double getHandicap() {return _Handicap;}
     public Double getTotalEarnings() {return _TotalEarnings;}
     public Integer getFinalPosition() {return _FinalPosition;}
-    public GolfEvent getGolfEvent() {return _GolfEvent;} 
-    public Golfer getGolfer() {return _Golfer;} 
-    
+    public GolfEvent getGolfEvent() {return _GolfEvent;}
+    public Golfer getGolfer() {return _Golfer;}
+
     // SETTERS
     public void setGolfEventID(Integer GolfEventID) {_GolfEventID = GolfEventID;}
     public void setGolferID(Integer GolferID) {_GolferID = GolferID;}
     public void setRank(Integer Rank) {_Rank = Rank;}
     public void setHandicap(Double Handicap) {_Handicap = Handicap;}
     public void setTotalEarnings(Double TotalEarnings) {_TotalEarnings = TotalEarnings;}
-    public void setFinalPosition(Integer FinalPosition) {_FinalPosition = FinalPosition;}    
+    public void setFinalPosition(Integer FinalPosition) {_FinalPosition = FinalPosition;}
     public void setGolfEvent(GolfEvent GolfEvent) {_GolfEvent = GolfEvent;}
     public void setGolfer(Golfer Golfer) {_Golfer = Golfer;}
 
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("GolfEventGolfer", "GolfEventID", getGolfEventID(), "GolferID", getGolferID());
         if (doesExist) { Update(); } else { Insert(); }
     }
 
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
-            // DB FIELDS            
-            if (FSUtils.fieldExists(crs, prefix, "GolfEventID")) { setGolfEventID(crs.getInt(prefix + "GolfEventID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "GolferID")) { setGolferID(crs.getInt(prefix + "GolferID")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Rank")) { setRank(crs.getInt(prefix + "Rank")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Handicap")) { setHandicap(crs.getDouble(prefix + "Handicap")); }            
-            if (FSUtils.fieldExists(crs, prefix, "TotalEarnings")) { setTotalEarnings(crs.getDouble(prefix + "TotalEarnings")); }            
-            if (FSUtils.fieldExists(crs, prefix, "FinalPosition")) { setFinalPosition(crs.getInt(prefix + "FinalPosition")); }  
-            
+            // DB FIELDS
+            if (FSUtils.fieldExists(crs, prefix, "GolfEventID")) { setGolfEventID(crs.getInt(prefix + "GolfEventID")); }
+            if (FSUtils.fieldExists(crs, prefix, "GolferID")) { setGolferID(crs.getInt(prefix + "GolferID")); }
+            if (FSUtils.fieldExists(crs, prefix, "Rank")) { setRank(crs.getInt(prefix + "Rank")); }
+            if (FSUtils.fieldExists(crs, prefix, "Handicap")) { setHandicap(crs.getDouble(prefix + "Handicap")); }
+            if (FSUtils.fieldExists(crs, prefix, "TotalEarnings")) { setTotalEarnings(crs.getDouble(prefix + "TotalEarnings")); }
+            if (FSUtils.fieldExists(crs, prefix, "FinalPosition")) { setFinalPosition(crs.getInt(prefix + "FinalPosition")); }
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "GolfEvent$", "GolfEventID")) { setGolfEvent(new GolfEvent(crs, "GolfEvent$")); }
             if (FSUtils.fieldExists(crs, "Golfer$", "GolferID")) { setGolfer(new Golfer(crs, "Golfer$")); }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -110,13 +112,13 @@ public class GolfEventGolfer implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getTotalEarnings()));
         sql.append(FSUtils.InsertDBFieldValue(getFinalPosition()));
         sql.deleteCharAt(sql.length()-1).append(")");
-        
+
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -133,7 +135,7 @@ public class GolfEventGolfer implements Serializable {
 
         // Execute Query
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

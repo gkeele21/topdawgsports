@@ -2,18 +2,20 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class PGASalaryValueDefault implements Serializable {
-    
+
     public static final int _DefaultValue = 25000;
-    
+
     // DB FIELDS
     private int _Rank;
-    private int _SalaryValue;    
+    private int _SalaryValue;
 
     // CONSTRUCTORS
     public PGASalaryValueDefault() {
@@ -31,7 +33,7 @@ public class PGASalaryValueDefault implements Serializable {
     {
         this(null, rank);
     }
-    
+
     public PGASalaryValueDefault(Connection con, int rank)
     {
         StringBuilder sql = new StringBuilder();
@@ -41,7 +43,7 @@ public class PGASalaryValueDefault implements Serializable {
 
         CachedRowSet crs = null;
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "PGASalaryValueDefault$");
             }
@@ -51,17 +53,17 @@ public class PGASalaryValueDefault implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
 
-    }    
+    }
 
     // GETTERS
     public int getRank() {return _Rank;}
     public int getSalaryValue() {return _SalaryValue;}
-    
+
     // SETTERS
     public void setRank(int rank) {_Rank = rank;}
     public void setSalaryValue(int value) {_SalaryValue = value;}
 
-    // PUBLIC METHODS    
+    // PUBLIC METHODS
 
     // PRIVATE METHODS
 
@@ -74,14 +76,14 @@ public class PGASalaryValueDefault implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "Rank")) {
                 setRank(crs.getInt(prefix + "Rank"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SalaryValue")) {
                 setSalaryValue(crs.getInt(prefix + "SalaryValue"));
-            }            
-            
+            }
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
 }

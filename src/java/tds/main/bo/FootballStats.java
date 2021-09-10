@@ -5,8 +5,8 @@ import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static tds.data.CTColumnLists._Cols;
@@ -318,16 +318,16 @@ public class FootballStats implements Serializable {
             }
 
             if (FSUtils.fieldExists(crs, prefix, "BeginPlayDate")){
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "BeginPlayDate");
+                Timestamp s = crs.getTimestamp(prefix + "BeginPlayDate");
                 if (s != null) {
-                    setBeginPlayDate(s.toLocalDate());
+                    setBeginPlayDate(s.toLocalDateTime().toLocalDate());
                 }
             }
 
             if (FSUtils.fieldExists(crs, prefix, "EndPlayDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "EndPlayDate");
+                Timestamp s = crs.getTimestamp(prefix + "EndPlayDate");
                 if (s != null) {
-                    setEndPlayDate(s.toLocalDate());
+                    setEndPlayDate(s.toLocalDateTime().toLocalDate());
                 }
             }
 

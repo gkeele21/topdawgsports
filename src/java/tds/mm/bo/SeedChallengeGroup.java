@@ -2,12 +2,14 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.CTApplication;
 
 public class SeedChallengeGroup implements Serializable {
 
@@ -16,7 +18,7 @@ public class SeedChallengeGroup implements Serializable {
     private Integer _TournamentID;
     private Integer _StartingSeedNumber;
     private Integer _EndingSeedNumber;
-    
+
     // OBJECTS
     private MarchMadnessTournament _Tournament;
 
@@ -34,16 +36,16 @@ public class SeedChallengeGroup implements Serializable {
     public Integer getStartingSeedNumber() {return _StartingSeedNumber;}
     public Integer getEndingSeedNumber() {return _EndingSeedNumber;}
     public MarchMadnessTournament getTournament() {return _Tournament;}
-    
+
     // SETTERS
     public void setSeedChallengeGroupID(Integer SeedChallengeGroupID) {_SeedChallengeGroupID = SeedChallengeGroupID;}
     public void setTournamentID(Integer TournamentID) {_TournamentID = TournamentID;}
     public void setStartingSeedNumber(Integer StartingSeedNumber) {_StartingSeedNumber = StartingSeedNumber;}
     public void setEndingSeedNumber(Integer EndingSeedNumber) {_EndingSeedNumber = EndingSeedNumber;}
     public void setTournament(MarchMadnessTournament Tournament) {_Tournament = Tournament;}
-    
+
     // PUBLIC METHODS
-    
+
     /* This retrieves all of the Seed Groups for a given fsTournament */
     public static List<SeedChallengeGroup> GetSeedGroups(int tournamentId) {
 
@@ -69,7 +71,7 @@ public class SeedChallengeGroup implements Serializable {
 
         return seedGroups;
    }
-    
+
     public void Save() {
             boolean exists = FSUtils.DoesARecordExistInDB("SeedChallengeGroup", "SeedChallengeGroupID", getSeedChallengeGroupID());
             if (exists) { Update(); } else { Insert(); }
@@ -93,7 +95,7 @@ public class SeedChallengeGroup implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -103,17 +105,17 @@ public class SeedChallengeGroup implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSeedChallengeGroupID()));
         sql.append(FSUtils.InsertDBFieldValue(getTournamentID()));
         sql.append(FSUtils.InsertDBFieldValue(getStartingSeedNumber()));
-        sql.append(FSUtils.InsertDBFieldValue(getEndingSeedNumber()));        
+        sql.append(FSUtils.InsertDBFieldValue(getEndingSeedNumber()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE SeedChallengeGroup SET ");
@@ -124,7 +126,7 @@ public class SeedChallengeGroup implements Serializable {
         sql.append("WHERE SeedChallengeGroupID = ").append(getSeedChallengeGroupID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

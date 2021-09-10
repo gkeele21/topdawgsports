@@ -8,7 +8,6 @@ import tds.data.CTDataSetDef;
 import tds.util.CTReturnCode;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,6 @@ public class FSLeague implements Serializable {
 
     public FSLeague(int leagueID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSLeague", "l.", ""));
@@ -69,15 +67,13 @@ public class FSLeague implements Serializable {
             sql.append(" INNER JOIN Season se ON se.SeasonID = s.SeasonID ");
             sql.append(" WHERE l.FSLeagueID = ").append(leagueID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
     }
 
@@ -218,10 +214,8 @@ public class FSLeague implements Serializable {
         sql.append(" ORDER BY tst.FantasyPts desc, p.LastName ");
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 Player player = new Player(crs, "Player$");
@@ -231,7 +225,6 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(exception);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
         return players;
     }
@@ -300,10 +293,8 @@ public class FSLeague implements Serializable {
         }
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 players.add(new PlayerStats(crs));
@@ -312,7 +303,6 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(exception);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return players;
@@ -354,7 +344,6 @@ public class FSLeague implements Serializable {
     public List<FSTeam> GetTeams() {
         List<FSTeam> teams = new ArrayList<FSTeam>();
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSTeam", "t.", ""));
@@ -362,8 +351,7 @@ public class FSLeague implements Serializable {
             sql.append(" WHERE t.FSLeagueID = ").append(_FSLeagueID);
             sql.append(" AND t.isActive = 1 ");
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FSTeam tempTeam = new FSTeam(crs);
                 teams.add(tempTeam);
@@ -372,7 +360,6 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return teams;
@@ -426,10 +413,8 @@ public class FSLeague implements Serializable {
         sql.append(" order by ").append(sort);
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 ret.add(new FSPlayerValueSelected(crs,"FSPlayerValueSelected$"));
             }
@@ -437,7 +422,6 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(exception);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return ret;
@@ -447,7 +431,6 @@ public class FSLeague implements Serializable {
     public boolean GetUserAlreadyInLeague(int fsUserID) {
         boolean exists = false;
         CachedRowSet crs = null;
-        Connection con = null;
         if (fsUserID > 0) {
             try {
                 StringBuilder sql = new StringBuilder();
@@ -456,8 +439,7 @@ public class FSLeague implements Serializable {
                 sql.append(" WHERE FSLeagueID = ").append(_FSLeagueID);
                 sql.append(" AND FSUserID = ").append(fsUserID);
 
-                con = CTApplication._CT_DB.getConn(false);
-                crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 if (crs.next()) {
                     int cnt = crs.getInt("cnt");
                     if (cnt > 0) {
@@ -469,7 +451,6 @@ public class FSLeague implements Serializable {
                 CTApplication._CT_LOG.error(e);
             } finally {
                 JDBCDatabase.closeCRS(crs);
-                JDBCDatabase.close(con);
             }
         }
 
@@ -623,7 +604,6 @@ public class FSLeague implements Serializable {
     public List<FSRoster> GetIRPlayers(int fsSeasonWeekID) {
         List<FSRoster> roster = new ArrayList<FSRoster>();
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("select ").append(_Cols.getColumnList("FSRoster", "r.", ""));
@@ -651,8 +631,7 @@ public class FSLeague implements Serializable {
             sql.append(" and r.ActiveState = 'ir' ");
             sql.append(" order by r.FSTeamID, p.PositionID, r.ID");
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FSRoster tempRoster = new FSRoster(crs);
                 roster.add(tempRoster);
@@ -661,7 +640,6 @@ public class FSLeague implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return roster;

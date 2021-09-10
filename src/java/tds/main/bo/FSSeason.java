@@ -2,33 +2,34 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.sql.Connection;
-import java.util.*;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+import java.util.*;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSSeason implements Serializable {
-    
+
     // DB FIELDS
     private Integer _FSSeasonID;
-    private Integer _FSGameID;    
-    private Integer _SeasonID;    
+    private Integer _FSGameID;
+    private Integer _SeasonID;
     private String _SeasonName;
     private boolean _IsActive;
     private boolean _DisplayTeams;
     private String _DisplayStatsYear;
-    private Integer _CurrentFSSeasonWeekID;    
-    
+    private Integer _CurrentFSSeasonWeekID;
+
     // OBJECTS
     private FSGame _FSGame;
     private Season _Season;
     private FSSeasonWeek _CurrentFSSeasonWeek;
-    
+
     // ADDITIONAL FIELDS
     private FSFootballSeasonDetail _FSFootballSeasonDetail;
     private Map<Integer, FSFootballRosterPositions> _FSFootballRosterPositions;
-    private Map<Integer, FSSeasonWeek> _CurrentFSSeasonWeeks;    
+    private Map<Integer, FSSeasonWeek> _CurrentFSSeasonWeeks;
 
     // CONSTRUCTORS
     public FSSeason() {
@@ -36,25 +37,22 @@ public class FSSeason implements Serializable {
 
     public FSSeason(int seasonID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSSeason", "s.", ""));
             sql.append(" FROM FSSeason s ");
             sql.append(" WHERE s.FSSeasonID = ").append(seasonID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
     }
-    
+
     public FSSeason(CachedRowSet fields) {
         InitFromCRS(fields, "");
     }
@@ -66,8 +64,8 @@ public class FSSeason implements Serializable {
     // GETTERS
     public Integer getFSSeasonID() {return _FSSeasonID;}
     public void setFSSeasonID(int FSSeasonID) {_FSSeasonID = FSSeasonID;}
-    public Integer getFSGameID() {return _FSGameID;}    
-    public Integer getSeasonID() {return _SeasonID;}    
+    public Integer getFSGameID() {return _FSGameID;}
+    public Integer getSeasonID() {return _SeasonID;}
     public String getSeasonName() {return _SeasonName;}
     public boolean isIsActive() {return _IsActive;}
     public boolean isDisplayTeams() {return _DisplayTeams;}
@@ -75,7 +73,7 @@ public class FSSeason implements Serializable {
     public Integer getCurrentFSSeasonWeekID() { return _CurrentFSSeasonWeekID; }
     public FSGame getFSGame() {if (_FSGame == null && _FSGameID > 0) {_FSGame = new FSGame(_FSGameID);}return _FSGame;}
     public Season getSeason() {if (_Season == null && _SeasonID > 0) {_Season = new Season(_SeasonID);}return _Season;}
-    
+
     public FSSeasonWeek getCurrentFSSeasonWeek() {
         // check for the current week
         List<FSSeasonWeek> allWeeks = FSSeasonWeek.GetAllFSSeasonWeeks(getFSSeasonID());
@@ -96,9 +94,9 @@ public class FSSeason implements Serializable {
         }
         return _CurrentFSSeasonWeek;
     }
-    
+
     public FSFootballSeasonDetail getFSFootballSeasonDetail() {if (_FSFootballSeasonDetail == null &&_FSSeasonID > 0) {_FSFootballSeasonDetail = new FSFootballSeasonDetail(_FSSeasonID);}return _FSFootballSeasonDetail;}
-    
+
     // SETTERS
     public void setFSGameID(Integer FSGameID) {_FSGameID = FSGameID;}
     public void setSeasonID(Integer SeasonID) {_SeasonID = SeasonID;}
@@ -113,15 +111,14 @@ public class FSSeason implements Serializable {
     public void setCurrentFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_CurrentFSSeasonWeek = FSSeasonWeek;}
     public void setFSFootballRosterPositions(Map<Integer, FSFootballRosterPositions> FSFootballRosterPositions) {_FSFootballRosterPositions = FSFootballRosterPositions;}
     public void setCurrentFSSeasonWeeks(Map<Integer, FSSeasonWeek> CurrentFSSeasonWeeks) {_CurrentFSSeasonWeeks = CurrentFSSeasonWeeks;}
-    
+
     // PUBLIC METHODS
-    
+
     public Map<Integer, FSSeasonWeek> GetCurrentFSSeasonWeeks() {
         if (_CurrentFSSeasonWeeks == null || _CurrentFSSeasonWeeks.size() == 0) {
             setCurrentFSSeasonWeeks(new HashMap<Integer, FSSeasonWeek>());
 
             CachedRowSet crs = null;
-            Connection con = null;
             try {
                 StringBuilder sql = new StringBuilder();
                 sql.append(" SELECT ").append(_Cols.getColumnList("FSSeasonWeek", "w.", "FSSeasonWeek$"));
@@ -130,8 +127,7 @@ public class FSSeason implements Serializable {
                 sql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = w.SeasonWeekID ");
                 sql.append(" where w.FSSeasonID = ").append(getFSSeasonID());
 
-                con = CTApplication._CT_DB.getConn(false);
-                crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 while (crs.next()) {
                     FSSeasonWeek week = new FSSeasonWeek(crs, "FSSeasonWeek$");
                     _CurrentFSSeasonWeeks.put(week.getFSSeasonWeekNo(),week);
@@ -140,20 +136,18 @@ public class FSSeason implements Serializable {
                 CTApplication._CT_LOG.error(e);
             } finally {
                 JDBCDatabase.closeCRS(crs);
-                JDBCDatabase.close(con);
             }
         }
-        
+
         return _CurrentFSSeasonWeeks;
-    }    
+    }
 
     public Map<Integer, FSFootballRosterPositions> GetFSFootballRosterPositions() {
         if (_FSFootballRosterPositions == null || _FSFootballRosterPositions.isEmpty()) {
-            
+
             setFSFootballRosterPositions(new HashMap<Integer, FSFootballRosterPositions>());
 
             CachedRowSet crs = null;
-            Connection con = null;
             Collection<Position> allPositions = Position.getAllPositions();
 
             for (Position pos : allPositions) {
@@ -164,8 +158,7 @@ public class FSSeason implements Serializable {
                     sql.append(" WHERE rp.FSSeasonID = ").append(getFSSeasonID());
                     sql.append(" AND rp.PositionID = ").append(pos.getPositionID());
 
-                    con = CTApplication._CT_DB.getConn(false);
-                    crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                    crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                     while (crs.next()) {
                         FSFootballRosterPositions position = new FSFootballRosterPositions(crs, "");
                         _FSFootballRosterPositions.put(pos.getPositionID(),position);
@@ -174,29 +167,26 @@ public class FSSeason implements Serializable {
                     CTApplication._CT_LOG.error(e);
                 } finally {
                     JDBCDatabase.closeCRS(crs);
-                    JDBCDatabase.close(con);
                 }
-                
+
             }
 
         }
-        
+
         return _FSFootballRosterPositions;
     }
 
-    public List<FSLeague> GetLeagues() {    
+    public List<FSLeague> GetLeagues() {
         List<FSLeague> leagues = new ArrayList<FSLeague>();
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FSLeague", "l.", ""));
             sql.append(" FROM FSLeague l ");
             sql.append(" WHERE l.FSSeasonID = ").append(getFSSeasonID());
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 leagues.add(new FSLeague(crs));
             }
@@ -204,7 +194,6 @@ public class FSSeason implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return leagues;
@@ -214,10 +203,9 @@ public class FSSeason implements Serializable {
         List<FSSeason> fsseasons = new ArrayList<FSSeason>();
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
-            
+
             if (fsGameID > 0) {
                 sql.append(" SELECT ").append(_Cols.getColumnList("FSSeason", "s.", ""));
                 sql.append(" FROM FSSeason s ");
@@ -227,8 +215,7 @@ public class FSSeason implements Serializable {
                 sql.append(" FROM FSSeason s");
             }
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 fsseasons.add(new FSSeason(crs));
             }
@@ -236,12 +223,11 @@ public class FSSeason implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return fsseasons;
     }
- 
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSSeason", "FSSeasonID", getFSSeasonID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -250,31 +236,31 @@ public class FSSeason implements Serializable {
     // PRIVATE METHODS
 
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
-        try {            
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
+        try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) { setFSSeasonID(crs.getInt(prefix + "FSSeasonID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "SeasonID")) { setSeasonID(crs.getInt(prefix + "SeasonID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "SeasonName")) { setSeasonName(crs.getString(prefix + "SeasonName")); }  
-            if (FSUtils.fieldExists(crs, prefix, "IsActive")) { setIsActive(crs.getBoolean(prefix + "IsActive")); }  
-            if (FSUtils.fieldExists(crs, prefix, "DisplayTeams")) { setDisplayTeams(crs.getBoolean(prefix + "DisplayTeams")); }  
-            if (FSUtils.fieldExists(crs, prefix, "DisplayStatsYear")) { setDisplayStatsYear(crs.getString(prefix + "DisplayStatsYear")); }  
-            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }  
-            if (FSUtils.fieldExists(crs, prefix, "DisplayTeams")) { setDisplayTeams(crs.getBoolean(prefix + "DisplayTeams")); }  
-            if (FSUtils.fieldExists(crs, prefix, "DisplayStatsYear")) { setDisplayStatsYear(crs.getString(prefix + "DisplayStatsYear")); }  
-            if (FSUtils.fieldExists(crs, prefix, "CurrentFSSeasonWeekID")) { setCurrentFSSeasonWeekID(crs.getInt(prefix + "CurrentFSSeasonWeekID")); }  
-            
-            // OBJECTS 
-            if (FSUtils.fieldExists(crs, "FSGame$", "FSGameID")) { setFSGame(new FSGame(crs, "FSGame$")); }  
-            if (FSUtils.fieldExists(crs, "Season$", "SeasonID")) { setSeason(new Season(crs, "Season$")); }  
+            if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) { setFSSeasonID(crs.getInt(prefix + "FSSeasonID")); }
+            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }
+            if (FSUtils.fieldExists(crs, prefix, "SeasonID")) { setSeasonID(crs.getInt(prefix + "SeasonID")); }
+            if (FSUtils.fieldExists(crs, prefix, "SeasonName")) { setSeasonName(crs.getString(prefix + "SeasonName")); }
+            if (FSUtils.fieldExists(crs, prefix, "IsActive")) { setIsActive(crs.getBoolean(prefix + "IsActive")); }
+            if (FSUtils.fieldExists(crs, prefix, "DisplayTeams")) { setDisplayTeams(crs.getBoolean(prefix + "DisplayTeams")); }
+            if (FSUtils.fieldExists(crs, prefix, "DisplayStatsYear")) { setDisplayStatsYear(crs.getString(prefix + "DisplayStatsYear")); }
+            if (FSUtils.fieldExists(crs, prefix, "FSGameID")) { setFSGameID(crs.getInt(prefix + "FSGameID")); }
+            if (FSUtils.fieldExists(crs, prefix, "DisplayTeams")) { setDisplayTeams(crs.getBoolean(prefix + "DisplayTeams")); }
+            if (FSUtils.fieldExists(crs, prefix, "DisplayStatsYear")) { setDisplayStatsYear(crs.getString(prefix + "DisplayStatsYear")); }
+            if (FSUtils.fieldExists(crs, prefix, "CurrentFSSeasonWeekID")) { setCurrentFSSeasonWeekID(crs.getInt(prefix + "CurrentFSSeasonWeekID")); }
+
+            // OBJECTS
+            if (FSUtils.fieldExists(crs, "FSGame$", "FSGameID")) { setFSGame(new FSGame(crs, "FSGame$")); }
+            if (FSUtils.fieldExists(crs, "Season$", "SeasonID")) { setSeason(new Season(crs, "Season$")); }
             if (FSUtils.fieldExists(crs, "FSFootballSeasonDetail$", "FSSeasonID")) { setFSFootballSeasonDetail(new FSFootballSeasonDetail(crs, "FSFootballSeasonDetail$")); }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        }        
+        }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -298,7 +284,7 @@ public class FSSeason implements Serializable {
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE FSSeason SET ");

@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : viewFSSeasons
     Created on : Aug 27, 2009, 10:53:43 PM
     Author     : admin
@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="container">
-        
+
             <jsp:include page="inc_header.jsp" />
 
             <jsp:include page="inc_mainmenu.jsp" />
@@ -40,7 +40,7 @@
 
                     <br />
                     <div align="center" class="rowTitle"><strong><h2>FSTEAM : ${commFSTeam.teamName}</h2></strong></div>
-                    
+
                     <!-- FSTeam Info -->
                     <div align="center">
                         <form method="post" action="fsTeamEdit.do">
@@ -59,7 +59,10 @@
                                 </tr>
                                 <tr class="rowData2">
                                     <td align="right">DateCreated : </td>
-                                    <td align="left"><input type="text" name="dateCreated" id="dateCreated" value="<fmt:formatDate value="${commFSTeam.dateCreated.time}" pattern="yyyy-MM-dd"/>" /></td>
+                                    <td align="left">
+                                        <fmt:parseDate  value="${commFSTeam.dateCreated}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="dateCreated" />
+                                        <input type="text" name="dateCreated" id="dateCreated" value="<fmt:formatDate value="${dateCreated}" pattern="yyyy-MM-dd" timeZone="America/Denver" />" />
+                                    </td>
                                 </tr>
                                 <tr class="rowData">
                                     <td align="right">TeamName : </td>
@@ -83,7 +86,10 @@
                                 </tr>
                                 <tr class="rowData2">
                                     <td align="right">LastAccessed : </td>
-                                    <td align="left"><input type="text" name="lastAccessed" id="lastAccessed" value="<fmt:formatDate value="${commFSTeam.lastAccessed.time}" pattern="yyyy-MM-dd"/>" /></td>
+                                    <td align="left">
+                                        <fmt:parseDate  value="${commFSTeam.lastAccessed}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="lastAccessed" />
+                                        <input type="text" name="lastAccessed" id="lastAccessed" value="<fmt:formatDate value="${lastAccessed}" pattern="yyyy-MM-dd" timeZone="America/Denver" />" />
+                                    </td>
                                 </tr>
                                 <tr class="rowData2">
                                     <td align="right">RankDraftMode : </td>
@@ -99,7 +105,7 @@
                             </table>
                         </form>
                     </div>
-                    
+
                 </div> <!-- main -->
             </div> <!-- colmask outside -->
 

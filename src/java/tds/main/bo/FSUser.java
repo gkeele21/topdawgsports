@@ -3,12 +3,12 @@ package tds.main.bo;
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import sun.jdbc.rowset.CachedRowSet;
 import tds.data.CTDataSetDef;
 import tds.util.CTReturnCode;
 
-import sun.jdbc.rowset.CachedRowSet;
 import java.io.Serializable;
-import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class FSUser implements Serializable {
     private int _FSUserID;
     private String _Username;
     private String _Password;
-    private LocalDate _DateCreated;
+    private LocalDateTime _DateCreated;
     private String _FirstName;
     private String _LastName;
     private String _Email;
@@ -131,7 +131,7 @@ public class FSUser implements Serializable {
     public int getFSUserID() { return _FSUserID; }
     public String getUsername() { return _Username; }
     public String getPassword() { return _Password; }
-    public LocalDate getDateCreated() { return _DateCreated; }
+    public LocalDateTime getDateCreated() { return _DateCreated; }
     public String getFirstName() { return _FirstName; }
     public String getLastName() { return _LastName; }
     public String getFullName() { return _FirstName + " " + _LastName; }
@@ -157,7 +157,7 @@ public class FSUser implements Serializable {
     public void setFSUserID(int FSUserID) {_FSUserID = FSUserID;}
     public void setUsername(String Username) {_Username = Username;}
     public void setPassword(String Password) {_Password = Password;}
-    public void setDateCreated(LocalDate DateCreated) {_DateCreated = DateCreated;}
+    public void setDateCreated(LocalDateTime DateCreated) {_DateCreated = DateCreated;}
     public void setFirstName(String FirstName) {_FirstName = FirstName;}
     public void setLastName(String LastName) {_LastName = LastName;}
     public void setEmail(String Email) {_Email = Email;}
@@ -235,7 +235,6 @@ public class FSUser implements Serializable {
     public List<FSTeam> getTeams(int sportYear) {
         setFSTeams(new ArrayList<FSTeam>());
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT").append(_Cols.getColumnList("FSTeam", "t.", ""));
@@ -257,8 +256,7 @@ public class FSUser implements Serializable {
             sql.append("WHERE t.FSUserID = ").append(getFSUserID()).append(" AND (s.SportYear = ").append(sportYear).append(" OR s.SportYear IS NULL) ");
             sql.append("ORDER BY fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 getFSTeams().add(new FSTeam(crs));
             }
@@ -266,7 +264,6 @@ public class FSUser implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return getFSTeams();
@@ -416,9 +413,9 @@ public class FSUser implements Serializable {
             }
 
             if (FSUtils.fieldExists(crs, prefix, "DateCreated")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "DateCreated");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "DateCreated");
                 if (s != null) {
-                    setDateCreated(s.toLocalDate());
+                    setDateCreated(s.toLocalDateTime());
                 }
             }
 
@@ -471,16 +468,16 @@ public class FSUser implements Serializable {
             }
 
             if (FSUtils.fieldExists(crs, prefix, "Birthdate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "Birthdate");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "Birthdate");
                 if (s != null) {
-                    setBirthdate(s.toLocalDate());
+                    setBirthdate(s.toLocalDateTime().toLocalDate());
                 }
             }
 
             if (FSUtils.fieldExists(crs, prefix, "LastLogin")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "LastLogin");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "LastLogin");
                 if (s != null) {
-                    setLastLogin(s);
+                    setLastLogin(s.toLocalDateTime());
                 }
             }
 

@@ -68,7 +68,11 @@
                                             <c:out value="${tournamentWeek.PGATournament.tournamentName}" />
                                         </a>
                                     </td>
-                                    <td align="center"><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
+                                    <td align="center">
+                                        <fmt:parseDate  value="${tournamentWeek.startDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="startDate" />
+                                        <fmt:parseDate  value="${tournamentWeek.endDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="endDate" />
+                                        <fmt:formatDate value="${startDate}" pattern="E MM/dd"/> - <fmt:formatDate value="${endDate}" pattern="E MM/dd" />
+                                    </td>
                                     <td align="center"><c:out value="${tournamentWeek.FSSeasonWeek.status}" /></td>
                                 </tr>
                             </jsp:attribute>

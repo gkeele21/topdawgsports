@@ -6,6 +6,7 @@ import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class FSSeasonWeek implements Serializable {
             sql.append("JOIN SeasonWeek sw ON sw.SeasonWeekID = w.SeasonWeekID ");
             sql.append("WHERE s.FSSeasonID = ").append(fsSeasonId).append(" AND weekNo = ").append(weekNo);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             InitFromCRS(crs, "");
         } catch (Exception e) {
@@ -152,7 +153,7 @@ public class FSSeasonWeek implements Serializable {
             sql.append(" INNER JOIN FSLeague l ON l.FSSeasonID = s.FSSeasonID and l.FSLeagueID = ").append(leagueid);
             sql.append(" WHERE w.FSSeasonWeekNo = ").append(weekno);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 fsseasonweekid = crs.getInt("FSSeasonWeekID");
             }
@@ -188,7 +189,7 @@ public class FSSeasonWeek implements Serializable {
         sql.append("ORDER BY fssw.FSSeasonWeekNo");
 
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 allWeeks.add(new FSSeasonWeek(crs,""));
             }
@@ -214,7 +215,7 @@ public class FSSeasonWeek implements Serializable {
         sql.append("WHERE fssw.SeasonWeekID = ").append(seasonWeekId).append(" AND fss.FSGameID = ").append(fsGameId);
 
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             week = new FSSeasonWeek(crs, "");
 
@@ -242,7 +243,7 @@ public class FSSeasonWeek implements Serializable {
             sql.append("JOIN FSGame g ON g.FSGameID = fss.FSGameID ");
             sql.append("WHERE sw.SeasonWeekID = ").append(seasonWeekId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 weeks.add(new FSSeasonWeek(crs,""));
             }
@@ -271,7 +272,7 @@ public class FSSeasonWeek implements Serializable {
             sql.append("FROM FSSeasonWeek ");
             sql.append("WHERE FSSeasonID = ").append(fsSeasonWeek.getFSSeasonID()).append(" AND FSSeasonWeekNo = ").append(fsSeasonWeek.getFSSeasonWeekNo() + 1);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 nextFSSeasonWeekId = crs.getInt("FSSeasonWeekID");
             }
@@ -350,21 +351,21 @@ public class FSSeasonWeek implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) { setFSSeasonID(crs.getInt(prefix + "FSSeasonID")); }
             if (FSUtils.fieldExists(crs, prefix, "SeasonWeekID")) { setSeasonWeekID(crs.getInt(prefix + "SeasonWeekID")); }
             if (FSUtils.fieldExists(crs, prefix, "StartersDeadline")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "StartersDeadline");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "StartersDeadline");
                 if (s != null) {
-                    setStartersDeadline(s);
+                    setStartersDeadline(s.toLocalDateTime());
                 }
             }
             if (FSUtils.fieldExists(crs, prefix, "TransactionDeadline")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "TransactionDeadline");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "TransactionDeadline");
                 if (s != null) {
-                    setTransactionDeadline(s);
+                    setTransactionDeadline(s.toLocalDateTime());
                 }
             }
             if (FSUtils.fieldExists(crs, prefix, "StartPlayDate") && crs.getObject(prefix + "StartPlayDate") != null) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "StartPlayDate");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "StartPlayDate");
                 if (s != null) {
-                    setStartPlayDate(s);
+                    setStartPlayDate(s.toLocalDateTime());
                 }
 
             } else {
@@ -373,9 +374,9 @@ public class FSSeasonWeek implements Serializable {
                 }
             }
             if (FSUtils.fieldExists(crs, prefix, "EndPlayDate") && crs.getObject(prefix + "EndPlayDate") != null) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "EndPlayDate");
+                Timestamp s = (Timestamp)crs.getObject(prefix + "EndPlayDate");
                 if (s != null) {
-                    setEndPlayDate(s);
+                    setEndPlayDate(s.toLocalDateTime());
                 }
             } else {
                 if (_SeasonWeek != null) {
@@ -414,7 +415,7 @@ public class FSSeasonWeek implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -437,7 +438,7 @@ public class FSSeasonWeek implements Serializable {
         sql.append("WHERE FSSeasonWeekID = ").append(getFSSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

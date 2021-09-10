@@ -2,16 +2,18 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSTeam;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class BracketChallenge implements Serializable {
-    
+
     public static final int MAX_SCORE = 192;
 
     // DB FIELDS
@@ -45,7 +47,7 @@ public class BracketChallenge implements Serializable {
     public MarchMadnessTeamSeed getTeamSeedPicked() {return _TeamSeedPicked;}
     public BracketChallenge getPrevTopGamePick() {return _PrevTopGamePick;}
     public BracketChallenge getPrevBottomGamePick() {return _PrevBottomGamePick;}
-    
+
     // SETTERS
     public void setFSTeamID(Integer FSTeamID) {_FSTeamID = FSTeamID;}
     public void setGameID(Integer GameID) {_GameID = GameID;}
@@ -57,7 +59,7 @@ public class BracketChallenge implements Serializable {
     public void setPrevBottomGamePick(BracketChallenge PrevBottomGamePick) {_PrevBottomGamePick = PrevBottomGamePick;}
 
     // PUBLIC METHODS
-    
+
     public static List<BracketChallenge> GetPicks(int tournamentId, int fsTeamId, int roundNumber) {
         List<BracketChallenge> picks = new ArrayList<BracketChallenge>();
         CachedRowSet crs = null;
@@ -75,16 +77,16 @@ public class BracketChallenge implements Serializable {
         sql.append(_Cols.getColumnList("BracketChallenge", "bc.", "")).append(", ");
         sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "ts.", "MarchMadnessTeamSeed$")).append(", ");
         sql.append(_Cols.getColumnList("Team", "tp.", "PredictedTeam$")).append(", ");
-        sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "w.", "GameWinnerTeamSeed$")).append(", "); 
+        sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "w.", "GameWinnerTeamSeed$")).append(", ");
         sql.append(_Cols.getColumnList("Team", "gw.", "GameWinnerTeam$")).append(", ");
         sql.append(_Cols.getColumnList("MarchMadnessGame", "ptg.", "PreviousTopGame$")).append(", ");
         sql.append(_Cols.getColumnList("BracketChallenge", "p.", "PreviousTopGamePick$")).append(", ");
         sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "tsp.", "PreviousTopGameTeamSeedPicked$")).append(", ");
         sql.append(_Cols.getColumnList("Team", "ptgt.", "PreviousTopGameTeamPicked$")).append(", ");
-        sql.append(_Cols.getColumnList("MarchMadnessGame", "pbg.", "PreviousBottomGame$")).append(", ");        
+        sql.append(_Cols.getColumnList("MarchMadnessGame", "pbg.", "PreviousBottomGame$")).append(", ");
         sql.append(_Cols.getColumnList("BracketChallenge", "p2.", "PreviousBottomGamePick$")).append(", ");
         sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "tsp2.", "PreviousBottomGameTeamSeedPicked$")).append(", ");
-        sql.append(_Cols.getColumnList("Team", "pbgt.", "PreviousBottomGameTeamPicked$"));                   
+        sql.append(_Cols.getColumnList("Team", "pbgt.", "PreviousBottomGameTeamPicked$"));
         sql.append("FROM MarchMadnessGame g ");
         sql.append("JOIN MarchMadnessRegion r ON r.RegionID = g.RegionID ");
         sql.append("JOIN MarchMadnessRound rd ON rd.RoundID = g.RoundID ");
@@ -111,13 +113,13 @@ public class BracketChallenge implements Serializable {
         sql.append("LEFT JOIN MarchMadnessGame pbg on pbg.NextGameID = g.GameID AND pbg.nextPosition = 2 ");
         sql.append("LEFT JOIN BracketChallenge p2 ON p2.GameID = pbg.GameID AND p2.FSTeamID = ").append(fsTeamId).append(" ");
         sql.append("LEFT JOIN MarchMadnessTeamSeed tsp2 ON tsp2.TeamSeedID = p2.TeamSeedPickedID ");
-        sql.append("LEFT JOIN Team pbgt ON pbgt.TeamID = tsp2.TeamID ");        
+        sql.append("LEFT JOIN Team pbgt ON pbgt.TeamID = tsp2.TeamID ");
         sql.append("WHERE t.TournamentID = ").append(tournamentId).append(" ");
         if (roundNumber > 0) { sql.append(" AND rd.RoundNumber = ").append(roundNumber).append(" "); }
         sql.append("ORDER BY g.gameNumber");
 
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 picks.add(new BracketChallenge(crs,""));
             }
@@ -128,7 +130,7 @@ public class BracketChallenge implements Serializable {
         }
         return picks;
     }
-     
+
     public static List<BracketChallenge> GetPicksByGame(int gameId) {
         List<BracketChallenge> picks = new ArrayList<BracketChallenge>();
         CachedRowSet crs = null;
@@ -144,7 +146,7 @@ public class BracketChallenge implements Serializable {
         sql.append("ORDER BY p.FSTeamID");
 
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 picks.add(new BracketChallenge(crs,""));
             }
@@ -155,7 +157,7 @@ public class BracketChallenge implements Serializable {
         }
         return picks;
     }
-    
+
     public static List<BracketChallenge> GetFutureTeamSeedPicksFromGameLoser(int teamSeedId, int roundNumber) {
         List<BracketChallenge> picks = new ArrayList<BracketChallenge>();
         CachedRowSet crs = null;
@@ -169,9 +171,9 @@ public class BracketChallenge implements Serializable {
         sql.append("JOIN MarchMadnessRound rd ON rd.RoundID = g.RoundID ");
         sql.append("WHERE bc.TeamSeedPickedID  = ").append(teamSeedId).append(" AND rd.RoundNumber >= ").append(roundNumber).append(" ");
         sql.append("ORDER BY bc.FSTeamID, rd.RoundNumber");
-        
+
         try {
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 picks.add(new BracketChallenge(crs,""));
             }
@@ -182,14 +184,14 @@ public class BracketChallenge implements Serializable {
         }
         return picks;
     }
-     
-    public void Save() {        
+
+    public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("BracketChallenge", "FSTeamID", getFSTeamID(), "GameID", getGameID());
         if (doesExist) Update(); else Insert();
-    } 
-     
+    }
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }
@@ -208,14 +210,14 @@ public class BracketChallenge implements Serializable {
             // ADDITIONAL FIELDS
             if (prefix.equals("") && FSUtils.fieldExists(crs, "PreviousTopGamePick$", "FSTeamID")) { setPrevTopGamePick(new BracketChallenge (crs, "PreviousTopGamePick$")); }
             if (prefix.equals("") && FSUtils.fieldExists(crs, "PreviousBottomGamePick$", "FSTeamID")) { setPrevBottomGamePick(new BracketChallenge (crs, "PreviousBottomGamePick$")); }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }   
+    }
 
     /*  This method inserts a new record into the DB. */
-    public void Insert() {        
+    public void Insert() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO BracketChallenge ");
@@ -227,12 +229,12 @@ public class BracketChallenge implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     /*  This method updates a record in the DB. */
     public void Update() {
         StringBuilder sql = new StringBuilder();
@@ -245,7 +247,7 @@ public class BracketChallenge implements Serializable {
         sql.append("WHERE FSTeamID = ").append(getFSTeamID()).append(" AND GameID = ").append(getGameID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

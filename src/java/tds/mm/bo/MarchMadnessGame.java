@@ -2,18 +2,20 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSGame;
 import tds.main.bo.FSSeasonWeek;
 import tds.main.bo.SeasonWeek;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class MarchMadnessGame implements Serializable {
-    
+
     public enum Status {UPCOMING, ONGOING, FINAL};
 
     // DB FIELDS
@@ -26,7 +28,7 @@ public class MarchMadnessGame implements Serializable {
     private Integer _TeamSeed2ID;
     private Integer _Team1Pts;
     private Integer _Team2Pts;
-    private Integer _WinnerID;  
+    private Integer _WinnerID;
     private Integer _NextGameID;
     private Integer _NextPosition;
     private String _Location;
@@ -35,18 +37,18 @@ public class MarchMadnessGame implements Serializable {
     private MarchMadnessRound _Round;
     private MarchMadnessRegion _Region;
     private MarchMadnessTeamSeed _TopTeamSeed;
-    private MarchMadnessTeamSeed _BottomTeamSeed;    
+    private MarchMadnessTeamSeed _BottomTeamSeed;
     private MarchMadnessTeamSeed _Winner;
-    
+
 
     // CONSTRUCTORS
-    public MarchMadnessGame() {        
+    public MarchMadnessGame() {
     }
-    
+
     public MarchMadnessGame(int gameId) {
         CachedRowSet crs = null;
         try {
-            StringBuilder sql = new StringBuilder();            
+            StringBuilder sql = new StringBuilder();
             sql.append("SELECT").append(_Cols.getColumnList("MarchMadnessGame", "g.", "")).append(", ");
             sql.append(_Cols.getColumnList("MarchMadnessRegion", "s.", "MarchMadnessRegion$")).append(", ");
             sql.append(_Cols.getColumnList("MarchMadnessRound", "rd.", "MarchMadnessRound$")).append(", ");
@@ -69,10 +71,10 @@ public class MarchMadnessGame implements Serializable {
             sql.append("LEFT JOIN Team tm2 ON tm2.TeamID = ts2.TeamID ");
             sql.append("LEFT JOIN MarchMadnessTeamSeed tsw ON tsw.TeamSeedID = g.WinnerID ");
             sql.append("LEFT JOIN Team w ON w.TeamID = tsw.TeamID ");
-            
+
             sql.append("WHERE g.GameID = ").append(gameId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -83,7 +85,7 @@ public class MarchMadnessGame implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
- 
+
     public MarchMadnessGame(CachedRowSet crs, String prefix) {
         InitFromCRS(crs, prefix);
     }
@@ -125,11 +127,11 @@ public class MarchMadnessGame implements Serializable {
     public void setRound(MarchMadnessRound Round) {_Round = Round;}
     public void setRegion(MarchMadnessRegion Region) {_Region = Region;}
     public void setTopTeamSeed(MarchMadnessTeamSeed TopTeamSeed) {_TopTeamSeed = TopTeamSeed;}
-    public void setBottomTeamSeed(MarchMadnessTeamSeed BottomTeamSeed) {_BottomTeamSeed = BottomTeamSeed;}    
+    public void setBottomTeamSeed(MarchMadnessTeamSeed BottomTeamSeed) {_BottomTeamSeed = BottomTeamSeed;}
     public void setWinner(MarchMadnessTeamSeed Winner) {_Winner = Winner;}
 
     // PUBLIC METHODS
-    
+
     /* Retrieves a list of March Madness Tournament games for specific rounds */
     public static List<MarchMadnessGame> GetTournamentGames(int tournamentId, int begRoundNum, int endRoundNum) {
         CachedRowSet crs = null;
@@ -156,13 +158,13 @@ public class MarchMadnessGame implements Serializable {
             sql.append("LEFT JOIN MarchMadnessTeamSeed ts ON ts.TeamSeedID = g.TeamSeed1ID ");
             sql.append("LEFT JOIN MarchMadnessTeamSeed ts2 ON ts2.TeamSeedID = g.TeamSeed2ID ");
             sql.append("LEFT JOIN Team tm ON tm.TeamID = ts.TeamID ");
-            sql.append("LEFT JOIN Team tm2 ON tm2.TeamID = ts2.TeamID ");            
+            sql.append("LEFT JOIN Team tm2 ON tm2.TeamID = ts2.TeamID ");
             sql.append("LEFT JOIN MarchMadnessTeamSeed w ON w.TeamSeedID = g.WinnerID ");
             sql.append("LEFT JOIN Team gw ON gw.TeamID = w.TeamID ");
             sql.append("WHERE rd.RoundNumber BETWEEN ").append(begRoundNum).append(" AND ").append(endRoundNum).append(" ");
             sql.append("ORDER BY GameID");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 games.add(new MarchMadnessGame(crs, ""));
             }
@@ -189,7 +191,7 @@ public class MarchMadnessGame implements Serializable {
             sql.append("INNER JOIN SeasonWeek sw ON sw.SeasonWeekID = r.SeasonWeekID ");
             sql.append("WHERE sw.SeasonWeekNo = ").append(roundNum).append(" AND g.Team1ID = ").append(fsTeamId).append(" OR g.Team2ID = ").append(fsTeamId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 currentGame = crs.getInt("GameID");
             }
@@ -202,19 +204,19 @@ public class MarchMadnessGame implements Serializable {
 
         return currentGame;
    }
-    
+
      /*  This method is used to store the March Madness Game data in the DB. */
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("MarchMadnessGame", "GameID", getGameID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // Update the Score/Winner in the MarchMadnessGame table
-    public static void UpdateGameResult(int tournamentId, int gameId, SeasonWeek seasonWeek, int topTeamPts, int bottomTeamPts) {        
+    public static void UpdateGameResult(int tournamentId, int gameId, SeasonWeek seasonWeek, int topTeamPts, int bottomTeamPts) {
         Integer winnerId = 0;
-        Integer loserId = 0;        
-        
-        // Update the March Madness Game table with the score, winner, and loser     
+        Integer loserId = 0;
+
+        // Update the March Madness Game table with the score, winner, and loser
         MarchMadnessGame game = new MarchMadnessGame(gameId);
         game.setTeam1Pts(topTeamPts);
         game.setTeam2Pts(bottomTeamPts);
@@ -223,9 +225,9 @@ public class MarchMadnessGame implements Serializable {
         if (topTeamPts > bottomTeamPts) { winnerId = game.getTeamSeed1ID(); loserId = game.getTeamSeed2ID(); }
         else if (bottomTeamPts > topTeamPts) { winnerId = game.getTeamSeed2ID(); loserId = game.getTeamSeed1ID(); }
 
-        game.setWinnerID(winnerId);        
-        game.Save();        
-                
+        game.setWinnerID(winnerId);
+        game.Save();
+
         // Update the next round's game with the winner
         if (game.getNextGameID() != null && game.getNextGameID() > 0) {
             MarchMadnessGame nextGame = new MarchMadnessGame(game.getNextGameID());
@@ -236,25 +238,25 @@ public class MarchMadnessGame implements Serializable {
                 nextGame.setTeamSeed2ID(game.getWinnerID());
             }
             nextGame.Save();
-        }        
-                
+        }
+
         // Update the loser to show they are out in the TournamentSeed table
         MarchMadnessTeamSeed loser = new MarchMadnessTeamSeed(tournamentId, loserId);
         loser.setTournamentWins(seasonWeek.getWeekNo() -1);
-        loser.setStatus(MarchMadnessTeamSeed.Status.OUT.toString());        
+        loser.setStatus(MarchMadnessTeamSeed.Status.OUT.toString());
         loser.Save();
-                
+
         // Update the winner's total tournament wins to be the round number (week no) and also ensure they are still alive
         MarchMadnessTeamSeed winner = new MarchMadnessTeamSeed(tournamentId, winnerId);
         winner.setTournamentWins(seasonWeek.getWeekNo());
-        winner.setStatus(MarchMadnessTeamSeed.Status.IN.toString());        
+        winner.setStatus(MarchMadnessTeamSeed.Status.IN.toString());
         winner.Save();
-        
+
         // Update the BracketChallenge standings based on this game
         FSSeasonWeek bcWeek = FSSeasonWeek.GetFSSeasonWeekBySeasonWeekAndGameID(seasonWeek.getSeasonWeekID(), FSGame.BRACKET_CHALLENGE);
         BracketChallengeStandings.CalculateStandingsByGame(bcWeek, gameId, loserId);
         BracketChallengeStandings.CalculateRank(bcWeek.getFSSeasonWeekID());
-                
+
         // Update the SeedChallenge standings based on this game
         FSSeasonWeek scWeek = FSSeasonWeek.GetFSSeasonWeekBySeasonWeekAndGameID(seasonWeek.getSeasonWeekID(), FSGame.SEED_CHALLENGE);
         SeedChallengeStandings.CalculateStandingsByGame(scWeek, tournamentId, winnerId, loserId);
@@ -262,7 +264,7 @@ public class MarchMadnessGame implements Serializable {
     }
 
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
@@ -276,12 +278,12 @@ public class MarchMadnessGame implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "TeamSeed2ID")) { setTeamSeed2ID(crs.getInt(prefix + "TeamSeed2ID")); }
             if (FSUtils.fieldExists(crs, prefix, "Team1Pts")) { setTeam1Pts(crs.getInt(prefix + "Team1Pts")); }
             if (FSUtils.fieldExists(crs, prefix, "Team2Pts")) { setTeam2Pts(crs.getInt(prefix + "Team2Pts")); }
-            if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { setWinnerID(crs.getInt(prefix + "WinnerID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { setWinnerID(crs.getInt(prefix + "WinnerID")); }
             if (FSUtils.fieldExists(crs, prefix, "NextGameID")) { setNextGameID(crs.getInt(prefix + "NextGameID")); }
             if (FSUtils.fieldExists(crs, prefix, "NextPosition")) { setNextPosition(crs.getInt(prefix + "NextPosition")); }
             if (FSUtils.fieldExists(crs, prefix, "Location")) { setLocation(crs.getString(prefix + "Location")); }
-            
-            // OBJECTS 
+
+            // OBJECTS
             if (FSUtils.fieldExists(crs, "MarchMadnessRound$", "RoundID")) { setRound(new MarchMadnessRound(crs, "MarchMadnessRound$")); }
             if (FSUtils.fieldExists(crs, "MarchMadnessRegion$", "RegionID")) { setRegion(new MarchMadnessRegion(crs, "MarchMadnessRegion$")); }
             if (FSUtils.fieldExists(crs, "TopTeamSeed$", "TeamSeedID")) { setTopTeamSeed(new MarchMadnessTeamSeed(crs, "TopTeamSeed$")); }
@@ -292,7 +294,7 @@ public class MarchMadnessGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
      /*  This method inserts a new record into the DB. */
     private void Insert() {
         StringBuilder sql = new StringBuilder();
@@ -316,11 +318,11 @@ public class MarchMadnessGame implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     /*  This method updates a record in the DB. */
     private void Update() {
@@ -343,7 +345,7 @@ public class MarchMadnessGame implements Serializable {
         sql.append("WHERE GameID = ").append(getGameID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

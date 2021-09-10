@@ -10,9 +10,9 @@ import bglib.scripts.ResultCode;
 import bglib.util.Application;
 import bglib.util.AuUtil;
 import tds.main.bo.CTApplication;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -30,7 +30,7 @@ public class NCAAFootballPlayers implements Harnessable {
     private static String _PLAYERS_FILE = Application._GLOBAL_SETTINGS.getProperty(NCAAROSTER_DIR_PROP);
     private static final int _FSSeasonID = 8;
     private static final int _SeasonID = 4;
-    
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -62,14 +62,14 @@ public class NCAAFootballPlayers implements Harnessable {
     public static void main(String[] args) {
         try {
             NCAAFootballPlayers players = new NCAAFootballPlayers();
-            
+
             players.run();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
+
     public void run() {
 
         try {
@@ -102,7 +102,6 @@ public class NCAAFootballPlayers implements Harnessable {
             List playerscolumns = Arrays.asList(TEMPPLAYERS);
 
             StringTokenizer st = new StringTokenizer(str,"\n");
-            Connection con = CTApplication._CT_QUICK_DB.getConn(false);
             int lineNumber = 0;
             while (st.hasMoreTokens()) {
                 try {
@@ -124,11 +123,11 @@ public class NCAAFootballPlayers implements Harnessable {
                             if (x < player.length) {
                                 player[x] = fieldValue;
                             }
-                            
+
                             x++;
-                            
+
                         }
-                        
+
                         if (player[2] != null && !player[2].equals("")) {
                             // insert this player's data
                             StringBuffer sql = new StringBuffer();
@@ -156,7 +155,7 @@ public class NCAAFootballPlayers implements Harnessable {
                             sql.append(")");
                             _Logger.info(sql.toString());
                             System.out.println(sql.toString());
-                            CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         }
                     }
                 } catch (Exception e) {
@@ -164,10 +163,6 @@ public class NCAAFootballPlayers implements Harnessable {
                     _Logger.log(Level.SEVERE, "Exception in NCAAPlayer.run()", e);
                 }
             }
-            con.commit();
-
-            con.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,12 +170,12 @@ public class NCAAFootballPlayers implements Harnessable {
         }
 
     }
-    
+
     private void updateNCAAPlayers() {
-        
-        
+
+
     }
-    
-    
+
+
 
 }

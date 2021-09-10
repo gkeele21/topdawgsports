@@ -2,8 +2,10 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSTournamentLeague implements Serializable {
@@ -25,11 +27,11 @@ public class FSTournamentLeague implements Serializable {
     }
 
     // GETTERS
-    public int getFSLeagueID() {return _FSLeagueID;}    
+    public int getFSLeagueID() {return _FSLeagueID;}
     public int getTournamentID() {return _TournamentID;}
     public FSLeague getFSLeague() {if (_FSLeague == null && _FSLeagueID > 0) {_FSLeague = new FSLeague(_FSLeagueID);}return _FSLeague;}
     public FSTournament geFSTournament() {return _FSTournament;}
-    
+
     // SETTERS
     public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
     public void setTournamentID(int TournamentID) {_TournamentID = TournamentID;}
@@ -53,7 +55,7 @@ public class FSTournamentLeague implements Serializable {
             sql.append("JOIN FSLeague l ON l.FSLeagueID = tl.FSLeagueID ");
             sql.append("WHERE tl.FSLeagueID = ").append(fsLeagueId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 objTournament = new FSTournament(crs, "");
             }
@@ -78,8 +80,8 @@ public class FSTournamentLeague implements Serializable {
             sql.append(" VALUES (").append(fsLeagueId);
             sql.append(" , ").append(tournamentId);
             sql.append(" )");
-            
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
@@ -99,7 +101,7 @@ public class FSTournamentLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
                 setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TournamentID")) {
                 setTournamentID(crs.getInt(prefix + "TournamentID"));
             }
@@ -108,7 +110,7 @@ public class FSTournamentLeague implements Serializable {
             if (FSUtils.fieldExists(crs, "FSLeague$", "FSLeagueID")) {
                 setFSLeague(new FSLeague(crs, "FSLeague$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FSTournament$", "TournamentID")) {
                 setFSTournament(new FSTournament(crs, "FSTournament$"));
             }

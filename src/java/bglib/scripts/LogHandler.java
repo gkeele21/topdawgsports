@@ -1,7 +1,5 @@
 package bglib.scripts;
 
-import static bglib.util.Application._GLOBAL_LOG;
-import static bglib.util.Application._GLOBAL_QUICK_DB;
 import bglib.util.AuDate;
 import bglib.util.BGConstants;
 import bglib.util.FSUtils;
@@ -14,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+
+import static bglib.util.Application._GLOBAL_LOG;
+import static bglib.util.Application._GLOBAL_QUICK_DB;
 
 public class LogHandler extends Handler {
 
@@ -50,7 +51,7 @@ public class LogHandler extends Handler {
                              "values (" + _ScriptRunID + ", '" + lr.getLevel().toString() + "', '" +
                              new AuDate(lr.getMillis()).toString(BGConstants.PLAYDATETIME_PATTERN) + "', '" +
                              FSUtils.fixupUserInputForDB(lr.getMessage()) + "', '" + stackTrace + "')";
-                _GLOBAL_QUICK_DB.executeUpdate(con, sql);
+                _GLOBAL_QUICK_DB.executeUpdate(sql);
             }
             con.commit();
             _LogRecords.clear();

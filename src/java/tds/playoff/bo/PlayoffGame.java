@@ -2,16 +2,18 @@ package tds.playoff.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSTeam;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class PlayoffGame implements Serializable {
-    
+
     public enum Status {UPCOMING, ONGOING, FINAL};
     public enum NextPosition {TOP, BOTTOM};
 
@@ -24,42 +26,42 @@ public class PlayoffGame implements Serializable {
     private Integer _FSTeam2ID;
     private Double _Team1Pts;
     private Double _Team2Pts;
-    private Integer _WinnerID;  
+    private Integer _WinnerID;
     private Integer _NextGameID;
     private String _NextPosition;
 
     // OBJECTS
     private PlayoffRound _Round;
     private FSTeam _TopTeam;
-    private FSTeam _BottomTeam;    
+    private FSTeam _BottomTeam;
     private FSTeam _Winner;
-    
+
 
     // CONSTRUCTORS
-    public PlayoffGame() {        
+    public PlayoffGame() {
     }
-    
+
     public PlayoffGame(int gameId) {
         CachedRowSet crs = null;
         try {
-            StringBuilder sql = new StringBuilder();            
+            StringBuilder sql = new StringBuilder();
             sql.append("SELECT").append(_Cols.getColumnList("PlayoffGame", "g.", "")).append(", ");
             sql.append(_Cols.getColumnList("PlayoffRound", "rd.", "PlayoffRound$")).append(", ");
             sql.append(_Cols.getColumnList("PlayoffTournament", "t.", "PlayoffTournament$")).append(", ");
-            sql.append(_Cols.getColumnList("FSSeasonWeek", "fssw.", "FSSeasonWeek$")).append(", ");            
+            sql.append(_Cols.getColumnList("FSSeasonWeek", "fssw.", "FSSeasonWeek$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "tm.", "TopTeam$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "tm2.", "BottomTeam$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "w.", "Winner$"));
             sql.append("FROM PlayoffGame g ");
             sql.append("JOIN PlayoffRound rd ON rd.RoundID = g.RoundID ");
             sql.append("JOIN PlayoffTournament t ON t.TournamentID = rd.TournamentID ");
-            sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = rd.FSSeasonWeekID ");            
+            sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = rd.FSSeasonWeekID ");
             sql.append("LEFT JOIN FSTeam tm ON tm.FSTeamID = g.FSTeam1ID ");
             sql.append("LEFT JOIN FSTeam tm2 ON tm2.FSTeamID = g.FSTeam2ID ");
             sql.append("LEFT JOIN FSTeam w ON w.FSTeamID = g.WinnerID ");
             sql.append("WHERE GameID = ").append(gameId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -70,7 +72,7 @@ public class PlayoffGame implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-  
+
     public PlayoffGame(CachedRowSet crs, String prefix) {
         InitFromCRS(crs, prefix);
     }
@@ -110,7 +112,7 @@ public class PlayoffGame implements Serializable {
     public void setWinner(FSTeam Winner) {_Winner = Winner;}
 
     // PUBLIC METHODS
-    
+
     /* Retrieves a list of March Madness Tournament games for specific rounds */
     public static List<PlayoffGame> GetTournamentGames(int tournamentId, int begRoundNum, int endRoundNum) {
         CachedRowSet crs = null;
@@ -121,21 +123,21 @@ public class PlayoffGame implements Serializable {
             sql.append("SELECT").append(_Cols.getColumnList("PlayoffGame", "g.", "")).append(", ");
             sql.append(_Cols.getColumnList("PlayoffRound", "rd.", "PlayoffRound$")).append(", ");
             sql.append(_Cols.getColumnList("PlayoffTournament", "t.", "PlayoffTournament$")).append(", ");
-            sql.append(_Cols.getColumnList("FSSeasonWeek", "fssw.", "FSSeasonWeek$")).append(", ");            
+            sql.append(_Cols.getColumnList("FSSeasonWeek", "fssw.", "FSSeasonWeek$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "tm.", "TopTeam$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "tm2.", "BottomTeam$")).append(", ");
             sql.append(_Cols.getColumnList("FSTeam", "gw.", "Winner$"));
             sql.append("FROM PlayoffGame g ");
             sql.append("JOIN PlayoffRound rd ON rd.RoundID = g.RoundID ");
             sql.append("JOIN PlayoffTournament t ON t.TournamentID = rd.TournamentID AND t.TournamentID = ").append(tournamentId).append(" ");
-            sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = rd.FSSeasonWeekID ");            
+            sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = rd.FSSeasonWeekID ");
             sql.append("LEFT JOIN FSTeam tm ON tm.FSTeamID = g.FSTeam1ID ");
             sql.append("LEFT JOIN FSTeam tm2 ON tm2.FSTeamID = g.FSTeam2ID ");
             sql.append("LEFT JOIN FSTeam gw ON gw.FSTeamID = t.WinnerID ");
             sql.append("WHERE rd.RoundNumber BETWEEN ").append(begRoundNum).append(" AND ").append(endRoundNum).append(" ");
             sql.append("ORDER BY GameNumber");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 games.add(new PlayoffGame(crs, ""));
             }
@@ -162,7 +164,7 @@ public class PlayoffGame implements Serializable {
             sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append("WHERE fssw.FSSeasonWeekNo = ").append(roundNum).append(" AND g.FSTeam1ID = ").append(fsTeamId).append(" OR g.FSTeam2ID = ").append(fsTeamId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 currentGame = crs.getInt("GameID");
             }
@@ -175,15 +177,15 @@ public class PlayoffGame implements Serializable {
 
         return currentGame;
    }
-    
+
      /*  This method is used to store the March Madness Game data in the DB. */
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PlayoffGame", "GameID", getGameID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
@@ -196,11 +198,11 @@ public class PlayoffGame implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "FSTeam2ID")) { setFSTeam2ID(crs.getInt(prefix + "FSTeam2ID")); }
             if (FSUtils.fieldExists(crs, prefix, "Team1Pts")) { setTeam1Pts(crs.getDouble(prefix + "Team1Pts")); }
             if (FSUtils.fieldExists(crs, prefix, "Team2Pts")) { setTeam2Pts(crs.getDouble(prefix + "Team2Pts")); }
-            if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { setWinnerID(crs.getInt(prefix + "WinnerID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "WinnerID")) { setWinnerID(crs.getInt(prefix + "WinnerID")); }
             if (FSUtils.fieldExists(crs, prefix, "NextGameID")) { setNextGameID(crs.getInt(prefix + "NextGameID")); }
             if (FSUtils.fieldExists(crs, prefix, "NextPosition")) { setNextPosition(crs.getString(prefix + "NextPosition")); }
-            
-            // OBJECTS 
+
+            // OBJECTS
             if (FSUtils.fieldExists(crs, "PlayoffRound$", "RoundID")) { setRound(new PlayoffRound(crs, "PlayoffRound$")); }
             if (FSUtils.fieldExists(crs, "TopTeam$", "FSTeamID")) { setTopTeam(new FSTeam(crs, "TopTeam$")); }
             if (FSUtils.fieldExists(crs, "BottomTeam$", "FSTeamID")) { setBottomTeam(new FSTeam(crs, "BottomTeam$")); }
@@ -210,7 +212,7 @@ public class PlayoffGame implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -231,11 +233,11 @@ public class PlayoffGame implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -255,7 +257,7 @@ public class PlayoffGame implements Serializable {
         sql.append("WHERE GameID = ").append(getGameID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

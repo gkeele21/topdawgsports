@@ -2,12 +2,12 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.sql.Connection;
 import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSFootballRosterPositions {
-    
+
     // DB FIELDS
     private int _FSSeasonID;
     private int _PositionID;
@@ -18,18 +18,17 @@ public class FSFootballRosterPositions {
     private int _MinNum;
     private int _DraftNum;
     private int _MinActive;
-    
+
     // CONSTRUCTORS
     public FSFootballRosterPositions() {
     }
-    
+
     public FSFootballRosterPositions(int fsseasonID, int positionID) {
         this(fsseasonID, positionID, 0);
     }
 
     public FSFootballRosterPositions(int fsseasonID, int positionID, int fsleagueID) {
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSFootballRosterPositions", "rp.", ""));
@@ -38,8 +37,7 @@ public class FSFootballRosterPositions {
             sql.append(" AND rp.PositionID = ").append(positionID);
             sql.append(" AND rp.FSLeagueID = ").append(fsleagueID);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery( sql.toString());
             if (crs.next()) {
                 initFromCRS(crs, "");
             } else {
@@ -51,7 +49,7 @@ public class FSFootballRosterPositions {
                 sql.append(" AND rp.PositionID = ").append(positionID);
                 sql.append(" AND rp.FSLeagueID = 0");
 
-                crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+                crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
                 if (crs.next()) {
                     initFromCRS(crs, "");
                 }
@@ -60,10 +58,9 @@ public class FSFootballRosterPositions {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
     }
-    
+
     public FSFootballRosterPositions(CachedRowSet fields) {
         initFromCRS(fields, "");
     }
@@ -71,7 +68,7 @@ public class FSFootballRosterPositions {
     public FSFootballRosterPositions(CachedRowSet fields, String prefix) {
         initFromCRS(fields, prefix);
     }
-    
+
     // GETTERS
     public int getFSSeasonID() {return _FSSeasonID;}
     public int getPositionID() {return _PositionID;}
@@ -82,7 +79,7 @@ public class FSFootballRosterPositions {
     public int getMinNum() {return _MinNum;}
     public int getDraftNum() {return _DraftNum;}
     public int getMinActive() {return _MinActive;}
-    
+
     // SETTERS
     public void setFSSeasonID(int FSSeasonID) {_FSSeasonID = FSSeasonID;}
     public void setPositionID(int PositionID) {_PositionID = PositionID;}
@@ -93,56 +90,56 @@ public class FSFootballRosterPositions {
     public void setMinNum(int MinNum) {_MinNum = MinNum;}
     public void setDraftNum(int DraftNum) {_DraftNum = DraftNum;}
     public void setMinActive(int MinActive) {_MinActive = MinActive;}
-    
+
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
-            
+
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonID")) {
                 setFSSeasonID(crs.getInt(prefix + "FSSeasonID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PositionID")) {
                 setPositionID(crs.getInt(prefix + "PositionID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
                 setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxStart")) {
                 setMaxStart(crs.getInt(prefix + "MaxStart"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MinStart")) {
                 setMinStart(crs.getInt(prefix + "MinStart"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MaxNum")) {
                 setMaxNum(crs.getInt(prefix + "MaxNum"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MinNum")) {
                 setMinNum(crs.getInt(prefix + "MinNum"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "DraftNum")) {
                 setDraftNum(crs.getInt(prefix + "DraftNum"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "MinActive")) {
                 setMinActive(crs.getInt(prefix + "MinActive"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSFootballRosterPositions", "FSSeasonID", getFSSeasonID(), "PositionID", getPositionID());
         if (doesExist) { Update(); } else { Insert(); }

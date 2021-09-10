@@ -7,6 +7,7 @@ import sun.jdbc.rowset.CachedRowSet;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,15 +213,15 @@ public class SeasonWeek implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "SeasonID")) { setSeasonID(crs.getInt(prefix + "SeasonID")); }
             if (FSUtils.fieldExists(crs, prefix, "WeekNo")) { setWeekNo(crs.getInt(prefix + "WeekNo")); }
             if (FSUtils.fieldExists(crs, prefix, "StartDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "StartDate");
+                Timestamp s = crs.getTimestamp(prefix + "StartDate");
                 if (s != null) {
-                    setStartDate(s);
+                    setStartDate(s.toLocalDateTime());
                 }
             }
             if (FSUtils.fieldExists(crs, prefix, "EndDate")) {
-                LocalDateTime s = (LocalDateTime)crs.getObject(prefix + "EndDate");
+                Timestamp s = crs.getTimestamp(prefix + "EndDate");
                 if (s != null) {
-                    setEndDate(s);
+                    setEndDate(s.toLocalDateTime());
                 }
             }
             if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }

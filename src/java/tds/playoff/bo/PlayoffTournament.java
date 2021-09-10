@@ -2,19 +2,21 @@ package tds.playoff.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSTeam;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class PlayoffTournament implements Serializable {
 
     public enum Status {UPCOMING, ONGOING, FINAL};
     public static final int AverageJoe = 520;
-    
+
     // DB FIELDS
-    private Integer _TournamentID;    
+    private Integer _TournamentID;
     private String _TournamentName;
     private String _Status;
     private Integer _NumTeams;
@@ -31,7 +33,7 @@ public class PlayoffTournament implements Serializable {
     public PlayoffTournament(CachedRowSet crs, String prefix) {
         InitFromCRS(crs, prefix);
     }
-    
+
     public PlayoffTournament(int tournamentId) {
         CachedRowSet crs = null;
         try {
@@ -40,7 +42,7 @@ public class PlayoffTournament implements Serializable {
             sql.append("FROM PlayoffTournament ");
             sql.append("WHERE TournamentID = ").append(tournamentId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -60,7 +62,7 @@ public class PlayoffTournament implements Serializable {
     public Integer getNumRounds() {return _NumRounds;}
     public Integer getWinnerID() {return _WinnerID;}
     public FSTeam getWinner() {return _Winner;}
-    
+
     // SETTERS
     public void setTournamentID(Integer TournamentID) {_TournamentID = TournamentID;}
     public void setTournamentName(String TournamentName) {_TournamentName = TournamentName;}
@@ -96,12 +98,12 @@ public class PlayoffTournament implements Serializable {
         return playoffObj;
     }
 */
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PlayoffTournament", "TournamentID", getTournamentID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
@@ -122,7 +124,7 @@ public class PlayoffTournament implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -138,13 +140,13 @@ public class PlayoffTournament implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE PlayoffTournament SET ");
@@ -157,7 +159,7 @@ public class PlayoffTournament implements Serializable {
         sql.append("WHERE TournamentID = ").append(getTournamentID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

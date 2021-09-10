@@ -84,6 +84,12 @@
                 <input type="hidden" name="displayTeamId" value="${displayTeam.FSTeamID}"></input>
                 <input type="hidden" name="displayWeekId" value="${displayWeek.FSSeasonWeekID}"></input>
 
+<%--
+                <c:set var="timeZone" value="GMT-6"/>
+                <fmt:timeZone value="${timeZone}" />
+                <fmt:setTimeZone value = "GMT-6" />
+--%>
+
                 <%-- Variables --%>
                 <c:set var="prevGameDate" value="" />
 
@@ -172,14 +178,16 @@
 
                             <c:forEach items="${picks}" var="pick">
 
+                                <%--<fmt:timeZone value="America/Denver">--%>
+                                <fmt:parseDate  value="${pick.game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate"/>
                                 <%-- Game Date --%>
                                 <c:if test="${pick.game.gameDate != prevGameDate}">
-                                    <tr>
-                                        <td class="gameDate" colspan="8"><fmt:formatDate value="${pick.game.gameDate.time}" pattern="EEEE, MMM. d - h:mm a"/></td>
+                                        <td class="gameDate" colspan="8">
+                                                <fmt:formatDate value="${gameDate}" pattern="EEEE, MMM. d - h:mm a" timeZone="America/Denver" />
+                                        </td>
                                         <c:set var="prevGameDate" value="${pick.game.gameDate}" />
-                                    </tr>
                                 </c:if>
-
+                                <%--</fmt:timeZone>--%>
                                 <tr id="gameMatchup_${pick.game.gameID}" gid="${pick.game.gameID}" gs="${pick.game.gameHasStarted}">
 
                                     <%-- Visitor Name and Record --%>

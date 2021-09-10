@@ -6,12 +6,10 @@
 package tds.proloveleaveplayer.scripts;
 
 import bglib.scripts.ResultCode;
-import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.*;
 import tds.util.CTReturnCode;
 
-import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
@@ -164,13 +162,9 @@ public class FootballResults  {
     // note: if we fail to calculate the pts for one team, the whole process fails
     static void calculateFantasyPts(Logger logger, int fsleagueid, int fsseasonweekid) throws Exception {
         logger.info("Calculating fantasy points for FSLeagueID : " + fsleagueid + ", FSSeasonWeekID : " + fsseasonweekid);
-        Connection con = null;
         CTReturnCode rc = null;
         int count;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn();
-            con.setAutoCommit(false);
-
             FSSeasonWeek thisWeek = new FSSeasonWeek(fsseasonweekid);
             int thisweekNo = thisWeek.getFSSeasonWeekNo();
             FSSeasonWeek lastWeek = thisweekNo == 1 ? thisWeek : thisWeek.getFSSeason().GetCurrentFSSeasonWeeks().get(new Integer(thisweekNo-1));
@@ -178,13 +172,13 @@ public class FootballResults  {
             String sql2 = "delete from FSFootballStandings " +
                         " where FSSeasonWeekID = " + fsseasonweekid +
                         " and FSTeamID in (select FSTeamID from FSTeam where FSLeagueID = " + fsleagueid + ")";
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql2);
+            CTApplication._CT_QUICK_DB.executeUpdate(sql2);
 
             //String sql = "select * from Team where PlayDate = '" + playdate.toString(FSConstants.PLAYDATE_PATTERN) + "' and RoomID = " + room.getRoomID();
             String sql = "select * from FSTeam where FSLeagueID = " + fsleagueid + " and IsActive = 1";
 
             logger.finer(sql);
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql);
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql);
             count = 0;
             while (crs.next()) {
                 int teamid = crs.getInt("FSTeamID");
@@ -199,7 +193,7 @@ public class FootballResults  {
                 s.append("select * from FSFootballStandings where FSTeamID = ").append(teamid);
                 s.append(" and FSSeasonWeekID = ").append(lastWeek.getFSSeasonWeekID());
 
-                CachedRowSet cc = CTApplication._CT_QUICK_DB.executeQuery(con, s.toString());
+                CachedRowSet cc = CTApplication._CT_QUICK_DB.executeQuery(s.toString());
                 if (cc.next()) {
                     totfpts = cc.getDouble("TotalFantasyPts");
                     totgpts = cc.getDouble("TotalGamePoints");
@@ -216,7 +210,7 @@ public class FootballResults  {
                 sql2 = "insert into FSFootballStandings " +
                         " (FSTeamID,FSSeasonWeekID,FantasyPts,GamePoints,TotalFantasyPts,TotalGamePoints) " +
                         " values (" + teamid + "," + fsseasonweekid + "," + teampts + ",0," + totfpts + "," + totgpts + ")";
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql2);
+                CTApplication._CT_QUICK_DB.executeUpdate(sql2);
 
                 logger.info("Updated Team ID #" + teamid + " ('" + team.getTeamName() + "') fantasy points to " + teampts);
                 count++;
@@ -225,26 +219,22 @@ public class FootballResults  {
             crs.close();
         }
         finally {
-            FSUtils.finishTransaction(con, rc);
+//            FSUtils.finishTransaction(con, rc);
         }
         logger.info("Calculated and updated to db fantasy points for " + count + " teams.");
     }
 
     static void fixEmptyRosters(Logger logger, int fsleagueid, int fsseasonweekid) throws Exception {
         logger.info("Fixing Empty Rosters for FSLeagueID : " + fsleagueid + ", FSSeasonWeekID : " + fsseasonweekid);
-        Connection con = null;
         CTReturnCode rc = null;
         int count;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn();
-            con.setAutoCommit(false);
-
             String sql2 = "select * from FSTeam t " +
                         " left join FSRoster r on r.FSTeamID = t.FSTeamID and r.FSSeasonWeekID = " + fsseasonweekid +
                         " where t.IsActive = 1 " +
                         " and r.FSTeamID is null " +
                         " and t.FSLeagueID = " + fsleagueid;
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql2);
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql2);
 
             logger.finer(sql2);
             count = 0;
@@ -270,20 +260,16 @@ public class FootballResults  {
             crs.close();
         }
         finally {
-            FSUtils.finishTransaction(con, rc);
+//            FSUtils.finishTransaction(con, rc);
         }
         logger.info("Updated this week's rosters from last week's rosters for " + count + " teams.");
     }
 
     static void calculateStandings(Logger logger, int fsleagueid, int fsseasonweekid) throws Exception {
         logger.info("Calculating standings for FSLeagueID : " + fsleagueid + ", FSSeasonWeekID : " + fsseasonweekid);
-        Connection con = null;
         CTReturnCode rc = null;
         int count;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn();
-            con.setAutoCommit(false);
-
             // grab previous week's standings
 
             FSSeasonWeek thisWeek = new FSSeasonWeek(fsseasonweekid);
@@ -312,7 +298,7 @@ public class FootballResults  {
                         " order by s.FantasyPts desc";
 
             logger.info(sql);
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql);
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql);
             int numpoints = numteams;
             //numpoints = 28;
             double prevfantasypoints = -1;
@@ -339,7 +325,7 @@ public class FootballResults  {
                 }
                 double totfpts = wkfpts;
                 double totgpts = wkgpts;
-                CachedRowSet tempcrs = CTApplication._CT_QUICK_DB.executeQuery(con, tempsql);
+                CachedRowSet tempcrs = CTApplication._CT_QUICK_DB.executeQuery(tempsql);
                 if (tempcrs.next()) {
                     double tot = tempcrs.getDouble("TotalFantasyPts");
                     totfpts = totfpts + tot;
@@ -361,7 +347,7 @@ public class FootballResults  {
                             " ,TotalGamePoints = " + totgpts +
                             " where FSTeamID = " + teamid +
                             " and FSSeasonWeekID = " + fsseasonweekid;
-                CTApplication._CT_QUICK_DB.executeUpdate(con, sql2);
+                CTApplication._CT_QUICK_DB.executeUpdate(sql2);
                 logger.info("Updated Team ID #" + teamid + " salary points to " + numpoints);
                 numpoints--;
                 prevfantasypoints = wkfpts;
@@ -370,7 +356,7 @@ public class FootballResults  {
             crs.close();
         }
         finally {
-            FSUtils.finishTransaction(con, rc);
+//            FSUtils.finishTransaction(con, rc);
         }
         logger.info("Calculated and updated to db salary points for " + count + " teams.");
     }

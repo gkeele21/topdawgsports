@@ -2,8 +2,10 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSTournamentRound implements Serializable {
@@ -32,7 +34,7 @@ public class FSTournamentRound implements Serializable {
             sql.append("FROM FSTournamentRound ");
             sql.append("WHERE RoundID = ").append(roundId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -57,7 +59,7 @@ public class FSTournamentRound implements Serializable {
     public int getNumTeams() {return _NumTeams;}
     public FSTournament getFSTournament() {return _FSTournament;}
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
-    
+
     // SETTERS
     public void setRoundID(int RoundID) {_RoundID = RoundID;}
     public void setTournamentID(int TournamentID) {_TournamentID = TournamentID;}
@@ -83,7 +85,7 @@ public class FSTournamentRound implements Serializable {
             sql.append("INNER JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append("WHERE r.FSSeasonWeekID = ").append(fsSeasonWeekId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 objRound = new FSTournamentRound(crs, "");
             }

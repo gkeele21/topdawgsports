@@ -2,10 +2,12 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class CourseTeeInfo implements Serializable {
 
@@ -33,7 +35,7 @@ public class CourseTeeInfo implements Serializable {
             sql.append("FROM CourseTeeInfo");
             sql.append("WHERE CourseID = ").append(courseId).append(" AND TeeID = ").append(teeId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -112,7 +114,7 @@ public class CourseTeeInfo implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -133,7 +135,7 @@ public class CourseTeeInfo implements Serializable {
         sql.append("WHERE CourseID = ").append(getCourseID()).append(" AND TeeID = ").append(getTeeID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

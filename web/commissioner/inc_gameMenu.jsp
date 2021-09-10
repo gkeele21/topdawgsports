@@ -12,8 +12,23 @@
                     <td width="100" align="center">Post-Season</td>
                 </tr>
                 <tr height="22" class="rowData">
-                    <td align="center"><a href="fsLeague_modifyDraft.htm">Draft Results</a></td>
+                    <td align="center"><a href="fantasy/fsSeason_updatePlayers.htm">Update Players</a></td>
                     <td align="center"><a href="fantasy/viewTransactionRequests.htm">View Transaction Requests</a></td>
+                    <td align="center"></td>
+                </tr>
+                <tr height="22" class="rowData">
+                    <td align="center"><a href="fantasy/fsLeague_modifyDraft.htm">Draft Results</a></td>
+                    <td align="center"></td>
+                    <td align="center"></td>
+                </tr>
+                <tr height="22" class="rowData">
+                    <td align="center"><a href="fantasy/fsSeason_createRosters.htm">Create Rosters</a></td>
+                    <td align="center"></td>
+                    <td align="center"></td>
+                </tr>
+                <tr height="22" class="rowData">
+                    <td align="center"><a href="fantasy/fsSeason_createMatchups.htm">Create Matchups</a></td>
+                    <td align="center"></td>
                     <td align="center"></td>
                 </tr>
             </table>
@@ -29,6 +44,6 @@
                 </tr>
             </table>
         </c:when>
-        
+
     </c:choose>
 </div>

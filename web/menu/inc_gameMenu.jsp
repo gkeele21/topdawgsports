@@ -4,13 +4,17 @@
     <c:set var="imageURL" value="" />
     <c:set var="menuURL" value="" />
     <c:choose>
-        <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 1 && fsteam.FSLeague.draftType == 'dynasty'}" >
+        <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 1 && fsteam.FSLeague.draftType == 'keeper'}" >
             <c:set var="imageURL" value="../images/keeper.png" />
             <c:set var="menuURL" value="../menu/inc_keeperMenu.jsp" />
         </c:when>
         <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 1 && fsteam.FSLeague.draftType == 'redraft'}" >
             <c:set var="imageURL" value="../images/tenman.png" />
             <c:set var="menuURL" value="../menu/inc_tenmanMenu.jsp" />
+        </c:when>
+        <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 1 && fsteam.FSLeague.draftType == 'dynasty'}" >
+            <c:set var="imageURL" value="../images/dynasty.png" />
+            <c:set var="menuURL" value="../menu/inc_dynastyMenu.jsp" />
         </c:when>
         <c:when test="${fsteam != null && fsteam.FSLeague.FSSeason.FSGameID == 2}" >
             <c:set var="imageURL" value="../images/salarycap.png" />

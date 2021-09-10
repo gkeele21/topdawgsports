@@ -2,10 +2,12 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class HoleTeeInfo implements Serializable {
 
@@ -23,7 +25,7 @@ public class HoleTeeInfo implements Serializable {
     // CONSTRUCTORS
     public HoleTeeInfo() {
     }
-    
+
     public HoleTeeInfo(int holeId, int teeId) {
         CachedRowSet crs = null;
         try {
@@ -32,11 +34,11 @@ public class HoleTeeInfo implements Serializable {
             sql.append("FROM HoleTeeInfo");
             sql.append("WHERE HoleID = ").append(holeId).append(" AND TeeID = ").append(teeId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -54,9 +56,9 @@ public class HoleTeeInfo implements Serializable {
     public Integer getYardage() {return _Yardage;}
     public Integer getPar() {return _Par;}
     public Integer getHandicap() {return _Handicap;}
-    public Hole getHole() {return _Hole;} 
+    public Hole getHole() {return _Hole;}
     public Tee getTee() {return _Tee;}
-    
+
     // SETTERS
     public void setHoleID(Integer holeId) {_HoleID = holeId;}
     public void setTeeID(Integer teeId) {_TeeID = teeId;}
@@ -67,25 +69,25 @@ public class HoleTeeInfo implements Serializable {
     public void setTee(Tee Tee) {this._Tee = Tee;}
 
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("HoleTeeInfo", "HoleID", getHoleID(), "TeeID", getTeeID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "HoleID")) { setHoleID(crs.getInt(prefix + "HoleID")); }
             if (FSUtils.fieldExists(crs, prefix, "TeeID")) { setTeeID(crs.getInt(prefix + "TeeID")); }
-            if (FSUtils.fieldExists(crs, prefix, "Yardage")) { setYardage(crs.getInt(prefix + "Yardage")); }            
+            if (FSUtils.fieldExists(crs, prefix, "Yardage")) { setYardage(crs.getInt(prefix + "Yardage")); }
             if (FSUtils.fieldExists(crs, prefix, "Par")) { setPar(crs.getInt(prefix + "Par")); }
             if (FSUtils.fieldExists(crs, prefix, "Handicap")) { setHandicap(crs.getInt(prefix + "Handicap")); }
 
-            // OBJECTS         
+            // OBJECTS
             if (FSUtils.fieldExists(crs, "Hole$", "HoleID")) { setHole(new Hole(crs, "Hole$")); }
             if (FSUtils.fieldExists(crs, "Tee$", "TeeID")) { setTee(new Tee(crs, "Tee$")); }
 
@@ -93,7 +95,7 @@ public class HoleTeeInfo implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -108,11 +110,11 @@ public class HoleTeeInfo implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -126,9 +128,9 @@ public class HoleTeeInfo implements Serializable {
 
         // Execute Query
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }   
+    }
 }

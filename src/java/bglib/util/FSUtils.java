@@ -1171,7 +1171,7 @@ public class FSUtils
             sql.append("SELECT max(").append(fieldName).append(") ");
             sql.append("FROM ").append(tableName);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 lastId = crs.getInt(1);
             }
@@ -1190,7 +1190,7 @@ public class FSUtils
         sql.append("DELETE FROM ").append(tableName).append(" ");
         sql.append("WHERE ").append(columnName).append(" = ").append(value);
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) { CTApplication._CT_LOG.error(e); }
     }
 
@@ -1203,7 +1203,6 @@ public class FSUtils
     public static boolean DoesARecordExistInDB(String tableName, String column1Name, Integer value1, String column2Name, Integer value2) {
         boolean exists = false;
         CachedRowSet crs = null;
-        Connection con = null;
         StringBuilder sql = new StringBuilder();
 
         try {
@@ -1212,8 +1211,7 @@ public class FSUtils
             sql.append("WHERE ").append(column1Name).append(" = ").append(value1);
             if (column2Name != null || value2 != null) sql.append(" AND ").append(column2Name).append(" = ").append(value2);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 exists = true;
             }
@@ -1221,7 +1219,6 @@ public class FSUtils
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
         return exists;
     }

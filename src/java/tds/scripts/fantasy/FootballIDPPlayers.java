@@ -5,22 +5,21 @@
 
 package tds.scripts.fantasy;
 
-import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
 
 /**
  *
@@ -71,15 +70,12 @@ public class FootballIDPPlayers {
         final int teamidpos = 35;
         final int positionpos = 40;
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // clear out the temp table
             StringBuffer clear = new StringBuffer();
             clear.append("delete from ct_temp.TempProPlayer");
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(clear.toString());
 
             URL url = new URL(playersurl);
 
@@ -140,7 +136,7 @@ public class FootballIDPPlayers {
                                     ", '" + FSUtils.fixupUserInputForDB(playername.trim()) + "' )");
 
                         _Logger.info(sql.toString());
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                     }
                 }
@@ -148,12 +144,10 @@ public class FootballIDPPlayers {
 
             in.close();
 
-            con.commit();
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
         updateNFLPlayers();
@@ -163,14 +157,11 @@ public class FootballIDPPlayers {
 
     public void updateNFLPlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             StringBuffer sql = new StringBuffer();
             sql.append("select * from ct_temp.TempProPlayer where StatsPlayerID <> 0 order by StatsPlayerid");
 
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 String playerid = crs.getString("StatsPlayerID");
@@ -182,7 +173,7 @@ public class FootballIDPPlayers {
                 String last = crs.getString("LastName");
                 String quickstatsname = crs.getString("FullName");
 
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from " + CTApplication.TBL_PREF + "Player where StatsPlayerID = " + playerid);
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery("select * from " + CTApplication.TBL_PREF + "Player where StatsPlayerID = " + playerid);
                 if (crs2.next()) {
 
                     int currentteam = crs2.getInt("TeamID");
@@ -190,7 +181,7 @@ public class FootballIDPPlayers {
 
                         sql = new StringBuffer();
                         sql.append("update " + CTApplication.TBL_PREF + "Player set TeamID = " + teamid + " where StatsPlayerID = " + playerid);
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         _Logger.info(sql.toString());
                     }
                 } else {
@@ -203,9 +194,9 @@ public class FootballIDPPlayers {
                     } else if (_ValidDBPOS.contains(pos)) {
                         pos = "DB";
                     }
-                    
+
                     // Get the PositionID based on the position
-                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from " + CTApplication.TBL_PREF + "Position where PositionName = '" + pos + "'");
+                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery("select * from " + CTApplication.TBL_PREF + "Position where PositionName = '" + pos + "'");
                     if (crs3.next()) {
                         String posid = crs3.getString("PositionID");
                         int active = teamid > 0 ? 1 : 0;
@@ -217,7 +208,7 @@ public class FootballIDPPlayers {
                                     FSUtils.fixupUserInputForDB(last) + "', '" + FSUtils.fixupUserInputForDB(quickstatsname) + "'," + playerid + "," + active + ")");
 
                         _Logger.info(sql.toString());
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                     } else {
                         _Logger.warning("Position [" + pos + "] is not in DB...skipping player");
@@ -231,12 +222,10 @@ public class FootballIDPPlayers {
 
             crs.close();
 
-            con.commit();
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE,"Error in FootballIDPPlayers : " + e.getMessage());
         } finally {
-            con.close();
         }
     }
 

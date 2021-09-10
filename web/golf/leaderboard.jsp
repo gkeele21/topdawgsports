@@ -37,8 +37,8 @@
             <div id="innerContent">
 
                 <div id="vendorContent" class="game">
-                  
-                    <!-- #BeginEditable "content" --> 
+
+                    <!-- #BeginEditable "content" -->
                     <center>
                         <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                             <tr class="rowHeader">
@@ -50,14 +50,21 @@
                             <tr class="rowData">
                                 <td><c:out value="${fantasyCurrentWeek.FSSeasonWeekNo}" /><script>console.log('FSSeasonWeekID : ' + ${fantasyCurrentWeek.FSSeasonWeekID});</script></td>
                                 <td><c:out value="${tournamentWeek.PGATournament.tournamentName}" /><script>console.log('PGATournamentID : ' + ${tournamentWeek.PGATournament.PGATournamentID});</script></td>
-                                <td><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
-                                <td><fmt:formatDate value="${tournamentWeek.FSSeasonWeek.startersDeadline.time}" pattern="E MM/dd h:mm a"/></td>
+                                <td>
+                                    <fmt:parseDate  value="${tournamentWeek.startDate}" type="date" pattern="yyyy-MM-dd" var="startDate" />
+                                    <fmt:parseDate  value="${tournamentWeek.endDate}" type="date" pattern="yyyy-MM-dd" var="endDate" />
+                                    <fmt:formatDate value="${startDate}" pattern="E MM/dd"/> - <fmt:formatDate value="${endDate}" pattern="E MM/dd"/>
+                                </td>
+                                <td>
+                                    <fmt:parseDate  value="${tournamentWeek.FSSeasonWeek.startersDeadline}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="startersDeadline" />
+                                    <fmt:formatDate value="${startersDeadline}" pattern="E MM/dd h:mm a" timeZone="America/Denver" />
+                                </td>
                             </tr>
                           </table>
                           <br />
                           <jsp:include page="../inc_errorMessage.jsp" />
                           <br />
-                          
+
                           <table width="60%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                                 <tds:tableRows items="${leagueStandings}" var="standing" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                                     <jsp:attribute name="rowTitle">
@@ -88,9 +95,9 @@
                                     </jsp:attribute>
                                 </tds:tableRows>
                             </table>
-                          
+
                           <br /><br />
-                          
+
                           <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                                 <tds:tableRows items="${weekPlayers}" var="weekPlayer" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                                     <jsp:attribute name="rowTitle">
@@ -145,7 +152,7 @@
                                             <td><fmt:formatNumber value="${weekPlayer.round2}" maxFractionDigits="0" /></td>
                                             <td><fmt:formatNumber value="${weekPlayer.round3}" maxFractionDigits="0" /></td>
                                             <td><fmt:formatNumber value="${weekPlayer.round4}" maxFractionDigits="0" /></td>
-                                            <td><c:out value="${weekPlayer.finalScore}" /></td>                                            
+                                            <td><c:out value="${weekPlayer.finalScore}" /></td>
                                             <td><fmt:formatNumber type="currency" value="${weekPlayer.moneyEarned}" maxFractionDigits="0" /></td>
                                             <td>
                                                 <c:if test='${weekPlayer.owners != null}'>
@@ -163,7 +170,7 @@
                                     </jsp:attribute>
                                 </tds:tableRows>
                             </table>
-                          
+
                           </center>
                   </form>
                   <!-- #EndEditable -->

@@ -2,10 +2,12 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class GolfScore implements Serializable {
 
@@ -17,7 +19,7 @@ public class GolfScore implements Serializable {
     // CONSTRUCTORS
     public GolfScore() {
     }
-    
+
     public GolfScore(int golfScoreId) {
         CachedRowSet crs = null;
         try {
@@ -26,10 +28,10 @@ public class GolfScore implements Serializable {
             sql.append("FROM GolfScore");
             sql.append("WHERE GolfScoreID = ").append(golfScoreId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -45,23 +47,23 @@ public class GolfScore implements Serializable {
     public Integer getGolfScoreID() {return _GolfScoreID;}
     public String getScoreName() {return _ScoreName;}
     public Integer getRelativeToPar() {return _RelativeToPar;}
-    
+
     // SETTERS
     public void setGolfScoreID(Integer GolfScoreID) {_GolfScoreID = GolfScoreID;}
     public void setScoreName(String ScoreName) {_ScoreName = ScoreName;}
     public void setRelativeToPar(Integer RelativeToPar) {_RelativeToPar = RelativeToPar;}
-    
+
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("GolfScore", "GolfScoreID", getGolfScoreID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
-    // PRIVATE METHODS 
-    
+
+    // PRIVATE METHODS
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "GolfScoreID")) { setGolfScoreID(crs.getInt(prefix + "GolfScoreID")); }
@@ -72,7 +74,7 @@ public class GolfScore implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -84,12 +86,12 @@ public class GolfScore implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Update() {
         StringBuilder sql = new StringBuilder();
 
@@ -100,7 +102,7 @@ public class GolfScore implements Serializable {
         sql.append("WHERE GolfScoreID = ").append(getGolfScoreID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

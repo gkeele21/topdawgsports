@@ -1,15 +1,15 @@
-package tds.commissioner.control;
+package tds.commissioner.fantasy.control;
 
-import tds.main.bo.UserSession;
-import tds.main.bo.FSLeague;
-import tds.main.bo.FSFootballDraft;
 import bglib.util.FSUtils;
+import tds.main.bo.FSFootballDraft;
+import tds.main.bo.FSLeague;
+import tds.main.bo.UserSession;
+import tds.main.control.BaseAction;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import tds.main.control.BaseAction;
-import tds.main.*;
 public class fsLeague_modifyDraftAction extends BaseAction {
-    
+
     public String process(HttpServletRequest request, HttpServletResponse response) {
 
         String nextPage = super.process(request,response);

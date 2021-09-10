@@ -2,11 +2,13 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.SeasonWeek;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class MarchMadnessRound implements Serializable {
 
@@ -34,7 +36,7 @@ public class MarchMadnessRound implements Serializable {
             sql.append("FROM MarchMadnessRound ");
             sql.append("WHERE RoundID = ").append(roundId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -59,7 +61,7 @@ public class MarchMadnessRound implements Serializable {
     public Integer getNumTeams() {return _NumTeams;}
     public MarchMadnessTournament getTournament() {return _Tournament;}
     public SeasonWeek getSeasonWeek() {return _SeasonWeek;}
-    
+
     // SETTERS
     public void setRoundID(Integer RoundID) {_RoundID = RoundID;}
     public void setTournamentID(Integer TournamentID) {_TournamentID = TournamentID;}
@@ -88,8 +90,8 @@ public class MarchMadnessRound implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "RoundNumber")) { setRoundNumber(crs.getInt(prefix + "RoundNumber")); }
             if (FSUtils.fieldExists(crs, prefix, "RoundName")) { setRoundName(crs.getString(prefix + "RoundName")); }
             if (FSUtils.fieldExists(crs, prefix, "NumTeams")) { setNumTeams(crs.getInt(prefix + "NumTeams")); }
-            
-            // OBJECTS 
+
+            // OBJECTS
             if (FSUtils.fieldExists(crs, "MarchMadnessTournament$", "TournamentID")) { setTournament(new MarchMadnessTournament(crs, "MarchMadnessTournament$")); }
             if (FSUtils.fieldExists(crs, "SeasonWeek$", "SeasonWeekID")) { setSeasonWeek(new SeasonWeek(crs, "SeasonWeek$")); }
 
@@ -97,7 +99,7 @@ public class MarchMadnessRound implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -109,17 +111,17 @@ public class MarchMadnessRound implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSeasonWeekID()));
         sql.append(FSUtils.InsertDBFieldValue(getRoundNumber()));
         sql.append(FSUtils.InsertDBFieldValue(getRoundName(), true));
-        sql.append(FSUtils.InsertDBFieldValue(getNumTeams()));       
+        sql.append(FSUtils.InsertDBFieldValue(getNumTeams()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE MarchMadnessRound SET ");
@@ -132,7 +134,7 @@ public class MarchMadnessRound implements Serializable {
         sql.append("WHERE RoundID = ").append(getRoundID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

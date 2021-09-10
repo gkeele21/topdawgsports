@@ -16,7 +16,6 @@ import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -68,15 +67,12 @@ public class FootballPlayersJson implements Harnessable {
 
     public void importPlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             // clear out the temp table
             StringBuilder clear = new StringBuilder();
             clear.append("delete from TempProPlayer");
 
-            CTApplication._CT_QUICK_DB.executeUpdate(con,clear.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(clear.toString());
 
             System.out.println("Original players file : " + _PLAYERS_FILE);
             if (_PLAYERS_FILE == "") {
@@ -157,12 +153,12 @@ public class FootballPlayersJson implements Harnessable {
                 {
                     // grab the TeamId
                     int teamId = 0;
-                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from " + CTApplication.TBL_PREF + "Team where Abbreviation = '" + team + "'");
+                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery("select * from " + CTApplication.TBL_PREF + "Team where Abbreviation = '" + team + "'");
                     if (crs3.next()) {
                         teamId = crs3.getInt("TeamID");
                     }
                     int positionId = 0;
-                    crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from Position where PositionName = '" + position + "'");
+                    crs3 = CTApplication._CT_QUICK_DB.executeQuery("select * from Position where PositionName = '" + position + "'");
                     if (crs3.next()) {
                         positionId = crs3.getInt("PositionID");
                     }
@@ -171,7 +167,7 @@ public class FootballPlayersJson implements Harnessable {
                     int playerId = 0;
                     StringBuilder query = new StringBuilder();
                     query.append("select * from Player where NFLGameStatsId = '").append(newPlayerId).append("'");
-                    crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                    crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
                     _Logger.info(query.toString());
                     if (crs3.next()) {
                         playerId = crs3.getInt("PlayerID");
@@ -186,7 +182,7 @@ public class FootballPlayersJson implements Harnessable {
                         query.append(" and PositionID = ").append(positionId);
 
                         _Logger.info(query.toString());
-                        crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                        crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
                         int count = 0;
                         while (crs3.next()) {
                             count++;
@@ -214,34 +210,29 @@ public class FootballPlayersJson implements Harnessable {
                     sql.append(", ").append(playerId).append(" )");
 
                     _Logger.info(sql.toString());
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                 }
 
             }
-            con.commit();
             System.out.println("Players updated.");
         } catch (Exception e) {
             _Logger.log(Level.SEVERE,"FootballPlayers Update Error : " + e.getMessage());
             e.printStackTrace();
         } finally {
-            con.close();
         }
 
     }
 
     public void updateNFLPlayers() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"update Player set isActive = 0 where positionID in (1,2,3,4,5,6,7)");
+            CTApplication._CT_QUICK_DB.executeUpdate("update Player set isActive = 0 where positionID in (1,2,3,4,5,6,7)");
 
             StringBuilder sql = new StringBuilder();
             sql.append("select * from TempProPlayer order by PlayerId");
 
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 int playerid = crs.getInt("PlayerId");
@@ -256,7 +247,7 @@ public class FootballPlayersJson implements Harnessable {
                 StringBuilder tempSql2 = new StringBuilder();
                 tempSql2.append("select * from ").append(CTApplication.TBL_PREF).append("Player where PlayerID = ").append(playerid);
                 _Logger.info(tempSql2.toString());
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,tempSql2.toString());
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(tempSql2.toString());
                 if (crs2.next() && playerid > 0) {
 
                     int currentteam = crs2.getInt("TeamID");
@@ -271,7 +262,7 @@ public class FootballPlayersJson implements Harnessable {
                     }
 
                     sql.append(" where PlayerID = ").append(playerid);
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                     _Logger.info(sql.toString());
                 } else {
 
@@ -287,7 +278,7 @@ public class FootballPlayersJson implements Harnessable {
                     sql.append(",").append(active).append(")");
 
                     _Logger.info(sql.toString());
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                 }
 
@@ -295,13 +286,10 @@ public class FootballPlayersJson implements Harnessable {
             }
 
             crs.close();
-
-            con.commit();
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE,"Error in FootballPlayers : " + e.getMessage());
         } finally {
-            con.close();
         }
     }
 

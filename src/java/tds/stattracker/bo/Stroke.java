@@ -2,20 +2,22 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class Stroke implements Serializable {
-    
+
     // CONSTANTS
     public enum StrokeType {Normal, DropWaterHazard, DropOB, ReTee, Other};
     public enum Lie {Teebox, Fairway, Rough, Sand, Fringe, Green, FirstCut, SecondCut, Trees, Dirt};
 
     // DB FIELDS
     private Integer _StrokeID;
-    private Integer _GolferRoundID;    
+    private Integer _GolferRoundID;
     private Integer _HoleID;
     private Integer _StrokeNumber;
     private String _StrokeType;
@@ -32,7 +34,7 @@ public class Stroke implements Serializable {
     // CONSTRUCTORS
     public Stroke() {
     }
-    
+
     public Stroke(int strokeId) {
         CachedRowSet crs = null;
         try {
@@ -41,10 +43,10 @@ public class Stroke implements Serializable {
             sql.append("FROM Stroke");
             sql.append("WHERE StrokeID = ").append(strokeId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -67,9 +69,9 @@ public class Stroke implements Serializable {
     public String getLie() {return _Lie;}
     public String getShotDirection() {return _ShotDirection;}
     public String getNotes() {return _Notes;}
-    public GolferRound getGolferRound() {return _GolferRound;} 
-    public Hole getHole() {return _Hole;} 
-    
+    public GolferRound getGolferRound() {return _GolferRound;}
+    public Hole getHole() {return _Hole;}
+
     // SETTERS
     public void setStrokeID(Integer StrokeID) {_StrokeID = StrokeID;}
     public void setGolferRoundID(Integer GolferRoundID) {_GolferRoundID = GolferRoundID;}
@@ -85,33 +87,33 @@ public class Stroke implements Serializable {
     public void setHole(Hole Hole) {_Hole = Hole;}
 
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Stroke", "StrokeID", getStrokeID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-    
+
     // PRIVATE METHODS
-   
+
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
-            // DB FIELDS            
-            if (FSUtils.fieldExists(crs, prefix, "StrokeID")) { setStrokeID(crs.getInt(prefix + "StrokeID")); }            
+            // DB FIELDS
+            if (FSUtils.fieldExists(crs, prefix, "StrokeID")) { setStrokeID(crs.getInt(prefix + "StrokeID")); }
             if (FSUtils.fieldExists(crs, prefix, "GolferRoundID")) { setGolferRoundID(crs.getInt(prefix + "GolferRoundID")); }
             if (FSUtils.fieldExists(crs, prefix, "HoleID")) { setHoleID(crs.getInt(prefix + "HoleID")); }
             if (FSUtils.fieldExists(crs, prefix, "StrokeNumber")) { setStrokeNumber(crs.getInt(prefix + "StrokeNumber")); }
             if (FSUtils.fieldExists(crs, prefix, "StrokeType")) { setStrokeType(crs.getString(prefix + "StrokeType")); }
             if (FSUtils.fieldExists(crs, prefix, "Club")) { setClub(crs.getString(prefix + "Club")); }
-            if (FSUtils.fieldExists(crs, prefix, "DistanceToPin")) { setDistanceToPin(crs.getInt(prefix + "DistanceToPin")); }            
-            if (FSUtils.fieldExists(crs, prefix, "Lie")) { setLie(crs.getString(prefix + "Lie")); }            
+            if (FSUtils.fieldExists(crs, prefix, "DistanceToPin")) { setDistanceToPin(crs.getInt(prefix + "DistanceToPin")); }
+            if (FSUtils.fieldExists(crs, prefix, "Lie")) { setLie(crs.getString(prefix + "Lie")); }
             if (FSUtils.fieldExists(crs, prefix, "ShotDirection")) { setShotDirection(crs.getString(prefix + "ShotDirection")); }
             if (FSUtils.fieldExists(crs, prefix, "Notes")) { setNotes(crs.getString(prefix + "Notes")); }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "GolferRound$", "GolferRoundID")) { setGolferRound(new GolferRound(crs, "GolferRound$")); }
             if (FSUtils.fieldExists(crs, "Hole$", "HoleID")) { setHole(new Hole(crs, "Hole$")); }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -127,7 +129,7 @@ public class Stroke implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getHoleID()));
         sql.append(FSUtils.InsertDBFieldValue(getStrokeNumber()));
         sql.append(FSUtils.InsertDBFieldValue(getStrokeType(), true));
-        sql.append(FSUtils.InsertDBFieldValue(getClub(), true));        
+        sql.append(FSUtils.InsertDBFieldValue(getClub(), true));
         sql.append(FSUtils.InsertDBFieldValue(getDistanceToPin()));
         sql.append(FSUtils.InsertDBFieldValue(getLie(), true));
         sql.append(FSUtils.InsertDBFieldValue(getShotDirection(), true));
@@ -135,11 +137,11 @@ public class Stroke implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -158,7 +160,7 @@ public class Stroke implements Serializable {
         sql.append("WHERE StrokeID = ").append(getStrokeID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

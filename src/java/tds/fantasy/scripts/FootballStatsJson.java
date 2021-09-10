@@ -37,7 +37,7 @@ public class FootballStatsJson implements Harnessable {
     public static String _STATS_DIR = Application._GLOBAL_SETTINGS.getProperty(STATS_DIR_PROP);
 //    private static final int _FSSeasonID = 20;
 //    private static final int _SeasonID = 8;
-    public static final String _Year = "2020";
+    public static final String _Year = "2021";
     private static final int _NumColumns = 60;
 
     Logger _Logger;
@@ -265,7 +265,6 @@ public class FootballStatsJson implements Harnessable {
                 }
                 List statscolumns = Arrays.asList(TEMPPLAYERSTATS);
 
-                Connection con = CTApplication._CT_QUICK_DB.getConn(false);
                 try {
                     if (line != null && line.length() > 20) {
                         _Logger.log(Level.INFO, "line = {0}", line);
@@ -327,16 +326,13 @@ public class FootballStatsJson implements Harnessable {
 
                             sql.append(")");
                             _Logger.info(sql.toString());
-                            CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
                 }
-                con.commit();
-
-                con.close();
 
             }
 
@@ -357,7 +353,6 @@ public class FootballStatsJson implements Harnessable {
             String line;
             int linenumber = 0;
             Map<String, Collection<Integer>> players = new HashMap<String, Collection<Integer>>();
-            Connection con = CTApplication._CT_QUICK_DB.getConn(false);
             while ((line = textReader.readLine()) != null)
             {
                 linenumber++;
@@ -411,13 +406,9 @@ public class FootballStatsJson implements Harnessable {
                 sql.append("WHERE StatsPlayerID = '").append(playerId).append("' ");
 
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
             }
-
-            con.commit();
-
-            con.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -431,13 +422,12 @@ public class FootballStatsJson implements Harnessable {
         // clear out existing footballstats
         CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = " + seasonweekid);
 
-        Connection con = CTApplication._CT_QUICK_DB.getConn(false);
 
         // Import Offensive Stats
         StringBuilder sql = new StringBuilder();
         sql.append("select * from TempFootballStats");
 
-        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
         int count = 0;
         while (crs.next()) {
 
@@ -631,16 +621,10 @@ public class FootballStatsJson implements Harnessable {
                         fantasypts + "," +
                         salfantasypts + ")");
             _Logger.info(sql.toString());
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         }
         crs.close();
 
-        con.commit();
-
-        //CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FootballStats where Games < 1 and Year = " + season.getYear());
-        //con.commit();
-
-        con.close();
     }
 
     private void processMissingPlayers() {
@@ -910,7 +894,7 @@ public class FootballStatsJson implements Harnessable {
                         fantasypts + "," +
                         salfantasypts + ")");
                 _Logger.info(sql.toString());
-                CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             }
             con.commit();
 
@@ -934,13 +918,11 @@ public class FootballStatsJson implements Harnessable {
         // clear out existing footballstats
         CTApplication._CT_QUICK_DB.executeUpdate("delete from FootballStats where seasonweekid = " + seasonweekid);
 
-        Connection con = CTApplication._CT_QUICK_DB.getConn(false);
-
         // Import Offensive Stats
         StringBuilder sql = new StringBuilder();
         sql.append("select * from Player where IsActive = 1");
 
-        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
         int count = 0;
         while (crs.next()) {
 
@@ -960,16 +942,10 @@ public class FootballStatsJson implements Harnessable {
                         fantasypts + "," +
                         fantasypts + ")");
             _Logger.info(sql.toString());
-            CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         }
         crs.close();
 
-        con.commit();
-
-        //CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from FootballStats where Games < 1 and Year = " + season.getYear());
-        //con.commit();
-
-        con.close();
     }
 
     public static void findStatsPlayerIds() throws Exception
@@ -1014,7 +990,7 @@ public class FootballStatsJson implements Harnessable {
                 sql.append(" WHERE TempID = ").append(tempId);
 
                 System.out.println(sql.toString() + ";");
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 //                System.out.println("=================================");
 
             }

@@ -2,10 +2,12 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSTournamentSeed implements Serializable {
@@ -20,7 +22,7 @@ public class FSTournamentSeed implements Serializable {
     private int _TourneyStatus;
     private int _TourneyWins;
     private int _TimesPicked;
-    
+
     // OBJECTS
     private FSTournament _FSTournament;
     private Team _Team;
@@ -29,7 +31,7 @@ public class FSTournamentSeed implements Serializable {
     // CONSTRUCTORS
     public FSTournamentSeed() {
     }
-    
+
     public FSTournamentSeed(int tournamentId, int teamId) {
         CachedRowSet crs = null;
         try {
@@ -38,7 +40,7 @@ public class FSTournamentSeed implements Serializable {
             sql.append("FROM FSTournamentSeed s ");
             sql.append("WHERE s.TournamentID = ").append(tournamentId).append(" AND TeamID = ").append(teamId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 initFromCRS(crs, "");
             }
@@ -49,7 +51,7 @@ public class FSTournamentSeed implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-    
+
     public FSTournamentSeed(CachedRowSet crs, String prefix) {
         initFromCRS(crs, prefix);
     }
@@ -81,9 +83,9 @@ public class FSTournamentSeed implements Serializable {
     public void setFSTournament(FSTournament FSTournament) {this._FSTournament = FSTournament;}
     public void setTeam(Team Team) {this._Team = Team;}
     public void setFSTournamentRegion(FSTournamentRegion FSTournamentRegion) {this._FSTournamentRegion = FSTournamentRegion;}
-    
+
     // PUBLIC METHODS
-    
+
     /* This retrieves all of the Seed Groups for a given fsTournament */
     public static List<FSTournamentSeed> GetTournamentTeams(int tournamentId) {
 
@@ -100,7 +102,7 @@ public class FSTournamentSeed implements Serializable {
         sql.append("JOIN FSTournament t ON t.TournamentID = ts.TournamentID ");
         sql.append("JOIN Team tm ON tm.TeamID = ts.TeamID ");
         sql.append("JOIN FSTournamentRegion r ON r.RegionID = ts.RegionID ");
-        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" ");        
+        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" ");
         sql.append("ORDER BY r.RegionNumber, ts.SeedNumber");
 
         // Execute Query
@@ -117,7 +119,7 @@ public class FSTournamentSeed implements Serializable {
 
         return teams;
     }
-    
+
     /* This retrieves all of the Seed Groups for a given fsTournament */
     public static List<FSTournamentSeed> GetNCAATeamsBySeedGroup(int tournamentId, int seedGroupId) {
 
@@ -134,7 +136,7 @@ public class FSTournamentSeed implements Serializable {
         sql.append("JOIN FSTournament t ON t.TournamentID = ts.TournamentID ");
         sql.append("JOIN Team tm ON tm.TeamID = ts.TeamID ");
         sql.append("JOIN FSTournamentRegion r ON r.RegionID = ts.RegionID ");
-        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" AND ts.SeedNumber BETWEEN (SELECT StartingSeedNumber FROM FSSeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") AND (SELECT EndingSeedNumber FROM FSSeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") ");        
+        sql.append("WHERE ts.TournamentID = ").append(tournamentId).append(" AND ts.SeedNumber BETWEEN (SELECT StartingSeedNumber FROM FSSeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") AND (SELECT EndingSeedNumber FROM FSSeedChallengeGroup WHERE SeedChallengeGroupID = ").append(seedGroupId).append(") ");
         sql.append("ORDER BY ts.SeedNumber, r.RegionNumber");
 
         // Execute Query
@@ -151,7 +153,7 @@ public class FSTournamentSeed implements Serializable {
 
         return availableTeams;
     }
-    
+
      /*  This method is used to store NFLPickem data in the DB. */
     public static int SaveTournamentSeed(FSTournamentSeed objTourneySeed) {
 
@@ -184,7 +186,7 @@ public class FSTournamentSeed implements Serializable {
             sql.append("FROM FSTournamentSeed ");
             sql.append("WHERE TournamentSeedID = ").append(tourneySeedId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 doesExist = true;
             }
@@ -210,7 +212,7 @@ public class FSTournamentSeed implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "TournamentID")) {
                 setTournamentID(crs.getInt(prefix + "TournamentID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "RegionID")) {
                 setRegionID(crs.getInt(prefix + "RegionID"));
             }
@@ -222,19 +224,19 @@ public class FSTournamentSeed implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "SeedNumber")) {
                 setSeedNumber(crs.getInt(prefix + "SeedNumber"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "SeasonRecord")) {
                 setSeasonRecord(crs.getString(prefix + "SeasonRecord"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TourneyStatus")) {
                 setTourneyStatus(crs.getInt(prefix + "TourneyStatus"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TourneyWins")) {
                 setTourneyWins(crs.getInt(prefix + "TourneyWins"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TimesPicked")) {
                 setTimesPicked(crs.getInt(prefix + "TimesPicked"));
             }
@@ -247,16 +249,16 @@ public class FSTournamentSeed implements Serializable {
             if (FSUtils.fieldExists(crs, "Team$", "TeamID")) {
                 setTeam(new Team(crs, "Team$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FSTournamentRegion$", "RegionID")) {
                 setFSTournamentRegion(new FSTournamentRegion(crs, "FSTournamentRegion$"));
-            } 
+            }
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     /*  This method inserts a new record into the DB. */
     private static int InsertTournamentSeed(FSTournamentSeed objTourneySeed) {
 
@@ -278,13 +280,13 @@ public class FSTournamentSeed implements Serializable {
 
         // Call QueryCreator
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
 
         return retVal;
-    }    
+    }
 
     /*  This method updates a record in the DB. */
     private static int UpdateTournamentSeed(FSTournamentSeed objTourneySeed) {
@@ -304,7 +306,7 @@ public class FSTournamentSeed implements Serializable {
 
         // Call QueryCreator
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

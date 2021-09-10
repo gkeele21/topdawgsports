@@ -1,6 +1,5 @@
 package tds.main.control;
 
-import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSUser;
@@ -8,7 +7,6 @@ import tds.main.bo.UserSession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Connection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,12 +40,12 @@ public class indexView extends BaseView {
             session.getHttpSession().removeAttribute("fsteam");
         }
 
-        try {
-            Connection con = JDBCDatabase.getConnection();
-            System.out.println("Connection created");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Connection con = JDBCDatabase.getConnection();
+//            System.out.println("Connection created");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         FSUser user = null;
         if (userID > 0) {

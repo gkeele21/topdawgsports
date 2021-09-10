@@ -2,11 +2,13 @@ package tds.playoff.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSSeasonWeek;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class PlayoffRound implements Serializable {
 
@@ -34,7 +36,7 @@ public class PlayoffRound implements Serializable {
             sql.append("FROM PlayoffRound ");
             sql.append("WHERE RoundID = ").append(roundId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -59,7 +61,7 @@ public class PlayoffRound implements Serializable {
     public Integer getNumTeams() {return _NumTeams;}
     public PlayoffTournament getPlayoffTournament() {return _PlayoffTournament;}
     public FSSeasonWeek getFSSeasonWeek() {return _FSSeasonWeek;}
-    
+
     // SETTERS
     public void setRoundID(Integer RoundID) {_RoundID = RoundID;}
     public void setTournamentID(Integer TournamentID) {_TournamentID = TournamentID;}
@@ -72,7 +74,7 @@ public class PlayoffRound implements Serializable {
 
     // PUBLIC METHODS
 
-    public static PlayoffRound GetCurrentRound(int tournamentId) {        
+    public static PlayoffRound GetCurrentRound(int tournamentId) {
         PlayoffRound round = null;
         CachedRowSet crs = null;
         try {
@@ -85,7 +87,7 @@ public class PlayoffRound implements Serializable {
             sql.append("JOIN FSSeasonWeek fssw ON fssw.FSSeasonWeekID = rd.FSSeasonWeekID ");
             sql.append("WHERE t.TournamentID = ").append(tournamentId).append(" AND fssw.Status = '").append(FSSeasonWeek.Status.CURRENT).append("'");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             crs.next();
             round = new PlayoffRound(crs, "");
 
@@ -97,7 +99,7 @@ public class PlayoffRound implements Serializable {
 
         return round;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("PlayoffRound", "RoundID", getRoundID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -115,8 +117,8 @@ public class PlayoffRound implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "RoundNumber")) { setRoundNumber(crs.getInt(prefix + "RoundNumber")); }
             if (FSUtils.fieldExists(crs, prefix, "RoundName")) { setRoundName(crs.getString(prefix + "RoundName")); }
             if (FSUtils.fieldExists(crs, prefix, "NumTeams")) { setNumTeams(crs.getInt(prefix + "NumTeams")); }
-            
-            // OBJECTS            
+
+            // OBJECTS
             if (FSUtils.fieldExists(crs, "PlayoffTournament$", "TournamentID")) { setPlayoffTournament(new PlayoffTournament(crs, "PlayoffTournament$")); }
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) { setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$")); }
 
@@ -124,7 +126,7 @@ public class PlayoffRound implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -140,13 +142,13 @@ public class PlayoffRound implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE PlayoffRound SET ");
@@ -159,7 +161,7 @@ public class PlayoffRound implements Serializable {
         sql.append("WHERE RoundID = ").append(getRoundID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

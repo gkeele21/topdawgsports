@@ -2,12 +2,14 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.CTApplication;
 
 public class Hole implements Serializable {
 
@@ -19,14 +21,14 @@ public class Hole implements Serializable {
 
     // OBJECTS
     private Course _Course;
-    
+
     // ADDITIONALS FIELDS
     private HoleTeeInfo _HoleTeeInfo;
 
     // CONSTRUCTORS
     public Hole() {
     }
-    
+
     public Hole(int holeId) {
         CachedRowSet crs = null;
         try {
@@ -35,10 +37,10 @@ public class Hole implements Serializable {
             sql.append("FROM Hole");
             sql.append("WHERE HoleID = ").append(holeId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -55,9 +57,9 @@ public class Hole implements Serializable {
     public Integer getCourseID() {return _CourseID;}
     public Integer getHoleNumber() {return _HoleNumber;}
     public String getHoleName() {return _HoleName;}
-    public Course getCourse() {return _Course;} 
+    public Course getCourse() {return _Course;}
     public HoleTeeInfo getHoleTeeInfo() {return _HoleTeeInfo;}
-    
+
     // SETTERS
     public void setHoleID(Integer holeId) {_HoleID = holeId;}
     public void setCourseID(Integer courseId) {_CourseID = courseId;}
@@ -67,7 +69,7 @@ public class Hole implements Serializable {
     public void setHoleTeeInfo(HoleTeeInfo holeTeeInfo) {_HoleTeeInfo = holeTeeInfo;}
 
     // PUBLIC METHODS
-    
+
     public static List<HoleTeeInfo> GetHoleInfo(Integer courseId, Integer teeId) {
         List<HoleTeeInfo> holes = new ArrayList<HoleTeeInfo>();
         CachedRowSet crs = null;
@@ -86,10 +88,10 @@ public class Hole implements Serializable {
             sql.append("JOIN Tee t ON t.GolfCourseID = gc.GolfCourseID ");
             sql.append("JOIN HoleTeeInfo ht ON ht.HoleID = h.HoleID AND ht.TeeID = t.TeeID ");
             sql.append("JOIN CourseTeeInfo ct ON ct.CourseID = c.CourseID AND ct.TeeID = t.TeeID ");
-            sql.append("WHERE c.CourseID = ").append(courseId).append(" AND t.TeeID = ").append(teeId).append(" ");    
+            sql.append("WHERE c.CourseID = ").append(courseId).append(" AND t.TeeID = ").append(teeId).append(" ");
             sql.append("ORDER BY h.HoleNumber");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 HoleTeeInfo objHoleTeeInfo = new HoleTeeInfo(crs,"HoleTeeInfo$");
                 holes.add(objHoleTeeInfo);
@@ -102,7 +104,7 @@ public class Hole implements Serializable {
 
         return holes;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("Hole", "HoleID", getHoleID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -111,14 +113,14 @@ public class Hole implements Serializable {
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "HoleID")) { setHoleID(crs.getInt(prefix + "HoleID")); }
             if (FSUtils.fieldExists(crs, prefix, "CourseID")) { setCourseID(crs.getInt(prefix + "CourseID")); }
             if (FSUtils.fieldExists(crs, prefix, "HoleNumber")) { setHoleNumber(crs.getInt(prefix + "HoleNumber")); }
             if (FSUtils.fieldExists(crs, prefix, "HoleName")) { setHoleName(crs.getString(prefix + "HoleName")); }
-            
+
             // OBJECTS
             if (FSUtils.fieldExists(crs, "Course$", "CourseID")) { setCourse(new Course(crs, "Course$")); }
 
@@ -126,10 +128,10 @@ public class Hole implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
-      
+
         sql.append("INSERT INTO Hole ");
         sql.append("(CourseID, HoleNumber, HoleName) ");
         sql.append("VALUES (");
@@ -139,15 +141,15 @@ public class Hole implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("UPDATE Hole SET ");
         sql.append(FSUtils.UpdateDBFieldValue("CourseID", getCourseID()));
         sql.append(FSUtils.UpdateDBFieldValue("HoleNumber", getHoleNumber()));
@@ -156,7 +158,7 @@ public class Hole implements Serializable {
         sql.append("WHERE HoleID = ").append(getHoleID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

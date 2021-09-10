@@ -37,7 +37,7 @@
 
                 <div id="leagueRoster">
                     <div id="innerLeagueRoster">
-                        
+
                         <form action="yourPlayers.do" method="post">
 
                             <!-- Active Roster -->
@@ -56,7 +56,7 @@
                                             <%--<td>Active</td>--%>
                                             <td>Pos</td>
                                             <td>Team</td>
-                                            <td>Player</td>                                            
+                                            <td>Player</td>
                                             <td>Total FP</td>
                                             <td>Avg. FP</td>
                                             <td>Opp</td>
@@ -95,7 +95,10 @@
                                             <td><fmt:formatNumber value="${roster.player.totalFootballStats.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                             <td><fmt:formatNumber value="${roster.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                             <td><c:out value="${tds:getOpponentString(game,roster.player.team.teamID)}" /></td>
-                                            <td><fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/></td>
+                                            <td>
+                                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                                <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
+                                            </td>
                                         </tr>
                                     </jsp:attribute>
                                     <jsp:attribute name="rowEmpty">
@@ -120,7 +123,7 @@
                                                 <%--<td>Active</td>--%>
                                                 <td>Pos</td>
                                                 <td>Team</td>
-                                                <td>Player</td>                                                
+                                                <td>Player</td>
                                                 <td>Total FP</td>
                                                 <td>Avg. FP</td>
                                                 <td>Opp</td>
@@ -159,7 +162,10 @@
                                                 <td><fmt:formatNumber value="${roster.player.totalFootballStats.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                                 <td><fmt:formatNumber value="${roster.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                                 <td><c:out value="${tds:getOpponentString(game,roster.player.team.teamID)}" /></td>
-                                                <td><fmt:formatDate value="${game.gameDate.time}" pattern="E h:mm a"/></td>
+                                                <td>
+                                                    <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                                    <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
+                                                </td>
                                             </tr>
                                         </jsp:attribute>
                                         <jsp:attribute name="rowEmpty">
@@ -168,14 +174,14 @@
                                             </tr>
                                         </jsp:attribute>
                                     </tds:tableRows>
-                                </table>                                
+                                </table>
                             </c:if>
 
                             <!-- Submit Button -->
                             <%--<c:if test="${!afterStartersDeadline}">
                                 <input type="image" src="../images/submit.png" />
                             </c:if>--%>
-                        </form>                        
+                        </form>
 
                         <!-- IR Roster -->
                         <c:if test="${!empty irRoster}">

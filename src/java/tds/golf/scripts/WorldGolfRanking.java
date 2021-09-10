@@ -7,22 +7,21 @@ package tds.golf.scripts;
 
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.sql.Connection;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.constants.Team;
 import tds.main.bo.*;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -67,10 +66,7 @@ public class WorldGolfRanking implements Harnessable {
 
         final String filePath = "https://www.pgatour.com/stats/stat.186.html";
         StringBuilder sb = new StringBuilder();
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
             URL url = new URL(filePath);
 //
 //            InputStream uin = url.openStream();
@@ -171,7 +167,7 @@ public class WorldGolfRanking implements Harnessable {
                     int playerId = 0;
                     StringBuilder query = new StringBuilder();
                     query.append("select * from Player where StatsPlayerId = '").append(statsPlayerId).append("'").append(" AND TeamID = ").append(Team.PGATOUR);
-                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(con,query.toString());
+                    CachedRowSet crs3 = CTApplication._CT_QUICK_DB.executeQuery(query.toString());
 //                    _Logger.info(query.toString());
                     if (crs3.next()) {
                         playerId = crs3.getInt("PlayerID");

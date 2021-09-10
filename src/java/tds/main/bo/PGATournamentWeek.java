@@ -62,7 +62,7 @@ public class PGATournamentWeek implements Serializable {
                 sql.append(" AND tw.PGATournamentID = ").append(tournamentID);
             }
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -386,7 +386,7 @@ public class PGATournamentWeek implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -406,7 +406,7 @@ public class PGATournamentWeek implements Serializable {
         sql.append(" AND FSSeasonWeekID = ").append(getFSSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);

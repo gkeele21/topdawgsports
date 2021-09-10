@@ -11,13 +11,13 @@ import bglib.util.AppSettings;
 import bglib.util.Application;
 import bglib.util.FSUtils;
 import bglib.util.FileUtils;
+import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
 import tds.main.bo.Season;
 import tds.main.bo.SeasonWeek;
-import java.sql.Connection;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.jdbc.rowset.CachedRowSet;
 
 /**
  *
@@ -30,7 +30,7 @@ public class FootballInjuryReport implements Harnessable {
     public static final AppSettings _CT_APP_SETTINGS = _CT_APP.getAppSettings();
     public static final int _SeasonID = 4;
     private static String _INJURIES_DIR = _CT_APP_SETTINGS.getProperty(INJURIES_DIR_PROP);
-    
+
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
@@ -140,16 +140,13 @@ public class FootballInjuryReport implements Harnessable {
 
     public void insertIntoPlayerInjury() throws Exception {
 
-        Connection con = null;
         try {
-            con = CTApplication._CT_QUICK_DB.getConn(false);
-
-            CTApplication._CT_QUICK_DB.executeUpdate(con,"delete from PlayerInjury");
+            CTApplication._CT_QUICK_DB.executeUpdate("delete from PlayerInjury");
 
             StringBuffer sql = new StringBuffer();
             sql.append("select * from ct_temp.TempFootballInjury order by StatsPlayerid");
 
-            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(con,sql.toString());
+            CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 int playerid = crs.getInt("StatsPlayerID");
@@ -166,9 +163,9 @@ public class FootballInjuryReport implements Harnessable {
                 if (status.equals("A") || status.equals("B") || status.equals("C")) {
                     continue;
                 }
-                
+
                 // Grab the ProPlayerID based on the playerid (StatsPlayerID) from the temptable.
-                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery(con,"select * from Player where StatsPlayerID = " + playerid);
+                CachedRowSet crs2 = CTApplication._CT_QUICK_DB.executeQuery("select * from Player where StatsPlayerID = " + playerid);
                 if (crs2.next()) {
 
                     int proplayerid = crs2.getInt("PlayerID");
@@ -181,7 +178,7 @@ public class FootballInjuryReport implements Harnessable {
                     sql.append(" ,'" + FSUtils.fixupUserInputForDB(injury) + "')");
 
                     try {
-                        CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         _Logger.info(sql.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -193,7 +190,7 @@ public class FootballInjuryReport implements Harnessable {
                         sql.append(" ,Injury = '" + FSUtils.fixupUserInputForDB(injury) + "' ");
                         sql.append(" where PlayerID = " + proplayerid);
 
-                        int num = CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                        int num = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
                         System.out.println("Num updated : " + num);
                         _Logger.info(sql.toString());
                     }
@@ -208,12 +205,10 @@ public class FootballInjuryReport implements Harnessable {
 
             crs.close();
 
-            con.commit();
         } catch (Exception e) {
             e.printStackTrace();
             _Logger.log(Level.SEVERE,"Error in FootballInjuryReport : " + e.getMessage());
         } finally {
-            con.close();
         }
     }
 

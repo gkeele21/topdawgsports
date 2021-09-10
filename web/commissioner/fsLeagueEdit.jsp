@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : viewFSSeasons
     Created on : Aug 27, 2009, 10:53:43 PM
     Author     : admin
@@ -23,7 +23,7 @@
     </head>
     <body>
         <div id="container">
-        
+
             <jsp:include page="inc_header.jsp" />
 
             <jsp:include page="inc_mainmenu.jsp" />
@@ -40,7 +40,7 @@
 
                     <br />
                     <div align="center" class="rowTitle"><strong><h2>FSLEAGUE : ${commFSLeague.leagueName}</h2></strong></div>
-                    
+
                     <!-- FSLeague Info -->
                     <div align="center">
                         <form method="post" action="fsLeagueEdit.do">
@@ -95,7 +95,10 @@
                                 </tr>
                                 <tr class="rowData">
                                     <td align="right">DraftDate : </td>
-                                    <td align="left"><input type="text" name="draftDate" id="draftDate" value="<fmt:formatDate value="${commFSLeague.draftDate.time}" pattern="yyyy-MM-dd"/>" /></td>
+                                    <td align="left">
+                                        <fmt:parseDate  value="${commFSLeague.draftDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="draftDate" />
+                                        <input type="text" name="draftDate" id="draftDate" value="<fmt:formatDate value="${draftDate}" pattern="yyyy-MM-dd" timeZone="America/Denver" />" />
+                                    </td>
                                 </tr>
                                 <tr class="rowData2">
                                     <td align="right">HasPaid : </td>
@@ -131,7 +134,7 @@
                             </table>
                         </form>
                     </div>
-                    
+
                 </div> <!-- main -->
             </div> <!-- colmask outside -->
 

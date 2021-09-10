@@ -2,16 +2,18 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class Season implements Serializable {
 
-    public static final int _CurrentSeasonID = 42;
+    public static final int _CurrentSeasonID = 46;
 
     // DB FIELDS
     private Integer _SeasonID;
@@ -78,7 +80,6 @@ public class Season implements Serializable {
     public static List<Integer> GetAllSportYears() {
         List<Integer> years = new ArrayList<Integer>();
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT distinct SportYear ");
@@ -86,8 +87,7 @@ public class Season implements Serializable {
             sql.append("WHERE SportYear IS NOT NULL ");
             sql.append("ORDER BY SportYear desc");
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 years.add(crs.getInt("SportYear"));
             }
@@ -95,7 +95,6 @@ public class Season implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
         return years;
     }

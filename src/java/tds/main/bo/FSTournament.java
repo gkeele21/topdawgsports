@@ -2,9 +2,10 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.sql.Connection;
 import sun.jdbc.rowset.CachedRowSet;
+
+import java.io.Serializable;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSTournament implements Serializable {
@@ -32,15 +33,15 @@ public class FSTournament implements Serializable {
 
     // GETTERS
     public int getTournamentID() {return _TournamentID;}
-    public String getTournamentName() {return _TournamentName;}    
+    public String getTournamentName() {return _TournamentName;}
     public int getTournamentStatus() {return _TournamentStatus;}
     public int getNumTeams() {return _NumTeams;}
     public int getNumRounds() {return _NumRounds;}
     public int getNumRegions() {return _NumRegions;}
     public int getWinnerID() {return _WinnerID;}
-    public FSTeam getWinner() {return _Winner;}    
+    public FSTeam getWinner() {return _Winner;}
     public Team getNCAAWinner() {return _NCAAWinner;}
-    
+
     // SETTERS
     public void setTournamentID(int TournamentID) {_TournamentID = TournamentID;}
     public void setTournamentName(String TournamentName) {_TournamentName = TournamentName;}
@@ -57,15 +58,13 @@ public class FSTournament implements Serializable {
         FSTournament tournamentObj = null;
         CachedRowSet crs = null;
 
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("FSTournament", "", ""));
             sql.append("FROM FSTournament ");
             sql.append("WHERE FSLeagueID = ").append(fsLeagueId);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 tournamentObj = new FSTournament(crs, "");
             }
@@ -73,12 +72,11 @@ public class FSTournament implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
 
         return tournamentObj;
     }
-    
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
@@ -94,7 +92,7 @@ public class FSTournament implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "TournamentName")) {
                 setTournamentName(crs.getString(prefix + "TournamentName"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "TournamentStatus")) {
                 setTournamentStatus(crs.getInt(prefix + "TournamentStatus"));
             }
@@ -119,7 +117,7 @@ public class FSTournament implements Serializable {
             if (FSUtils.fieldExists(crs, "Winner$", "FSTeamID")) {
                 setWinner(new FSTeam(crs, "Winner$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "Winner$", "TeamID")) {
                 setNCAAWinner(new Team(crs, "Winner$"));
             }
@@ -127,5 +125,5 @@ public class FSTournament implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    } 
+    }
 }

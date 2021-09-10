@@ -2,14 +2,16 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.Team;
 
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class MarchMadnessTournament implements Serializable {
-    
+
     public enum Status {UPCOMING, ONGOING, ENDED};
 
     // DB FIELDS
@@ -20,14 +22,14 @@ public class MarchMadnessTournament implements Serializable {
     private Integer _NumTeams;
     private Integer _NumRounds;
     private Integer _NumRegions;
-    
+
     // OBJECTS
     private Team _Winner;
 
     // CONSTRUCTORS
     public MarchMadnessTournament() {
     }
-    
+
     public MarchMadnessTournament(int tournamentId) {
         CachedRowSet crs = null;
         try {
@@ -36,7 +38,7 @@ public class MarchMadnessTournament implements Serializable {
             sql.append("FROM MarchMadnessTournament ");
             sql.append("WHERE TournamentID = ").append(tournamentId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -47,20 +49,20 @@ public class MarchMadnessTournament implements Serializable {
             JDBCDatabase.closeCRS(crs);
         }
     }
-       
+
     public MarchMadnessTournament(CachedRowSet crs, String prefix) {
         InitFromCRS(crs, prefix);
     }
 
     // GETTERS
     public Integer getTournamentID() {return _TournamentID;}
-    public String getTournamentName() {return _TournamentName;}    
+    public String getTournamentName() {return _TournamentName;}
     public Integer getSportYear() {return _SportYear;}
     public String getStatus() {return _Status;}
     public Integer getNumTeams() {return _NumTeams;}
     public Integer getNumRounds() {return _NumRounds;}
     public Integer getNumRegions() {return _NumRegions;}
-    
+
     // SETTERS
     public void setTournamentID(Integer TournamentID) {_TournamentID = TournamentID;}
     public void setTournamentName(String TournamentName) {_TournamentName = TournamentName;}
@@ -69,9 +71,9 @@ public class MarchMadnessTournament implements Serializable {
     public void setNumTeams(Integer NumTeams) {_NumTeams = NumTeams;}
     public void setNumRounds(Integer NumRounds) {_NumRounds = NumRounds;}
     public void setNumRegions(Integer NumRegions) {_NumRegions = NumRegions;}
-    
+
     // PUBLIC METHODS
-    
+
     public static MarchMadnessTournament GetTournamentByYear(int sportYear) {
         CachedRowSet crs = null;
         MarchMadnessTournament tournament = null;
@@ -83,7 +85,7 @@ public class MarchMadnessTournament implements Serializable {
             sql.append("WHERE SportYear = ").append(sportYear).append(" ");
             sql.append("ORDER BY TournamentID desc");
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 tournament = new MarchMadnessTournament(crs,"");
             }
@@ -95,7 +97,7 @@ public class MarchMadnessTournament implements Serializable {
         }
         return tournament;
    }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("MarchMadnessTournament", "TournamentID", getTournamentID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -108,7 +110,7 @@ public class MarchMadnessTournament implements Serializable {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "TournamentID")) { setTournamentID(crs.getInt(prefix + "TournamentID")); }
-            if (FSUtils.fieldExists(crs, prefix, "TournamentName")) { setTournamentName(crs.getString(prefix + "TournamentName")); }  
+            if (FSUtils.fieldExists(crs, prefix, "TournamentName")) { setTournamentName(crs.getString(prefix + "TournamentName")); }
             if (FSUtils.fieldExists(crs, prefix, "SportYear")) { setNumRegions(crs.getInt(prefix + "SportYear")); }
             if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
             if (FSUtils.fieldExists(crs, prefix, "NumTeams")) { setNumTeams(crs.getInt(prefix + "NumTeams")); }
@@ -119,7 +121,7 @@ public class MarchMadnessTournament implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -136,13 +138,13 @@ public class MarchMadnessTournament implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE MarchMadnessTournament SET ");
@@ -156,7 +158,7 @@ public class MarchMadnessTournament implements Serializable {
         sql.append("WHERE TournamentID = ").append(getTournamentID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

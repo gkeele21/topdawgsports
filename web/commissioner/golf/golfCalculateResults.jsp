@@ -51,7 +51,7 @@
                             </tr>
                         </table>
                     </form>
-                    s
+
                 </div> <!-- main -->
             </div> <!-- colmask outside -->
 

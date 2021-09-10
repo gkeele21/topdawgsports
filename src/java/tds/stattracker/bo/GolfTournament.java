@@ -2,17 +2,19 @@ package tds.stattracker.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
+
+import java.io.Serializable;
+
+import static tds.data.CTColumnLists._Cols;
 
 public class GolfTournament implements Serializable {
 
     // DB FIELDS
     private Integer _GolfTournamentID;
     private Integer _DefaultGolfCourseID;
-    private String _TournamentName;    
+    private String _TournamentName;
 
     // OBJECTS
     private GolfCourse _DefaultGolfCourse;
@@ -20,7 +22,7 @@ public class GolfTournament implements Serializable {
     // CONSTRUCTORS
     public GolfTournament() {
     }
-    
+
     public GolfTournament(int golfTournamentId) {
         CachedRowSet crs = null;
         try {
@@ -29,10 +31,10 @@ public class GolfTournament implements Serializable {
             sql.append("FROM GolfTournament");
             sql.append("WHERE GolfTournamentID = ").append(golfTournamentId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
-            }            
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {
@@ -45,11 +47,11 @@ public class GolfTournament implements Serializable {
     }
 
     // GETTERS
-    public Integer getGolfTournamentID() {return _GolfTournamentID;}    
+    public Integer getGolfTournamentID() {return _GolfTournamentID;}
     public Integer getDefaultGolfCourseID() {return _DefaultGolfCourseID;}
     public String getTournamentName() {return _TournamentName;}
     public GolfCourse getDefaultGolfCourse() {return _DefaultGolfCourse;}
-    
+
     // SETTERS
     public void setGolfTournamentID(Integer GolfTournamentID) {_GolfTournamentID = GolfTournamentID;}
     public void setDefaultGolfCourseID(Integer DefaultGolfCourseID) {_DefaultGolfCourseID = DefaultGolfCourseID;}
@@ -57,20 +59,20 @@ public class GolfTournament implements Serializable {
     public void setDefaultGolfCourse(GolfCourse DefaultGolfCourse) {_DefaultGolfCourse = DefaultGolfCourse;}
 
     // PUBLIC METHODS
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("GolfTournament", "GolfTournamentID", getGolfTournamentID());
         if (doesExist) { Update(); } else { Insert(); }
     }
-   
+
     // PRIVATE METHODS
 
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "GolfTournamentID")) { setGolfTournamentID(crs.getInt(prefix + "GolfTournamentID")); }
-            if (FSUtils.fieldExists(crs, prefix, "DefaultGolfCourseID")) { setDefaultGolfCourseID(crs.getInt(prefix + "DefaultGolfCourseID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "DefaultGolfCourseID")) { setDefaultGolfCourseID(crs.getInt(prefix + "DefaultGolfCourseID")); }
             if (FSUtils.fieldExists(crs, prefix, "TournamentName")) { setTournamentName(crs.getString(prefix + "TournamentName")); }
 
             // OBJECTS
@@ -80,7 +82,7 @@ public class GolfTournament implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     private void Insert() {
         StringBuilder sql = new StringBuilder();
 
@@ -90,13 +92,13 @@ public class GolfTournament implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getDefaultGolfCourseID()));
         sql.append(FSUtils.InsertDBFieldValue(getTournamentName(), true));
         sql.deleteCharAt(sql.length()-1).append(")");
-        
+
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }    
+    }
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
@@ -108,7 +110,7 @@ public class GolfTournament implements Serializable {
         sql.append("WHERE GolfTournamentID = ").append(getGolfTournamentID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

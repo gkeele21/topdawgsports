@@ -153,10 +153,10 @@ public class JDBCDatabase {
             con = getConn();
             success = executeUpdate(con, query);
         } finally {
-            close(con);
-            if (con!=null && con.isClosed()==false) {
-                System.out.println("CONNECTION NOT CLOSED!!!");
-            }
+//            close(con);
+//            if (con!=null && con.isClosed()==false) {
+//                System.out.println("CONNECTION NOT CLOSED!!!");
+//            }
         }
 
         return success;
@@ -197,7 +197,7 @@ public class JDBCDatabase {
         return success;
     }
 
-    public int executeInsert(Connection con, String query) throws Exception {
+    private int executeInsert(Connection con, String query) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
 
@@ -245,7 +245,7 @@ public class JDBCDatabase {
     }
 
     // Methods with Connection Objects
-    public int executeUpdate(Connection con,String query) throws Exception {
+    private int executeUpdate(Connection con,String query) throws Exception {
         if (con==null) {
             return executeUpdate(query);
         }
@@ -300,7 +300,7 @@ public class JDBCDatabase {
         return true;
     }
 
-    public CachedRowSet executeQuery(Connection con,String query) throws Exception {
+    private CachedRowSet executeQuery(Connection con,String query) throws Exception {
         if (con==null) {
             con = _DataSource.getConnection();
         }
@@ -325,7 +325,7 @@ public class JDBCDatabase {
             if (stmt!=null) {
                 stmt.close();
             }
-            close(con);
+//            close(con);
         }
 
         return crs;

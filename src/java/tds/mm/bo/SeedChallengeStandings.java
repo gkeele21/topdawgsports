@@ -2,52 +2,54 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import sun.jdbc.rowset.CachedRowSet;
-import static tds.data.CTColumnLists._Cols;
 import tds.main.bo.CTApplication;
 import tds.main.bo.FSLeague;
 import tds.main.bo.FSSeasonWeek;
 import tds.main.bo.FSTeam;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static tds.data.CTColumnLists._Cols;
+
 public class SeedChallengeStandings implements Serializable {
 
     // DB FIELDS
-    private Integer _FSTeamID;    
+    private Integer _FSTeamID;
     private Integer _FSSeasonWeekID;
     private Integer _Rank;
     private Integer _RoundPoints;
     private Integer _TotalPoints;
     private Integer _TeamsLeft;
     private String _Scenario;
-    
+
     // OBJECTS
     private FSTeam _FSTeam;
     private FSSeasonWeek _FSSeasonWeek;
-    
+
     // CONSTRUCTORS
     public SeedChallengeStandings() {
     }
 
     public SeedChallengeStandings(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
-    }    
+    }
 
     // GETTERS
-    public Integer getFSTeamID() { return _FSTeamID; }    
+    public Integer getFSTeamID() { return _FSTeamID; }
     public Integer getFSSeasonWeekID() { return _FSSeasonWeekID; }
     public Integer getRank() { return _Rank; }
     public Integer getRoundPoints() { return _RoundPoints; }
     public Integer getTotalPoints() { return _TotalPoints; }
-    public Integer getTeamsLeft() { return _TeamsLeft; }    
+    public Integer getTeamsLeft() { return _TeamsLeft; }
     public String getScenario() { return _Scenario; }
     public FSTeam getFSTeam() { return _FSTeam; }
     public FSSeasonWeek getFSSeasonWeek() { return _FSSeasonWeek; }
 
     // SETTERS
-    public void setFSTeamID(Integer fsTeamId) {_FSTeamID = fsTeamId;}    
+    public void setFSTeamID(Integer fsTeamId) {_FSTeamID = fsTeamId;}
     public void setFSSeasonWeekID(Integer FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
     public void setRank(Integer Rank) {_Rank = Rank;}
     public void setRoundPoints(Integer RoundPoints) {_RoundPoints = RoundPoints;}
@@ -58,25 +60,25 @@ public class SeedChallengeStandings implements Serializable {
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
 
     // PUBLIC METHODS
-    
-    public static void CalculateRank(int fsSeasonWeekId) {     
+
+    public static void CalculateRank(int fsSeasonWeekId) {
         int rank = 0;
         int prevTotal = -1;
-        
+
         List<SeedChallengeStandings> standings = SeedChallengeStandings.GetStandings(fsSeasonWeekId);
         for (int i=0; i < standings.size(); i++) {
              if (standings.get(i).getTotalPoints() != prevTotal) {
-                 rank = i+1;                 
+                 rank = i+1;
              }
              standings.get(i).setRank(rank);
              standings.get(i).Save();
              prevTotal = standings.get(i).getTotalPoints();
         }
     }
-    
+
     /*  This method saves the standings after each game if the user had chosen the losing team */
-    public static void CalculateStandingsByGame(FSSeasonWeek week, int tournamentId, int winningTeamId, int losingTeamId) {                           
-        
+    public static void CalculateStandingsByGame(FSSeasonWeek week, int tournamentId, int winningTeamId, int losingTeamId) {
+
         // Grab all user's standings records for the week
         List<SeedChallengeStandings> allTeamsPriorStandings = GetStandings(week.getFSSeasonWeekID());
 
@@ -91,22 +93,22 @@ public class SeedChallengeStandings implements Serializable {
         for (int i=0; i < fsLeagues.size(); i++) {
 
             // Grab all of the teams in the league
-            List<FSTeam> fsTeams = FSTeam.GetLeagueTeams(fsLeagues.get(i).getFSLeagueID());                
+            List<FSTeam> fsTeams = FSTeam.GetLeagueTeams(fsLeagues.get(i).getFSLeagueID());
             for (int j=0; j < fsTeams.size(); j++) {
 
                 int roundPoints = 0;
                 int teamsEliminated = 0;
 
                 SeedChallengeStandings fsTeamPriorStandings = new SeedChallengeStandings();
-                
+
                 // Grab the user's previous standings record
                 if (allTeamsPriorStandings != null) {
                     for (int k=0; k < allTeamsPriorStandings.size(); k++) {
-                        
+
                         // Make sure we have the right fsTeam
                         if (fsTeams.get(j).getFSTeamID().equals(allTeamsPriorStandings.get(k).getFSTeamID())) {
                             fsTeamPriorStandings = allTeamsPriorStandings.get(k);
-                            
+
                             // If we grabbed the standings from the prior week, reset the round related fields to 0
                             if (!fsTeamPriorStandings.getFSSeasonWeekID().equals(week.getFSSeasonWeekID())) {
                                 fsTeamPriorStandings.setRoundPoints(0);
@@ -126,37 +128,37 @@ public class SeedChallengeStandings implements Serializable {
                         roundPoints += (Math.pow(10, (week.getFSSeasonWeekNo() -1)));
                     }
                     if (picks.get(l).getTeamSeedPickedID() == losingTeamId) {
-                        teamsEliminated += 1;                        
+                        teamsEliminated += 1;
                     }
                 }
 
-                // Set the Standings object                    
+                // Set the Standings object
                 SeedChallengeStandings standingsRecord = new SeedChallengeStandings();
                 standingsRecord.setFSTeamID(fsTeams.get(j).getFSTeamID());
                 standingsRecord.setFSSeasonWeekID(week.getFSSeasonWeekID());
                 standingsRecord.setRoundPoints((fsTeamPriorStandings.getFSSeasonWeekID() == null) ? roundPoints : roundPoints + FSUtils.ToInt(fsTeamPriorStandings.getRoundPoints()));
                 standingsRecord.setTotalPoints((fsTeamPriorStandings.getFSSeasonWeekID() == null) ? roundPoints : roundPoints + FSUtils.ToInt(fsTeamPriorStandings.getTotalPoints()));
-                standingsRecord.setTeamsLeft((fsTeamPriorStandings.getFSSeasonWeekID() == null) ? SeedChallengeGroup.GetSeedGroups(tournamentId).size() : FSUtils.ToInt(fsTeamPriorStandings.getTeamsLeft() - teamsEliminated));                
+                standingsRecord.setTeamsLeft((fsTeamPriorStandings.getFSSeasonWeekID() == null) ? SeedChallengeGroup.GetSeedGroups(tournamentId).size() : FSUtils.ToInt(fsTeamPriorStandings.getTeamsLeft() - teamsEliminated));
                 standingsRecord.Save();
             }
         }
     }
-    
+
     /*  This method calculates the standings for the seed challenge game for a given week (round) */
     public static void CalculateStandingsByRound(FSSeasonWeek week) {
-        
+
         // Grab all of the standings records for the prior week
         FSSeasonWeek priorWeek = new FSSeasonWeek(week.getFSSeasonID(), week.getFSSeasonWeekNo() - 1);
         List<SeedChallengeStandings> priorStandings = (priorWeek.getFSSeasonWeekID() == null) ?  null : SeedChallengeStandings.GetStandings(priorWeek.getFSSeasonWeekID());
-        
+
         // Grab all the active leagues for the seed challenge season
         List<FSLeague> fsLeagues = FSLeague.GetLeagues(week.getFSSeasonID());
         for (int i=0; i < fsLeagues.size(); i++) {
 
             // Grab all of the teams in the league
-            List<FSTeam> fsTeams = FSTeam.GetLeagueTeams(fsLeagues.get(i).getFSLeagueID());                
+            List<FSTeam> fsTeams = FSTeam.GetLeagueTeams(fsLeagues.get(i).getFSLeagueID());
             for (int j=0; j < fsTeams.size(); j++) {
-                
+
                 int roundPoints = 0;
                 int teamsLeft = 0;
                 SeedChallengeStandings priorStandingsForFSTeam = null;
@@ -185,7 +187,7 @@ public class SeedChallengeStandings implements Serializable {
                     }
                 }
 
-                // Set the Standings object                    
+                // Set the Standings object
                 SeedChallengeStandings standingsRecord = new SeedChallengeStandings();
                 standingsRecord.setFSTeamID(fsTeams.get(j).getFSTeamID());
                 standingsRecord.setFSSeasonWeekID(week.getFSSeasonWeekID());
@@ -196,7 +198,7 @@ public class SeedChallengeStandings implements Serializable {
             }
         }
     }
-    
+
     public static List<SeedChallengeStandings> GetStandings(Integer fsSeasonWeekId) {
         List<SeedChallengeStandings> standings = new ArrayList<SeedChallengeStandings>();
         CachedRowSet crs = null;
@@ -226,7 +228,7 @@ public class SeedChallengeStandings implements Serializable {
 
         return standings;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("SeedChallengeStandings", "FSTeamID", getFSTeamID(), "FSSeasonWeekID", getFSSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -235,19 +237,19 @@ public class SeedChallengeStandings implements Serializable {
     // PRIVATE METHODS
 
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
-            if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }            
+            if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }
             if (FSUtils.fieldExists(crs, prefix, "FSSeasonWeekID")) { setFSSeasonWeekID(crs.getInt(prefix + "FSSeasonWeekID")); }
-            if (FSUtils.fieldExists(crs, prefix, "Rank")) { setRank(crs.getInt(prefix + "Rank")); }           
+            if (FSUtils.fieldExists(crs, prefix, "Rank")) { setRank(crs.getInt(prefix + "Rank")); }
             if (FSUtils.fieldExists(crs, prefix, "RoundPoints")) { setRoundPoints(crs.getInt(prefix + "RoundPoints")); }
             if (FSUtils.fieldExists(crs, prefix, "TotalPoints")) { setTotalPoints(crs.getInt(prefix + "TotalPoints")); }
-            if (FSUtils.fieldExists(crs, prefix, "TeamsLeft")) { setTeamsLeft(crs.getInt(prefix + "TeamsLeft")); }            
+            if (FSUtils.fieldExists(crs, prefix, "TeamsLeft")) { setTeamsLeft(crs.getInt(prefix + "TeamsLeft")); }
             if (FSUtils.fieldExists(crs, prefix, "Scenario")) { setScenario(crs.getString(prefix + "Scenario")); }
 
             // OBJECTS
-            if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) { setFSTeam(new FSTeam(crs, "FSTeam$")); }            
+            if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) { setFSTeam(new FSTeam(crs, "FSTeam$")); }
             if (FSUtils.fieldExists(crs, "FSSeasonWeek$", "FSSeasonWeekID")) { setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$")); }
 
         } catch (Exception e) {
@@ -268,30 +270,30 @@ public class SeedChallengeStandings implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getRoundPoints()));
         sql.append(FSUtils.InsertDBFieldValue(getTotalPoints()));
         sql.append(FSUtils.InsertDBFieldValue(getTeamsLeft()));
-        sql.append(FSUtils.InsertDBFieldValue(getScenario(), true));        
+        sql.append(FSUtils.InsertDBFieldValue(getScenario(), true));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
 
-    private void Update() {        
+    private void Update() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("UPDATE SeedChallengeStandings SET ");
         sql.append(FSUtils.UpdateDBFieldValue("Rank", getRank()));
         sql.append(FSUtils.UpdateDBFieldValue("RoundPoints", getRoundPoints()));
-        sql.append(FSUtils.UpdateDBFieldValue("TotalPoints", getTotalPoints()));  
+        sql.append(FSUtils.UpdateDBFieldValue("TotalPoints", getTotalPoints()));
         sql.append(FSUtils.UpdateDBFieldValue("TeamsLeft", getTeamsLeft()));
         sql.append(FSUtils.UpdateDBFieldValue("Scenario", getScenario(), true));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSTeamID = ").append(getFSTeamID()).append(" AND FSSeasonWeekID = ").append(getFSSeasonWeekID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

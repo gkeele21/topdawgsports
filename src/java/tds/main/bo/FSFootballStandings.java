@@ -2,17 +2,18 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSFootballStandings implements Serializable {
 
     // DB FIELDS
-    private int _FSTeamID;    
+    private int _FSTeamID;
     private int _FSSeasonWeekID;
     private double _FantasyPts;
     private double _TotalFantasyPts;
@@ -39,7 +40,7 @@ public class FSFootballStandings implements Serializable {
     // OBJECTS
     private FSTeam _FSTeam;
     private FSSeasonWeek _FSSeasonWeek;
-    
+
     // CONSTRUCTORS
     public FSFootballStandings() {
     }
@@ -50,10 +51,10 @@ public class FSFootballStandings implements Serializable {
 
     public FSFootballStandings(CachedRowSet fields, String prefix) {
         InitFromCRS(fields, prefix);
-    }    
+    }
 
     // GETTERS
-    public int getFSTeamID() {return _FSTeamID;}    
+    public int getFSTeamID() {return _FSTeamID;}
     public int getFSSeasonWeekID() {return _FSSeasonWeekID;}
     public double getFantasyPts() {return _FantasyPts;}
     public double getTotalFantasyPts() {return _TotalFantasyPts;}
@@ -63,7 +64,7 @@ public class FSFootballStandings implements Serializable {
     public int getWins() {return _Wins;}
     public int getLosses() {return _Losses;}
     public int getTies() {return _Ties;}
-    public double getWinPercentage() {return _WinPercentage;}    
+    public double getWinPercentage() {return _WinPercentage;}
     public double getFantasyPtsAgainst() {return _FantasyPtsAgainst;}
     public double getTotalFantasyPtsAgainst() {return _TotalFantasyPtsAgainst;}
     public int getHiScore() {return _HiScore;}
@@ -73,14 +74,14 @@ public class FSFootballStandings implements Serializable {
     public int getGamesWrong() {return _GamesWrong;}
     public int getTotalGamesWrong() {return _TotalGamesWrong;}
     public int getRank() {return _Rank;}
-    public int getCurrentStreak() {return _CurrentStreak;}    
+    public int getCurrentStreak() {return _CurrentStreak;}
     public String getLastFive() {return _LastFive;}
     public String getNotes() {return _Notes;}
     public FSTeam getFSTeam() {if (_FSTeam == null && _FSTeamID > 0) {_FSTeam = new FSTeam(_FSTeamID);}return _FSTeam;}
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
 
     // SETTERS
-    public void setFSTeamID(int fsTeamId) {_FSTeamID = fsTeamId;}    
+    public void setFSTeamID(int fsTeamId) {_FSTeamID = fsTeamId;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
     public void setFantasyPts(double FantasyPts) {_FantasyPts = FantasyPts;}
     public void setTotalFantasyPts(double TotalFantasyPts) {_TotalFantasyPts = TotalFantasyPts;}
@@ -108,14 +109,14 @@ public class FSFootballStandings implements Serializable {
 
     // PUBLIC METHODS
 
-    public static void CalculateRank(int fsLeagueId, int fsSeasonWeekId, String RankSortBy) {     
+    public static void CalculateRank(int fsLeagueId, int fsSeasonWeekId, String RankSortBy) {
         CalculateRank(fsLeagueId,fsSeasonWeekId, RankSortBy, "TotalGamePoints");
     }
 
     public static void CalculateRank(int fsLeagueId, int fsSeasonWeekId, String RankSortBy, String sortColumn) {
         int rank = 0;
         double prevTotal = 0;
-        
+
         List<FSFootballStandings> standings = FSFootballStandings.getLeagueStandings(fsLeagueId, fsSeasonWeekId, RankSortBy);
         for (int i=0; i < standings.size(); i++) {
              double value = standings.get(i).getTotalGamePoints();
@@ -123,7 +124,7 @@ public class FSFootballStandings implements Serializable {
                  value = standings.get(i).getTotalFantasyPts();
              }
              if (value != prevTotal) {
-                 rank = i+1;                 
+                 rank = i+1;
              }
              standings.get(i).setRank(rank);
              standings.get(i).Save();
@@ -132,21 +133,21 @@ public class FSFootballStandings implements Serializable {
     }
 
     public static void CalculateRankForAllLeagues(FSSeasonWeek week, String sortColumn) {
-        try {            
+        try {
             List<FSLeague> fsLeagues = FSLeague.GetLeagues(week.getFSSeasonID());
             for (int i=0; i < fsLeagues.size(); i++) {
                 CalculateRank(fsLeagues.get(i).getFSLeagueID(), week.getFSSeasonWeekID(), sortColumn + " desc", sortColumn);
             }
-        }        
+        }
         catch (Exception e) {
             CTApplication._CT_LOG.error(e);
-        } 
+        }
     }
 
     public static List<FSFootballStandings> getLeagueStandings(int leagueID, int fsseasonweekID) {
         return getLeagueStandings(leagueID, fsseasonweekID, "");
     }
-    
+
     public static List<FSFootballStandings> getLeagueStandings(int leagueID, int fsseasonweekID, String sort) {
         return getLeagueStandings(leagueID, fsseasonweekID, sort, true);
     }
@@ -179,10 +180,8 @@ public class FSFootballStandings implements Serializable {
         sql.append(" ORDER BY ").append(sort);
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 FSFootballStandings stand = new FSFootballStandings(crs);
                 standings.add(stand);
@@ -191,9 +190,8 @@ public class FSFootballStandings implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
-        
+
         return standings;
     }
 
@@ -228,7 +226,7 @@ public class FSFootballStandings implements Serializable {
 
         return standings;
     }
-    
+
     public static FSFootballStandings GetWeekStandingsForFSTeam(int fsSeasonWeekId, int fsTeamId) {
 
         FSFootballStandings standings = new FSFootballStandings();
@@ -255,7 +253,7 @@ public class FSFootballStandings implements Serializable {
 
         return standings;
     }
-    
+
     public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("FSFootballStandings", "FSTeamID", getFSTeamID(), "FSSeasonWeekID", getFSSeasonWeekID());
         if (doesExist) { Update(); } else { Insert(); }
@@ -264,7 +262,7 @@ public class FSFootballStandings implements Serializable {
     // PRIVATE METHODS
 
     /*  This method populates the object from a cached row set.  */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB FIELDS
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) { setFSTeamID(crs.getInt(prefix + "FSTeamID")); }
@@ -301,7 +299,7 @@ public class FSFootballStandings implements Serializable {
     }
 
     private void Insert() {
-        
+
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO FSFootballStandings ");
@@ -342,7 +340,7 @@ public class FSFootballStandings implements Serializable {
 
     private void Update() {
         StringBuilder sql = new StringBuilder();
-        
+
         sql.append("UPDATE FSFootballStandings SET ");
         sql.append(FSUtils.UpdateDBFieldValue("FantasyPts", getFantasyPts()));
         sql.append(FSUtils.UpdateDBFieldValue("TotalFantasyPts", getTotalFantasyPts()));

@@ -34,13 +34,13 @@
 
         <div id="content">
             <div id="innerContent">
-                
+
                 <div id="vendorContent" class="game">
-		<!-- #BeginEditable "content" --> 
-                  
+		<!-- #BeginEditable "content" -->
+
                   <div id="standings">
                    <div id="innerStandings">
-                       
+
                        <%-- Standings --%>
                        <c:if test="${golfleagueStandings.isEmpty()}">
                            <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
@@ -72,7 +72,7 @@
                                 </tds:tableRows>
 
                         </table>
-                           
+
                        </c:if>
                            <br /><br />
                         <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
@@ -193,11 +193,15 @@
                                     <c:set var="standingsRec" value="${tds:getStandingsRecord(fsTeam.FSTeamID,tournamentWeek.FSSeasonWeek.FSSeasonWeekID)}" />
                                     <td align="center"><c:out value="${tournamentWeek.FSSeasonWeek.FSSeasonWeekNo}" /></td>
                                     <td align="center"><c:out value="${tournamentWeek.PGATournament.tournamentName}" /></td>
-                                    <td align="center"><fmt:formatDate value="${tournamentWeek.startDate.time}" pattern="E MM/dd"/> - <fmt:formatDate value="${tournamentWeek.endDate.time}" pattern="E MM/dd"/></td>
+                                    <td align="center">
+                                        <fmt:parseDate  value="${tournamentWeek.startDate}" type="date" pattern="yyyy-MM-dd" var="startDate" />
+                                        <fmt:parseDate  value="${tournamentWeek.endDate}" type="date" pattern="yyyy-MM-dd" var="endDate" />
+                                        <fmt:formatDate value="${startDate}" pattern="E MM/dd"/> - <fmt:formatDate value="${endDate}" pattern="E MM/dd"/>
+                                    </td>
                                     <td align="center"><fmt:formatNumber type="currency" value="${tournamentWeek.teamFee}" maxFractionDigits="0" /></td>
                                     <td align="center"><c:out value="${standingsRec.rank}" /></td>
                                     <td align="center"><fmt:formatNumber type="currency" value="${standingsRec.weekWinnings}" maxFractionDigits="0" /></td>
-                                    
+
                                     <td align="center">
                                         <c:if test="${standingsRec != null}">
                                             <fmt:formatNumber type="currency" value="${standingsRec.weekMoneyEarned}" maxFractionDigits="0" />
@@ -212,12 +216,12 @@
                             </jsp:attribute>
                         </tds:tableRows>
                     </table>
-                    
-                    
-				  
+
+
+
                   <!-- #EndEditable -->
-         	</div>				
-			
+         	</div>
+
             </div> <!-- inner content -->
         </div> <!-- content -->
     </div> <!-- container-->

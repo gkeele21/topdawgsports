@@ -2,23 +2,24 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 
 public class FSFootballDraft implements Serializable {
-    
+
     // DB FIELDS
-    private int _FSLeagueID;    
+    private int _FSLeagueID;
     private int _Round;
     private int _Place;
-    private int _FSTeamID;    
+    private int _FSTeamID;
     private int _PlayerID;
     private int _AuctionValue;
-    
+
     // OBJECTS
     private FSLeague _FSLeague;
     private FSTeam _FSTeam;
@@ -39,7 +40,6 @@ public class FSFootballDraft implements Serializable {
     public FSFootballDraft(int leagueID, int round, int place) {
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("Player", "p.", "Player$"));
@@ -58,8 +58,7 @@ public class FSFootballDraft implements Serializable {
             sql.append(" AND fsd.Round = ").append(round);
             sql.append(" AND fsd.Place = ").append(place);
 
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             if (crs.next()) {
                 initFromCRS(crs,"FSFootballDraft$");
@@ -69,11 +68,10 @@ public class FSFootballDraft implements Serializable {
             CTApplication._CT_LOG.error(e);
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
-        
+
     }
-    
+
     // GETTERS
     public int getFSLeagueID() {return _FSLeagueID;}
     public int getRound() {return _Round;}
@@ -84,7 +82,7 @@ public class FSFootballDraft implements Serializable {
     public FSLeague getFSLeague() {if (_FSLeague == null && getFSLeagueID() > 0) {_FSLeague = new FSLeague(getFSLeagueID());}return _FSLeague;}
     public FSTeam getFSTeam() {if (_FSTeam == null && _FSTeamID > 0) {_FSTeam = new FSTeam(_FSTeamID);}return _FSTeam;}
     public Player getPlayer() {if (_Player == null && _PlayerID > 0) {_Player = new Player(_PlayerID);}return _Player;}
-    
+
     // SETTERS
     public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
     public void setRound(int Round) {_Round = Round;}
@@ -97,12 +95,11 @@ public class FSFootballDraft implements Serializable {
     public void setPlayer(Player Player) {_Player = Player;}
 
     // PUBLIC METHODS
-    
+
     public static List<FSFootballDraft> getDraftResults(int leagueID) {
         List<FSFootballDraft> results = new ArrayList<FSFootballDraft>();
 
         CachedRowSet crs = null;
-        Connection con = null;
         try {
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT ").append(_Cols.getColumnList("Player", "p.", "Player$"));
@@ -121,8 +118,7 @@ public class FSFootballDraft implements Serializable {
             sql.append(" ORDER BY fsd.Round,fsd.Place ");
 
             System.out.println("Getting draft results with query : " + sql.toString());
-            con = CTApplication._CT_DB.getConn(false);
-            crs = CTApplication._CT_QUICK_DB.executeQuery(con, sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {
                 results.add(new FSFootballDraft(crs, "FSFootballDraft$"));
@@ -133,16 +129,15 @@ public class FSFootballDraft implements Serializable {
             System.out.println("Error : " + e.getMessage());
         } finally {
             JDBCDatabase.closeCRS(crs);
-            JDBCDatabase.close(con);
         }
-        
+
         return results;
     }
 
     public static int insertPick(int round, int place, int fsTeamId, int playerId, int fsLeagueId) {
         return insertPick(round, place, fsTeamId, playerId, fsLeagueId, 0);
     }
-    
+
     public static int insertPick(int round, int place, int fsTeamId, int playerId, int fsLeagueId, int auctionValue) {
         int retVal = 0;
 
@@ -167,7 +162,7 @@ public class FSFootballDraft implements Serializable {
 
         // Create SQL statement
         sql.append(" DELETE FROM FSFootballDraft ");
-	sql.append(" WHERE FSLeagueID = ").append(this._FSLeagueID);
+	    sql.append(" WHERE FSLeagueID = ").append(this._FSLeagueID);
         sql.append(" AND Round = ").append(this._Round);
         sql.append(" AND Place = ").append(this._Place);
 
@@ -180,9 +175,9 @@ public class FSFootballDraft implements Serializable {
 
         return retVal;
     }
-    
+
     // PRIVATE METHODS
-    
+
     /*  This method populates the object from a cached row set.  */
     private void initFromCRS(CachedRowSet crs, String prefix) {
 
@@ -192,23 +187,23 @@ public class FSFootballDraft implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
                 setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Round")) {
                 setRound(crs.getInt(prefix + "Round"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "Place")) {
                 setPlace(crs.getInt(prefix + "Place"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "FSTeamID")) {
                 setFSTeamID(crs.getInt(prefix + "FSTeamID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
                 setPlayerID(crs.getInt(prefix + "PlayerID"));
             }
-            
+
             if (FSUtils.fieldExists(crs, prefix, "AuctionValue")) {
                 setAuctionValue(crs.getInt(prefix + "AuctionValue"));
             }
@@ -217,15 +212,15 @@ public class FSFootballDraft implements Serializable {
             if (FSUtils.fieldExists(crs, "FSLeague$", "FSLeagueID")) {
                 setFSLeague(new FSLeague(crs, "FSLeague$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) {
                 setFSTeam(new FSTeam(crs, "FSTeam$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "Player$", "PlayerID")) {
                 setPlayer(new Player(crs, "Player$"));
             }
-            
+
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

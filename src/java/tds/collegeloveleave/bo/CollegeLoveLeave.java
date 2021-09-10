@@ -2,12 +2,14 @@ package tds.collegeloveleave.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.*;
 
 public class CollegeLoveLeave implements Serializable {
 
@@ -24,7 +26,7 @@ public class CollegeLoveLeave implements Serializable {
 
     // ADDITIONAL FIELDS
     private Game _Game;
-    private boolean _isPickCorrect;   
+    private boolean _isPickCorrect;
 
     // CONSTRUCTORS
     public CollegeLoveLeave() {
@@ -44,7 +46,7 @@ public class CollegeLoveLeave implements Serializable {
     public Team getTeamPicked() {if (_TeamPicked == null && _TeamPickedID > 0) {_TeamPicked = new Team(_TeamPickedID);}return _TeamPicked;}
     public Game getGame() {return _Game;}
     public boolean getIsPickCorrect() {return _isPickCorrect;}
-    
+
     // SETTERS
     public void setCollegeLoveLeaveID(int CollegeLoveLeaveID) {_CollegeLoveLeaveID = CollegeLoveLeaveID;}
     public void setFSSeasonWeekID(int FSSeasonWeekID) {_FSSeasonWeekID = FSSeasonWeekID;}
@@ -57,10 +59,10 @@ public class CollegeLoveLeave implements Serializable {
     public void setIsPickCorrect(boolean IsCorrect) {_isPickCorrect = IsCorrect;}
 
     // PUBLIC METHODS
-    
+
     /*  This method calculates the standings for all leagues and teams for the given FSSeasonWeek */
     public static int CalculateStandings(FSSeasonWeek week) {
-        
+
         int retVal = 0;
         List<FSLeague> fsLeagues = null;
         List<FSTeam> fsTeams = null;
@@ -77,7 +79,7 @@ public class CollegeLoveLeave implements Serializable {
         int teamPickedId = 0;
 
         try {
-            
+
             // Grab all the active leagues for the college pickem season
             fsLeagues = FSLeague.GetLeagues(week.getFSSeasonID());
 
@@ -93,18 +95,18 @@ public class CollegeLoveLeave implements Serializable {
                 else {
                     priorFSSeasonWeekId = new FSSeasonWeek(week.getFSSeasonID(),week.getFSSeasonWeekNo() - 1).getFSSeasonWeekID();
                     priorStandings = FSFootballStandings.GetWeeklyStandings(priorFSSeasonWeekId);
-                }                
+                }
 
                 for (int teamCount=0; teamCount < fsTeams.size(); teamCount++) {
-                    
-                    FSFootballStandings standings = new FSFootballStandings();                    
+
+                    FSFootballStandings standings = new FSFootballStandings();
                     gamePoints = 0;
                     gamesCorrect = 0;
                     gamesWrong = 0;
                     prevGamePointsTotal = 0;
                     prevGamesCorrectTotal = 0;
                     prevGamesWrongTotal = 0;
-                    
+
                     fsTeamId = fsTeams.get(teamCount).getFSTeamID();
 
                     // Grab the user's picks for the week
@@ -113,14 +115,14 @@ public class CollegeLoveLeave implements Serializable {
                     for (int j=0; j < picks.size(); j++) {
 
                         teamPickedId = picks.get(j).getTeamPickedID();
-                        
+
                         // Calculate weekly points
                         if (teamPickedId > 0 && picks.get(j).getGame().getWinnerID().equals(teamPickedId)) {
                             gamePoints += 1;
-                            gamesCorrect += 1;                                                                
+                            gamesCorrect += 1;
                         }
                         else {
-                            gamesWrong += 1;  
+                            gamesWrong += 1;
                         }
                     }
 
@@ -143,15 +145,15 @@ public class CollegeLoveLeave implements Serializable {
                     standings.setTotalGamePoints(prevGamePointsTotal + gamePoints);
                     standings.setTotalGamesCorrect(prevGamesCorrectTotal + gamesCorrect);
                     standings.setTotalGamesWrong(prevGamesWrongTotal + gamesWrong);
-                    standings.Save();                 
+                    standings.Save();
                 }
-                
+
                 FSFootballStandings.CalculateRank(fsLeagues.get(i).getFSLeagueID(), week.getFSSeasonWeekID(), "TotalGamePoints desc");
             }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
- 
+
         return retVal;
     }
 
@@ -175,7 +177,7 @@ public class CollegeLoveLeave implements Serializable {
         sql.append("LEFT JOIN Team t ON p.TeamPickedID = t.TeamID ");
         if (fsSeasonWeekId > 0) { sql.append("WHERE fssw.FSSeasonWeekID = ").append(fsSeasonWeekId).append(" "); }
         sql.append("ORDER BY fssw.FSSeasonWeekNo");
-        
+
         // Execute Query
         try {
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
@@ -190,7 +192,7 @@ public class CollegeLoveLeave implements Serializable {
 
         return picks;
    }
-    
+
     /*  This method is used to store the Pickem data in the DB. */
     public static int SavePick(int fsSeasonWeekId, int fsTeamId, int gameId, int teamPickedId) {
 
@@ -208,16 +210,16 @@ public class CollegeLoveLeave implements Serializable {
                 System.out.println("Game has already started - can't save pick.");
                 return retVal;
             }
-            
-            /* See if the team has been picked prior and needs to be removed. This should only affect future 
+
+            /* See if the team has been picked prior and needs to be removed. This should only affect future
             picks because you shouldn't be able to select a team that you've picked in the past. */
             id = HasTeamBeenPicked(fsTeamId, teamPickedId);
-                        
+
             numPicked = HowManyPicksExistInDB(fsSeasonWeekId, fsTeamId);
             if (numPicked < 2) {
                 CollegeLoveLeave.InsertPick(fsSeasonWeekId, fsTeamId, teamPickedId);
             }
-            
+
             // Now do the deletion that was flagged before now that the new pick has been inserted.
             if (id > 0) { DeletePick(id); }
 
@@ -230,7 +232,7 @@ public class CollegeLoveLeave implements Serializable {
     }
 
     // PRIVATE METHODS
-    
+
     /* This method removes a pick out of the DB. */
      public static int DeletePick(int CollegeLoveLeaveId) {
 
@@ -242,7 +244,7 @@ public class CollegeLoveLeave implements Serializable {
 	sql.append("WHERE CollegeLoveLeaveID = ").append(CollegeLoveLeaveId);
 
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
@@ -264,7 +266,7 @@ public class CollegeLoveLeave implements Serializable {
             sql.append("WHERE FSTeamID = ").append(fsTeamId).append(" AND TeamPickedID = ").append(teamPickedId).append(" ");
 
             // Execute Query
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 id = crs.getInt("CollegeLoveLeaveID");
             }
@@ -292,7 +294,7 @@ public class CollegeLoveLeave implements Serializable {
             sql.append("WHERE FSSeasonWeekID = ").append(fsSeasonWeekId).append(" AND FSTeamID = ").append(fsTeamId);
 
             // Execute Query
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
                 retVal = crs.getInt("NumPicks");
             }
@@ -307,7 +309,7 @@ public class CollegeLoveLeave implements Serializable {
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
     private void InitFromCRS(CachedRowSet crs, String prefix) {
-        
+
         try {
 
             // DB FIELDS
@@ -344,7 +346,7 @@ public class CollegeLoveLeave implements Serializable {
             if (FSUtils.fieldExists(crs, "Game$", "GameID")) {
                 setGame(new Game(crs, "Game$"));
             }
-            
+
             if (FSUtils.fieldExists(crs, "Game$", "WinnerID")) {
                 int winnerId = crs.getInt("Game$WinnerID");
                 if (winnerId > 0) {
@@ -360,7 +362,7 @@ public class CollegeLoveLeave implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }   
+    }
 
     /*  This method inserts a new record into the DB. */
     public static int InsertPick(int fsSeasonWeekId, int fsTeamId, int teamPickedId) {
@@ -375,7 +377,7 @@ public class CollegeLoveLeave implements Serializable {
 
         // Execute Query
         try {
-            retVal = CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            retVal = CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

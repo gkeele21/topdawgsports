@@ -2,13 +2,15 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+import tds.main.bo.Team;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.CTApplication;
-import tds.main.bo.Team;
 
 public class MarchMadnessTeamSeed implements Serializable {
 
@@ -44,7 +46,7 @@ public class MarchMadnessTeamSeed implements Serializable {
             sql.append("FROM MarchMadnessTeamSeed ");
             sql.append("WHERE TeamSeedID = ").append(teamSeedId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -64,7 +66,7 @@ public class MarchMadnessTeamSeed implements Serializable {
             sql.append("FROM MarchMadnessTeamSeed s ");
             sql.append("WHERE s.TournamentID = ").append(tournamentId).append(" AND TeamSeedID = ").append(teamSeedId);
 
-            crs = CTApplication._CT_QUICK_DB.executeQuery(CTApplication._CT_DB.getConn(false), sql.toString());
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {
                 InitFromCRS(crs, "");
             }
@@ -229,7 +231,7 @@ public class MarchMadnessTeamSeed implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
@@ -251,7 +253,7 @@ public class MarchMadnessTeamSeed implements Serializable {
         sql.append("WHERE TeamSeedID = ").append(getTeamSeedID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

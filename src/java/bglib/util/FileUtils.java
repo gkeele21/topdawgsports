@@ -1,15 +1,14 @@
 package bglib.util;
 
-import static bglib.util.Application._GLOBAL_QUICK_DB;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static bglib.util.Application._GLOBAL_QUICK_DB;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +37,6 @@ public class FileUtils {
             List columns = Arrays.asList(columnnames);
 
             StringTokenizer st = new StringTokenizer(str,"\n");
-            Connection con = _GLOBAL_QUICK_DB.getConn(false);
             int linenumber = 1;
             while (st.hasMoreTokens()) {
                 try {
@@ -85,7 +83,7 @@ public class FileUtils {
 
                             sql.append(")");
                             logger.info(sql.toString());
-                            _GLOBAL_QUICK_DB.executeUpdate(con, sql.toString());
+                            _GLOBAL_QUICK_DB.executeUpdate(sql.toString());
                         }
                     }
                 } catch (Exception e) {
@@ -94,10 +92,6 @@ public class FileUtils {
                 }
                 linenumber++;
             }
-            con.commit();
-
-            con.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();

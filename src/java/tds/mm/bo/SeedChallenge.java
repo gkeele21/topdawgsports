@@ -2,13 +2,15 @@ package tds.mm.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
+import tds.main.bo.FSTeam;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
-import tds.main.bo.CTApplication;
-import tds.main.bo.FSTeam;
 
 public class SeedChallenge implements Serializable {
 
@@ -20,7 +22,7 @@ public class SeedChallenge implements Serializable {
 
     // OBJECTS
     private MarchMadnessTournament _Tournament;
-    private FSTeam _FSTeam;    
+    private FSTeam _FSTeam;
     private SeedChallengeGroup _SeedChallengeGroup;
     private MarchMadnessTeamSeed _TeamSeedPicked;
 
@@ -40,12 +42,12 @@ public class SeedChallenge implements Serializable {
     public Integer getFSTeamID() {return _FSTeamID;}
     public Integer getSeedChallengeGroupID() {return _SeedChallengeGroupID;}
     public Integer getTeamSeedPickedID() {return _TeamSeedPickedID;}
-    public MarchMadnessTournament getTournament() {return _Tournament;}    
-    public FSTeam getFSTeam() {return _FSTeam;}    
+    public MarchMadnessTournament getTournament() {return _Tournament;}
+    public FSTeam getFSTeam() {return _FSTeam;}
     public SeedChallengeGroup getSeedChallengeGroup() {return _SeedChallengeGroup;}
     public MarchMadnessTeamSeed getTeamSeedPicked() {return _TeamSeedPicked;}
-    public boolean getIsPickCorrect() {return _isPickCorrect;}    
-    
+    public boolean getIsPickCorrect() {return _isPickCorrect;}
+
     // SETTERS
     public void setTournamentID(int TournamentID) {_TournamentID = TournamentID;}
     public void setFSTeamID(int FSTeamID) {_FSTeamID = FSTeamID;}
@@ -54,18 +56,18 @@ public class SeedChallenge implements Serializable {
     public void setTournament(MarchMadnessTournament Tournament) {_Tournament = Tournament;}
     public void setFSTeam(FSTeam FSTeam) {_FSTeam = FSTeam;}
     public void setSeedChallengeGroup(SeedChallengeGroup SeedChallengeGroup) {_SeedChallengeGroup = SeedChallengeGroup;}
-    public void setTeamSeedPicked(MarchMadnessTeamSeed TeamSeedPicked) {_TeamSeedPicked = TeamSeedPicked;}    
-    public void setIsPickCorrect(boolean IsCorrect) {_isPickCorrect = IsCorrect;}    
+    public void setTeamSeedPicked(MarchMadnessTeamSeed TeamSeedPicked) {_TeamSeedPicked = TeamSeedPicked;}
+    public void setIsPickCorrect(boolean IsCorrect) {_isPickCorrect = IsCorrect;}
 
     // PUBLIC METHODS
-    
+
     /*  This method is used to get a user's picks for the College Tournament's Seed Challenge game. */
     public static List<SeedChallenge> GetAllSeedChallengePicks(int tournamentId) {
         List<SeedChallenge> picks = new ArrayList<SeedChallenge>();
         CachedRowSet crs = null;
         StringBuilder sql = new StringBuilder();
 
-        sql.append("SELECT").append(_Cols.getColumnList("SeedChallenge", "sc.", "")).append(",");        
+        sql.append("SELECT").append(_Cols.getColumnList("SeedChallenge", "sc.", "")).append(",");
         sql.append(_Cols.getColumnList("FSTeam", "fst.", "FSTeam$")).append(",");
         sql.append(_Cols.getColumnList("FSUser", "u.", "FSUser$")).append(",");
         sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "ts.", "MarchMadnessTeamSeed$")).append(",");
@@ -74,7 +76,7 @@ public class SeedChallenge implements Serializable {
         sql.append("JOIN FSTeam fst ON fst.FSTeamID = sc.FSTeamID ");
         sql.append("JOIN FSUser u ON u.FSUserID = fst.FSUserID ");
         sql.append("JOIN MarchMadnessTeamSeed ts ON ts.TeamSeedID = sc.TeamSeedPickedID ");
-        sql.append("JOIN Team tm ON tm.TeamID = ts.TeamID ");        
+        sql.append("JOIN Team tm ON tm.TeamID = ts.TeamID ");
         sql.append("WHERE sc.TournamentID = ").append(tournamentId).append(" ");
         sql.append("ORDER BY fst.FSTeamID, sc.FSTeamID, ts.SeedNumber");
 
@@ -103,13 +105,13 @@ public class SeedChallenge implements Serializable {
         sql.append(_Cols.getColumnList("MarchMadnessTournament", "t.", "MarchMadnessTournament$")).append(",");
         sql.append(_Cols.getColumnList("MarchMadnessTeamSeed", "ts.", "MarchMadnessTeamSeed$")).append(",");
         sql.append(_Cols.getColumnList("Team", "tm.", "Team$")).append(",");
-        sql.append(_Cols.getColumnList("FSTeam", "fst.", "FSTeam$"));        
+        sql.append(_Cols.getColumnList("FSTeam", "fst.", "FSTeam$"));
         sql.append("FROM SeedChallengeGroup scg ");
         sql.append("LEFT JOIN SeedChallenge sc ON sc.SeedChallengeGroupID = scg.SeedChallengeGroupID AND sc.FSTeamID = ").append(fsTeamId).append(" ");
         sql.append("LEFT JOIN MarchMadnessTournament t ON t.TournamentID = sc.TournamentID ");
         sql.append("LEFT JOIN MarchMadnessTeamSeed ts ON ts.TeamSeedID = sc.TeamSeedPickedID ");
         sql.append("LEFT JOIN Team tm ON tm.TeamID = ts.TeamID ");
-        sql.append("LEFT JOIN FSTeam fst ON fst.FSTeamID = sc.FSTeamID ");        
+        sql.append("LEFT JOIN FSTeam fst ON fst.FSTeamID = sc.FSTeamID ");
         sql.append("WHERE scg.TournamentID = ").append(tournamentId).append(" ");
         sql.append("ORDER BY scg.StartingSeedNumber");
 
@@ -128,13 +130,13 @@ public class SeedChallenge implements Serializable {
    }
 
     /*  This method is used to store the SeedChallenge data in the DB. */
-    public void Save() {        
+    public void Save() {
         boolean doesExist = FSUtils.DoesARecordExistInDB("SeedChallenge", "FSTeamID", getFSTeamID(), "SeedChallengeGroupID", getSeedChallengeGroupID());
         if (doesExist) Update(); else Insert();
-    } 
+    }
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
-    private void InitFromCRS(CachedRowSet crs, String prefix) {        
+    private void InitFromCRS(CachedRowSet crs, String prefix) {
         try {
             // DB Fields
             //if (FSUtils.fieldExists(crs, prefix, "SeedChallengeID")) { setSeedChallengeID(crs.getInt(prefix + "SeedChallengeID")); }
@@ -145,9 +147,9 @@ public class SeedChallenge implements Serializable {
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "MarchMadnessTournament$", "TournamentID")) { setTournament(new MarchMadnessTournament(crs, "MarchMadnessTournament$")); }
-            if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) { setFSTeam(new FSTeam(crs, "FSTeam$")); }                     
+            if (FSUtils.fieldExists(crs, "FSTeam$", "FSTeamID")) { setFSTeam(new FSTeam(crs, "FSTeam$")); }
             if (FSUtils.fieldExists(crs, "SeedChallengeGroup$", "SeedChallengeGroupID")) { setSeedChallengeGroup(new SeedChallengeGroup(crs, "SeedChallengeGroup$")); }
-            if (FSUtils.fieldExists(crs, "MarchMadnessTeamSeed$", "TeamSeedID")) { setTeamSeedPicked(new MarchMadnessTeamSeed(crs, "MarchMadnessTeamSeed$")); }   
+            if (FSUtils.fieldExists(crs, "MarchMadnessTeamSeed$", "TeamSeedID")) { setTeamSeedPicked(new MarchMadnessTeamSeed(crs, "MarchMadnessTeamSeed$")); }
 
             // ADDITIONAL FIELDS
             if (FSUtils.fieldExists(crs, "Game$", "WinnerID")) {
@@ -158,10 +160,10 @@ public class SeedChallenge implements Serializable {
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
-    }   
+    }
 
     /*  This method inserts a new record into the DB. */
-    public void Insert() {        
+    public void Insert() {
         StringBuilder sql = new StringBuilder();
 
         sql.append("INSERT INTO SeedChallenge ");
@@ -174,12 +176,12 @@ public class SeedChallenge implements Serializable {
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
-            CTApplication._CT_QUICK_DB.executeInsert(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeInsert(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }
     }
-    
+
     public void Update() {
         StringBuilder sql = new StringBuilder();
 
@@ -192,7 +194,7 @@ public class SeedChallenge implements Serializable {
         sql.append("WHERE FSTeamID = ").append(getFSTeamID()).append(" AND SeedChallengeGroupID = ").append(getSeedChallengeGroupID());
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate(CTApplication._CT_DB.getConn(true), sql.toString());
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         }

@@ -11,7 +11,7 @@
 <html>
     <head>
         <title>TopDawgSports - College Team Schedule</title>
-        <link rel="stylesheet" type="text/css" href="css/topDawgMain.css" media="screen" />       
+        <link rel="stylesheet" type="text/css" href="css/topDawgMain.css" media="screen" />
         <script type="text/javascript" src="js/script.js" ></script>
         <style type="text/css">
             body { background-color: white; margin: 10px; }
@@ -24,7 +24,7 @@
             #innerTeamSchedule .ranking { color: blue; font-weight: bold; }
         </style>
     </head>
-    
+
 <body>
 
         <div id="teamSchedule">
@@ -89,7 +89,10 @@
 
                         <tr>
                             <td>${game.seasonWeek.weekNo}</td>
-                            <td><fmt:formatDate value="${game.gameDate.time}" pattern="MMM. d"/></td>
+                            <td>
+                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                <fmt:formatDate value="${gameDate}" pattern="MMM. d" timeZone="America/Denver" />
+                            </td>
 
                             <c:choose>
                                 <c:when test="${game.visitorID == 0}">
@@ -122,6 +125,6 @@
 
             </div> <!-- innerTeamSchedule -->
         </div> <!-- teamSchedule -->
-    
+
 </body>
 </html>

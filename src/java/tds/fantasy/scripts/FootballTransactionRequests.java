@@ -7,13 +7,14 @@ package tds.fantasy.scripts;
 
 import bglib.scripts.Harnessable;
 import bglib.scripts.ResultCode;
+import tds.main.bo.*;
+import tds.util.CTReturnCode;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tds.main.bo.*;
-import tds.util.CTReturnCode;
 
 /**
  *
@@ -24,7 +25,7 @@ public class FootballTransactionRequests implements Harnessable {
     Logger _Logger;
     ResultCode _ResultCode = ResultCode.RC_ERROR;
     String[] _Args;
-    
+
 //    private int _FSSeasonid = 30;
 
     public FootballTransactionRequests() {
@@ -46,14 +47,14 @@ public class FootballTransactionRequests implements Harnessable {
     public static void main(String[] args) {
         try {
             FootballTransactionRequests requests = new FootballTransactionRequests();
-            
+
             requests.run();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
+
     @Override
     public void run() {
 
@@ -61,12 +62,12 @@ public class FootballTransactionRequests implements Harnessable {
         try {
 
             con = CTApplication._CT_QUICK_DB.getConn(false);
-            
+
             FSGame fsGame = new FSGame(1);
             int currentFSSeasonID = fsGame.getCurrentFSSeasonID();
 
             processTransactionRequests(con, currentFSSeasonID);
-            
+
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
             _Logger.log(Level.SEVERE, "Exception in FootballTransactionRequests.run()", e);
@@ -76,7 +77,7 @@ public class FootballTransactionRequests implements Harnessable {
                     con.close();
                 }
             } catch (Exception e) {
-                
+
             }
         }
     }
@@ -92,13 +93,13 @@ public class FootballTransactionRequests implements Harnessable {
             for (FSLeague league : leagues) {
 
                 int leagueid = league.getFSLeagueID();
-                
+
                 _Logger.info("Processing Requests for League : " + leagueid + "[START]");
 
-                processRequests(con,league,fsSeasonWeek.getFSSeasonWeekID());
+                processRequests(league,fsSeasonWeek.getFSSeasonWeekID());
 
                 _Logger.info("Processing Requests for League : " + leagueid + "[END]");
-                
+
                 con.commit();
             }
 
@@ -107,7 +108,7 @@ public class FootballTransactionRequests implements Harnessable {
         }
     }
 
-    private void processRequests(Connection con,FSLeague league,int fsseasonweekid) throws Exception {
+    private void processRequests(FSLeague league,int fsseasonweekid) throws Exception {
         try {
 
             // Grab Transaction Order
@@ -133,21 +134,21 @@ public class FootballTransactionRequests implements Harnessable {
 
                     if (size > 0) {
                         FSFootballTransactionRequest request = teamRequests.get(0);
-                        
+
                         alldone = false;
-                        
+
                         CTReturnCode rc = FSFootballTransaction.insert(request);
                         if (rc.isSuccess()) {
                             // mark this request as granted
                             request.setProcessed(1);
                             request.setGranted(1);
                             request.update();
-                            
+
                             // swap the players on this team's roster
                             if (request.getDropType().equals("ONIR"))
                             {
                                 FSRoster newRoster = new FSRoster();
-                            
+
                                 newRoster.setActiveState("active");
                                 newRoster.setFSSeasonWeekID(request.getFSSeasonWeekID());
                                 newRoster.setFSTeamID(teamid);
@@ -168,33 +169,27 @@ public class FootballTransactionRequests implements Harnessable {
 
                             } else
                             {
-                                swapPlayers(con, teamid, request.getDropPlayerID(), request.getPUPlayerID(), fsseasonweekid);
+                                swapPlayers(teamid, request.getDropPlayerID(), request.getPUPlayerID(), fsseasonweekid);
                             }
-                            
-                            con.commit();
-                            
+
                             newOrder.remove(new Integer(teamid));
                             newOrder.add(new Integer(teamid));
                         } else {
                             throw new Exception ("Error inserting transaction ID : " + request.getRequestID());
                         }
-                        
+
                         _Logger.info("Granting Request[" + request.toString() + "]");
 
                         // update all other transactionrequests that have not yet been processed, but involve
                         // the 2 players involved in this transaction
 
-                        eliminateOtherRequests(con, request,league);
-                        con.commit();
-                        
+                        eliminateOtherRequests(request,league);
+
                     }
-                    con.commit();
                 }
 
             }
 
-            con.commit();
-            
             // create the new order for the next week
 
             FSSeasonWeek thisWeek = new FSSeasonWeek(fsseasonweekid);
@@ -208,7 +203,7 @@ public class FootballTransactionRequests implements Harnessable {
                 sql.append("DELETE FROM FSFootballTransactionOrder ");
                 sql.append(" WHERE FSSeasonWeekID = ").append(nextweekid);
                 sql.append(" AND FSLeagueID = ").append(league.getFSLeagueID());
-                CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                 for (Integer teamId : newOrder)
                 {
@@ -221,20 +216,18 @@ public class FootballTransactionRequests implements Harnessable {
                     sql.append(",").append(nextweekid);
                     sql.append(",").append(count);
                     sql.append(",").append(teamId).append(")");
-                    CTApplication._CT_QUICK_DB.executeUpdate(con,sql.toString());
+                    CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
                 }
             }
-            
-            con.commit();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception(e);
         }
     }
 
-    public void eliminateOtherRequests(Connection con, FSFootballTransactionRequest request,FSLeague fsleague) throws Exception {
+    public void eliminateOtherRequests(FSFootballTransactionRequest request,FSLeague fsleague) throws Exception {
 
         // Retrieve the Teams in this league
         List<FSTeam> teams = fsleague.GetTeams();
@@ -257,10 +250,10 @@ public class FootballTransactionRequests implements Harnessable {
         sql.append(" and (PUPlayerID = ").append(request.getPUPlayerID());
         sql.append(" or DropPlayerID = ").append(request.getDropPlayerID()).append(") ");
 
-        CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
     }
 
-    public boolean swapPlayers(Connection con, int fsteamid, int dropplayerid, int puplayerid, int fsseasonweekid) throws Exception {
+    public boolean swapPlayers(int fsteamid, int dropplayerid, int puplayerid, int fsseasonweekid) throws Exception {
 
         StringBuffer sql = new StringBuffer();
         sql.append("  update FSRoster ");
@@ -269,7 +262,7 @@ public class FootballTransactionRequests implements Harnessable {
         sql.append(" and FSSeasonWeekID = ").append(fsseasonweekid);
         sql.append(" and PlayerID = ").append(dropplayerid);
 
-        CTApplication._CT_QUICK_DB.executeUpdate(con, sql.toString());
+        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
 
         return true;
     }
