@@ -3,7 +3,9 @@ package tds.main.bo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import tds.main.bo.football.stats.MySportsFeeds_PlayerList;
+import tds.fantasy.scripts.FootballStats_ProFootballAPI;
+import tds.main.bo.football.stats.MySportsFeeds.Players_PlayerObj;
+import tds.main.bo.football.stats.MySportsFeeds.Stats_PlayerObj;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,39 +21,110 @@ public class MySportsFeeds_ProFootballAPI {
     private final static String PASSWORD = "MYSPORTSFEEDS";
     private final static String BASE_URL = "https://api.mysportsfeeds.com/v2.1";
 
-    public static List<MySportsFeeds_PlayerList> getPlayers() {
+    private final static String PLAYED_STATUS_COMPLETED = "COMPLETED";
+    private final static String PLAYED_STATUS_UNPLAYED = "UNPLAYED";
+
+    public static List<Players_PlayerObj> getPlayers() {
 
         String results = "";
-        List<MySportsFeeds_PlayerList> players = new ArrayList<>();
+        List<Players_PlayerObj> players = new ArrayList<>();
         try {
+            results = getAPIResults("/pull/nfl/players.json");
 
-//            String credential = Credentials.basic(API_KEY, PASSWORD);
-//            String encoded = Base64.getEncoder().encodeToString(credential.getBytes());
-//
-//            OkHttpClient client = new OkHttpClient().newBuilder()
-//                    .build();
-//            Request request = new Request.Builder()
-//                    .url(BASE_URL + "/pull/nfl/players.json")
-//                    .method("GET", null)
-//                    .addHeader("Authorization", "Basic " + encoded)
-//                    .build();
-//            Response response = client.newCall(request).execute();
-//            ResponseBody body = response.body();
-//            results = body.string();
+            if (results != null && !"".equals(results)) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode playersObj = mapper.readTree(results);
 
-//            String command = "curl --location --request GET 'https://api.mysportsfeeds.com/v2.1/pull/nfl/players.json' --header 'Authorization: Basic ZDIzNzkzOWItYTg2ZC00MDgxLTg5MjAtM2Q3NWQ3Ok1ZU1BPUlRTRkVFRFM='";
-//            ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
-//            Process process = processBuilder.start();
+                JsonNode playersJsonArray = playersObj.get("players");
 
+                if (playersJsonArray.isArray()) {
+                    players = mapper.readValue(playersJsonArray.toString(), new TypeReference<List<Players_PlayerObj>>(){});
+                }
+            }
 
-//            Process process = Runtime.getRuntime().exec(command);
-//            InputStream inputStream = process.getInputStream();
-//            results = new BufferedReader(
-//                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-//                    .lines()
-//                    .collect(Collectors.joining("\n"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return players;
+    }
 
-            URL url = new URL(BASE_URL + "/pull/nfl/players.json");
+    private static void processPlayerStats(Stats_PlayerObj playerObj, Player player, int seasonweekid) {
+        try {
+            FootballStats_ProFootballAPI.insertIntoFootballStatsTable_Offense(playerObj, player, seasonweekid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void processAwayHomeNode(JsonNode teamNode, ObjectMapper mapper, int seasonweekid) throws Exception {
+        JsonNode teamStatsArray = teamNode.get("teamStats");
+        JsonNode playersArray = teamNode.get("players");
+
+        if (playersArray.isArray()) {
+            List<Stats_PlayerObj> players = mapper.readValue(playersArray.toString(), new TypeReference<List<Stats_PlayerObj>>(){});
+
+            for (Stats_PlayerObj playerObj : players) {
+                // grab Player obj for this player
+                int extId = playerObj.getPlayer().getId();
+                Player player = Player.createFromStatsID(String.valueOf(extId));
+                if (player == null || player.getPlayerID() < 1) {
+                    continue;
+                }
+
+                processPlayerStats(playerObj, player, seasonweekid);
+            }
+
+        }
+
+    }
+
+    private static void getPlayerStatsFromGame(JsonNode statsNode, ObjectMapper mapper, int seasonweekid) {
+        try {
+            JsonNode homeNode = statsNode.get("home");
+            JsonNode awayNode = statsNode.get("away");
+
+            processAwayHomeNode(homeNode, mapper, seasonweekid);
+            processAwayHomeNode(awayNode, mapper, seasonweekid);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getIndividualGameStats(Game game, int seasonweekid) {
+        if (game.getExternalGameID() == null || "".equals(game.getExternalGameID())) {
+            return "ERROR: That game has no external Id set.";
+        }
+
+        try {
+            String results = getAPIResults("/pull/nfl/current/games/" + game.getExternalGameID() + "/boxscore.json");
+
+            if (results != null && !"".equals(results)) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode gameObj = mapper.readTree(results);
+
+                JsonNode gameNode = gameObj.get("game");
+                JsonNode scoringNode = gameObj.get("scoring");
+                JsonNode statsNode = gameObj.get("stats");
+                JsonNode referencesNode = gameObj.get("references");
+
+                // gameNode stuff
+                String gameStatus = gameNode.get("playedStatus").asText();
+
+                getPlayerStatsFromGame(statsNode, mapper, seasonweekid);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+        return "";
+    }
+
+    private static String getAPIResults(String path) {
+        String results = "";
+        try {
+            URL url = new URL(BASE_URL + path);
             URLConnection uc;
             uc = url.openConnection();
 
@@ -70,30 +143,18 @@ public class MySportsFeeds_ProFootballAPI {
 
             }
             results = builder.toString();
-            if (results != null && !"".equals(results)) {
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode playersObj = mapper.readTree(results);
-
-                JsonNode playersJsonArray = playersObj.get("players");
-
-                if (playersJsonArray.isArray()) {
-                    players = mapper.readValue(playersJsonArray.toString(), new TypeReference<List<MySportsFeeds_PlayerList>>(){});
-                }
-            }
-
-//            process.destroy();
-//            int exitCode = process.exitValue();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return players;
+
+        return results;
     }
 
     public static void main(String[] args) {
         try {
-            List<MySportsFeeds_PlayerList> players = getPlayers();
-
+//            List<Players_PlayerObj> players = getPlayers();
+//            Game game = new Game(19502);
+//            game.getStats();
         } catch (Exception e) {
             e.printStackTrace();
         }

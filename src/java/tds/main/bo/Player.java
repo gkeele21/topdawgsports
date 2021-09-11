@@ -2,13 +2,15 @@ package tds.main.bo;
 
 import bglib.data.JDBCDatabase;
 import bglib.util.FSUtils;
+import sun.jdbc.rowset.CachedRowSet;
+import tds.util.CTReturnCode;
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.*;
-import sun.jdbc.rowset.CachedRowSet;
+
 import static tds.data.CTColumnLists._Cols;
 import static tds.main.bo.CTApplication._CT_LOG;
-import tds.util.CTReturnCode;
 
 public class Player implements Serializable {
 
@@ -166,8 +168,36 @@ public class Player implements Serializable {
         }
 
         return player;
+    }
+
+    public static Player createFromStatsID2(String statsID) {
+        Player player = null;
+        CachedRowSet crs = null;
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ").append(_Cols.getColumnList("Player", "p.", ""));
+            sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+            sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
+            sql.append(",").append(_Cols.getColumnList("Country", "c.", ""));
+            sql.append(" FROM Player p ");
+            sql.append(" INNER JOIN Team t ON t.TeamID = p.TeamID ");
+            sql.append(" INNER JOIN Position ps ON ps.PositionID = p.PositionID ");
+            sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
+            sql.append(" WHERE p.StatsPlayerID2 = ").append(statsID);
+
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
+            crs.next();
+            player.initFromCRS(crs, "");
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+        }
+
+        return player;
 
     }
+
 
     public static Player getInstance(int playerID) {
 

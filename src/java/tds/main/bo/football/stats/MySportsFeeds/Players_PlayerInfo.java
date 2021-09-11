@@ -1,8 +1,8 @@
-package tds.main.bo.football.stats;
+package tds.main.bo.football.stats.MySportsFeeds;
 
 import java.util.List;
 
-public class MySportsFeeds_PlayerObj {
+public class Players_PlayerInfo {
 
     public int id;
     public String firstName;

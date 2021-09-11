@@ -11,8 +11,8 @@ import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
 import tds.main.bo.CTApplication;
 import tds.main.bo.MySportsFeeds_ProFootballAPI;
-import tds.main.bo.football.stats.MySportsFeeds_PlayerList;
-import tds.main.bo.football.stats.MySportsFeeds_PlayerObj;
+import tds.main.bo.football.stats.MySportsFeeds.Players_PlayerObj;
+import tds.main.bo.football.stats.MySportsFeeds.Players_PlayerInfo;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,15 +70,15 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
 
             CTApplication._CT_QUICK_DB.executeUpdate(clear.toString());
 
-            List<MySportsFeeds_PlayerList> players = MySportsFeeds_ProFootballAPI.getPlayers();
+            List<Players_PlayerObj> players = MySportsFeeds_ProFootballAPI.getPlayers();
 
             if (players.size() > 0) {
                 int playerCount = 0;
-                for (MySportsFeeds_PlayerList playerList : players) {
+                for (Players_PlayerObj playerList : players) {
 
                     playerCount++;
 
-                    MySportsFeeds_PlayerObj player = playerList.getPlayer();
+                    Players_PlayerInfo player = playerList.getPlayer();
 
                     String newPlayerId = String.valueOf(player.getId());
 

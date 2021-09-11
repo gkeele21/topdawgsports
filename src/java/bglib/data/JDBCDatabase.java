@@ -153,7 +153,7 @@ public class JDBCDatabase {
             con = getConn();
             success = executeUpdate(con, query);
         } finally {
-//            close(con);
+            close(con);
 //            if (con!=null && con.isClosed()==false) {
 //                System.out.println("CONNECTION NOT CLOSED!!!");
 //            }

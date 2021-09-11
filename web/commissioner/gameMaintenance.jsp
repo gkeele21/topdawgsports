@@ -48,6 +48,11 @@
                     saveGameMatchup($(this));
                 })
 
+                /* PRO AND COLLEGE GET STATS */
+                $("button[id=getGameStats]").click(function() {
+                    getGameStats($(this));
+                })
+
                 /* MARCH MADNESS UPDATE SCORE */
                 $("button[id*=updateScore]").click(function() {
                     updateMarchMadnessScore($(this));
@@ -108,6 +113,26 @@
                     dataType: "xml",
                     type:"POST",
                     data:"method=SaveGameMatchup&gid="+gid+"&gd="+gd+"&wk="+wk+"&vid="+vid+"&vr="+vr+"&vs="+vs+"&vw="+vw+"&vl="+vl+"&hid="+hid+"&hs="+hs+"&hw="+hw+"&hl="+hl+"&hr="+hr,
+                    error: function(){
+                        alert("Unknown error, please try again.");
+                    }
+                })
+
+                me.show();
+            }
+
+            function getGameStats(me) {
+                alert("Here in getGameStats");
+                me.hide();
+
+                var gid = me.attr('gid');
+
+                // Save Game Score / Matchup
+                $.ajax({
+                    url:"ajaxCall.ajax",
+                    dataType: "xml",
+                    type:"POST",
+                    data:"method=GetGameStats&gid="+gid,
                     error: function(){
                         alert("Unknown error, please try again.");
                     }
@@ -262,7 +287,10 @@
                             <%-- Home Name --%>
                             <td class="homeTeamName" title="${game.homeID}">${game.home.fullName} ${game.home.mascot}</td>
 
-                            <td><input type="button" value="SAVE" gid="${game.gameID}" vid="${game.visitorID}" hid="${game.homeID}" wk="${displayWeek.seasonWeekID}" /></td>
+                            <td>
+                                <input type="button" value="SAVE" gid="${game.gameID}" vid="${game.visitorID}" hid="${game.homeID}" wk="${displayWeek.seasonWeekID}" />
+                                <button id="getGameStats" gid="${game.gameID}">GET STATS</button>
+                            </td>
                         </tr>
                     </c:forEach>
                 </table>

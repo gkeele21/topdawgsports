@@ -25,7 +25,7 @@ public class fsSeason_updatePlayersAction extends BaseAction {
 //            prefix = "commissioner/golf/";
         }
 
-        nextPage = prefix + "fsSeasonView";
+        nextPage = prefix + "commissioner/fsSeasonView";
 
         UserSession userSession = UserSession.getUserSession(request, response);
         HttpSession session = userSession.getHttpSession();

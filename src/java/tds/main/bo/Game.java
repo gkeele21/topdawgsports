@@ -319,6 +319,10 @@ public class Game implements Serializable {
         if (doesExist) { Update(); } else { Insert(); }
     }
 
+    public String getStats(int seasonweekid) {
+        return MySportsFeeds_ProFootballAPI.getIndividualGameStats(this, seasonweekid);
+    }
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */

@@ -1,16 +1,16 @@
-package tds.main.bo.football.stats;
+package tds.main.bo.football.stats.MySportsFeeds;
 
-public class MySportsFeeds_PlayerList {
+public class Players_PlayerObj {
 
-    public MySportsFeeds_PlayerObj player;
+    public Players_PlayerInfo player;
 
     public Object teamAsOfDate;
 
-    public MySportsFeeds_PlayerObj getPlayer() {
+    public Players_PlayerInfo getPlayer() {
         return player;
     }
 
-    public void setPlayer(MySportsFeeds_PlayerObj player) {
+    public void setPlayer(Players_PlayerInfo player) {
         this.player = player;
     }
 

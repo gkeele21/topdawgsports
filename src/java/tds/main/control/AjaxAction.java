@@ -49,6 +49,10 @@ public class AjaxAction extends HttpServlet {
                 ret = SaveGameMatchup(request);
             }
 
+            else if (method.equals("GetGameStats")) {
+                ret = GetGameStats(request);
+            }
+
             else if (method.equals("SavePickemConfidencePts")) {
                 ret = SavePickemConfidencePts(request);
             }
@@ -208,6 +212,26 @@ public class AjaxAction extends HttpServlet {
 
         }
         catch (Exception e) { return "<result>SaveGameMatchup error : " + e.getMessage() + "</result>"; }
+
+        return "<result>Success</result>";
+    }
+
+    public String GetGameStats(HttpServletRequest request) {
+
+        try {
+            // Retrieve parameters
+            int gameId = FSUtils.getIntRequestParameter(request,"gid", 0);
+            int seasonWeekId = FSUtils.getIntRequestParameter(request,"wk", 0);
+
+            // Grab game stats
+            Game game = new Game(gameId);
+            String errorMessage = game.getStats(seasonWeekId);
+            if (!"".equals(errorMessage)) {
+                return "<result>" + errorMessage + "</result>";
+            }
+
+        }
+        catch (Exception e) { return "<result>GetGameStats error : " + e.getMessage() + "</result>"; }
 
         return "<result>Success</result>";
     }
