@@ -50,7 +50,13 @@ public class MySportsFeeds_ProFootballAPI {
 
     private static void processPlayerStats(Stats_PlayerObj playerObj, Player player, int seasonweekid) {
         try {
-            FootballStats_ProFootballAPI.insertIntoFootballStatsTable_Offense(playerObj, player, seasonweekid);
+            System.out.println("Inserting stats for " + player.getFirstName() + " " + player.getLastName());
+            if (player.getPositionID() >= 1 && player.getPositionID() < 6) {
+                // Offensive player
+                FootballStats_ProFootballAPI.saveFootballStatsTable_Offense(playerObj, player, seasonweekid);
+            } else if (player.getPositionID() >= 9 && player.getPositionID() < 12) {
+                // Defensive player
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,16 +72,15 @@ public class MySportsFeeds_ProFootballAPI {
             for (Stats_PlayerObj playerObj : players) {
                 // grab Player obj for this player
                 int extId = playerObj.getPlayer().getId();
-                Player player = Player.createFromStatsID(String.valueOf(extId));
+                Player player = Player.createFromStatsID2(String.valueOf(extId));
                 if (player == null || player.getPlayerID() < 1) {
                     continue;
                 }
 
                 processPlayerStats(playerObj, player, seasonweekid);
             }
-
+            System.out.println("All player stats are done.");
         }
-
     }
 
     private static void getPlayerStatsFromGame(JsonNode statsNode, ObjectMapper mapper, int seasonweekid) {

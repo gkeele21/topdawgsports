@@ -171,7 +171,7 @@ public class Player implements Serializable {
     }
 
     public static Player createFromStatsID2(String statsID) {
-        Player player = null;
+        Player player = new Player();
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
@@ -451,7 +451,7 @@ public class Player implements Serializable {
             sql.append(" LEFT JOIN Season ss ON ss.SeasonID = sw.SeasonID ");
             sql.append(" LEFT JOIN Team t ON t.StatsTeamID = st.TeamID ");
 //            sql.append(" WHERE st.StatsPlayerID = ").append(getStatsPlayerID());
-            sql.append(" WHERE st.StatsPlayerID = '").append(getNFLGameStatsID()).append("'");
+            sql.append(" WHERE st.PlayerID = '").append(getPlayerID()).append("'");
             sql.append(" AND st.SeasonID = ").append(Season._CurrentSeasonID);
             sql.append(" ORDER BY st.SeasonWeekID");
 
@@ -472,7 +472,7 @@ public class Player implements Serializable {
                 setWeeklyStats(new TreeMap<Integer,FootballStats>());
             }
 
-            if (!"0".equals(getNFLGameStatsID())) {
+            if (!"0".equals(getStatsPlayerID2())) {
 
                 StringBuilder sql = new StringBuilder();
                 sql.append(" SELECT ").append(_Cols.getColumnList("FootballStats", "st.", "FootballStats$"));
@@ -484,7 +484,7 @@ public class Player implements Serializable {
                 sql.append(" LEFT JOIN Season ss ON ss.SeasonID = sw.SeasonID ");
                 sql.append(" LEFT JOIN Team t ON t.StatsTeamID = st.TeamID ");
     //            sql.append(" WHERE st.StatsPlayerID = ").append(getStatsPlayerID());
-                sql.append(" WHERE st.StatsPlayerID = '").append(getNFLGameStatsID()).append("'");
+                sql.append(" WHERE st.PlayerID = '").append(getPlayerID()).append("'");
                 sql.append(" AND st.SeasonID = ").append(Season._CurrentSeasonID);
                 sql.append(" ORDER BY st.SeasonWeekID");
 

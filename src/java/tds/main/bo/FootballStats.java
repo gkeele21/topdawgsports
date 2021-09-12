@@ -3,6 +3,7 @@ package tds.main.bo;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
+import tds.util.CTReturnCode;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -77,6 +78,7 @@ public class FootballStats implements Serializable {
     private int _SeasonWeekID;
     private int _RecTargets;
     private double _AvgFantasyPts;
+    private int _PlayerID;
 
     // OBJECTS
     private Player _Player;
@@ -159,6 +161,7 @@ public class FootballStats implements Serializable {
     public double getSalFantasyPts() {return _SalFantasyPts;}
     public int getSeasonWeekID() {return _SeasonWeekID;}
     public int getRecTargets() {return _RecTargets;}
+    public int getPlayerID() {return _PlayerID;}
     public double getAvgFantasyPts() { return _AvgFantasyPts; }
     public Player getPlayer() {if (_Player == null && !AuUtil.isEmpty(_StatsPlayerID)) {_Player = Player.createFromStatsID(_StatsPlayerID);} return _Player;}
     public Season getSeason() {if (_Season == null && _SeasonID > 0) {_Season = new Season(_SeasonID);}return _Season;}
@@ -228,6 +231,7 @@ public class FootballStats implements Serializable {
     public void setSalFantasyPts(double SalFantasyPts) {_SalFantasyPts = SalFantasyPts;}
     public void setSeasonWeekID(int SeasonWeekID) {_SeasonWeekID = SeasonWeekID;}
     public void setRecTargets(int RecTargets) {_RecTargets = RecTargets;}
+    public void setPlayerID(int PlayerID) {_PlayerID = PlayerID;}
     public void setAvgFantasyPts( double avg) { _AvgFantasyPts = avg; }
     public void setPlayer(Player Player) {_Player = Player;}
     public void setSeason(Season Season) {_Season = Season;}
@@ -280,7 +284,7 @@ public class FootballStats implements Serializable {
         sql.append(" FROM FootballStats s");
         sql.append(" INNER JOIN Player p ON p.StatsPlayerID = s.StatsPlayerID");
 //        sql.append(" INNER JOIN FootballStats tst ON tst.StatsPlayerID = p.StatsPlayerID AND tst.SeasonWeekID = 0");
-        sql.append(" INNER JOIN FootballStats tst ON tst.StatsPlayerID = p.NFLGameStatsID AND tst.SeasonWeekID = 0");
+        sql.append(" INNER JOIN FootballStats tst ON tst.PlayerID = p.PlayerID AND tst.SeasonWeekID = 0");
         sql.append(" INNER JOIN Position ps ON ps.PositionID = p.PositionID");
         if (teamsStr.length() > 0) {
             sql.append(" LEFT JOIN FSRoster r ON r.PlayerID = p.PlayerID AND r.FSTeamID IN (");
@@ -303,6 +307,40 @@ public class FootballStats implements Serializable {
         }
 
         return crs;
+    }
+
+    public static FootballStats getRecordByPlayerIDSeasonWeekID(int playerId, int seasonWeekId) throws Exception {
+        FootballStats stats = null;
+
+        StringBuilder check = new StringBuilder();
+        check.append(" SELECT *");
+        check.append(" FROM FootballStats");
+        check.append(" WHERE PlayerID = ").append(playerId);
+        check.append(" AND SeasonWeekID = ").append(seasonWeekId);
+
+        CachedRowSet crs = CTApplication._CT_QUICK_DB.executeQuery(check.toString());
+        if (crs != null) {
+            crs.next();
+            stats = new FootballStats();
+            stats.initFromCRS(crs, "");
+        }
+        return stats;
+    }
+
+    public CTReturnCode Delete() {
+        int res = 0;
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("DELETE FROM FootballStats ");
+        sql.append("WHERE FootballStatsID = ").append(getFootballStatsID());
+
+        try {
+            res = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        }
+
+        return (res > 0) ? CTReturnCode.RC_SUCCESS : CTReturnCode.RC_DB_ERROR;
     }
 
     // PRIVATE METHODS
@@ -567,6 +605,10 @@ public class FootballStats implements Serializable {
                 setRecTargets(crs.getInt(prefix + "RecTargets"));
             }
 
+            if (FSUtils.fieldExists(crs, prefix, "PlayerID")) {
+                setPlayerID(crs.getInt(prefix + "PlayerID"));
+            }
+
             if (FSUtils.fieldExists(crs, prefix, "AvgFantasyPts")) {
                 setAvgFantasyPts(crs.getDouble(prefix + "AvgFantasyPts"));
             } else {
@@ -602,4 +644,6 @@ public class FootballStats implements Serializable {
             CTApplication._CT_LOG.error(e);
         }
     }
+
+
 }

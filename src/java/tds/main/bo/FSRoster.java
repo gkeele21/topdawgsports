@@ -148,7 +148,6 @@ public class FSRoster {
 
     public static List<FSRoster> getRoster(int teamID, int fsseasonweekID, String activeState, boolean sortByStarterState) {
         List<FSRoster> roster = new ArrayList<FSRoster>();
-        System.out.println("getRoster 156");
         CachedRowSet crs = null;
         try {
             StringBuilder sql = new StringBuilder();
@@ -170,8 +169,8 @@ public class FSRoster {
             sql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID ");
 //            sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
 //            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
-            sql.append(" left join FootballStats st on st.StatsPlayerID = p.NFLGameStatsID and st.SeasonWeekID = sw.SeasonWeekID ");
-            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
+            sql.append(" left join FootballStats st on st.PlayerID = p.PlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
+            sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
             sql.append(" where r.FSTeamID = ").append(teamID);
             sql.append(" and r.FSSeasonWeekID = ").append(fsseasonweekID);
             if (!FSUtils.isEmpty(activeState)) {
@@ -184,7 +183,7 @@ public class FSRoster {
             }
             sql.append("p.PositionID, r.ID");
 
-            System.out.println("Query : " + sql.toString());
+//            System.out.println("Query : " + sql.toString());
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
 
             while (crs.next()) {

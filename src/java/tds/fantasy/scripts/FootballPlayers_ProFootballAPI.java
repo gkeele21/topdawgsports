@@ -133,6 +133,9 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
                     } else if ("NT".equals(position))
                     {
                         position = "DL";
+                    } else if ("LS".equals(position))
+                    {
+                        position = "DB";
                     }
 
                     if (team.equals("SD")) {
@@ -228,10 +231,10 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
     public void updateNFLPlayers() throws Exception {
 
         try {
-            CTApplication._CT_QUICK_DB.executeUpdate("UPDATE Player p " +
-                    "INNER JOIN Position pt ON pt.PositionID = p.PositionID " +
-                    "SET p.isActive = 0  " +
-                    "WHERE pt.SportID = 1");
+//            CTApplication._CT_QUICK_DB.executeUpdate("UPDATE Player p " +
+//                    "INNER JOIN Position pt ON pt.PositionID = p.PositionID " +
+//                    "SET p.isActive = 0  " +
+//                    "WHERE pt.SportID = 1");
 
             StringBuilder sql = new StringBuilder();
             sql.append("SELECT * FROM TempProPlayer WHERE StatsPlayerID <> 0 ORDER BY StatsPlayerID");
@@ -256,6 +259,7 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
                     sql.append("UPDATE ").append(CTApplication.TBL_PREF).append("Player ");
                     sql.append(" SET IsActive = 1");
                     sql.append(" ,TeamID = ").append(teamid);
+                    sql.append(" ,StatsPlayerID2 = ").append(statsPlayerId);
                     sql.append(" WHERE PlayerID = ").append(playerId);
                     System.out.println(sql);
                     CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());

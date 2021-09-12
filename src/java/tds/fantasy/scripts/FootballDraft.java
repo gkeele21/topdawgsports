@@ -54,13 +54,13 @@ public class FootballDraft {
             List<FSLeague> fsLeagues = currentFSSeason.GetLeagues();
             for (FSLeague league : fsLeagues)
             {
-                System.out.println("LeagueId : ");
+                System.out.println("LeagueId : " + league.getFSLeagueID());
                 if (league.getIsDraftComplete() != null)
                 {
                     int draftComplete = league.getIsDraftComplete();
                     if (draftComplete == 1)
                     {
-                        _Logger.info("Calling insertRosters for League : " + league.getLeagueName());
+                        System.out.println("Calling insertRosters for League : " + league.getLeagueName());
                         insertRosters(fsSeasonWeekID,league.getFSLeagueID());
 
                     }

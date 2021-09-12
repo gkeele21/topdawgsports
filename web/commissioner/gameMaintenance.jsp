@@ -126,13 +126,14 @@
                 me.hide();
 
                 var gid = me.attr('gid');
+                var wk = me.attr('wk');
 
                 // Save Game Score / Matchup
                 $.ajax({
                     url:"ajaxCall.ajax",
                     dataType: "xml",
                     type:"POST",
-                    data:"method=GetGameStats&gid="+gid,
+                    data:"method=GetGameStats&gid="+gid+"&wk="+wk,
                     error: function(){
                         alert("Unknown error, please try again.");
                     }
@@ -289,7 +290,7 @@
 
                             <td>
                                 <input type="button" value="SAVE" gid="${game.gameID}" vid="${game.visitorID}" hid="${game.homeID}" wk="${displayWeek.seasonWeekID}" />
-                                <button id="getGameStats" gid="${game.gameID}">GET STATS</button>
+                                <button id="getGameStats" gid="${game.gameID}" wk="${displayWeek.seasonWeekID}">GET STATS</button>
                             </td>
                         </tr>
                     </c:forEach>
