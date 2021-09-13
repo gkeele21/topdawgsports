@@ -186,7 +186,7 @@ public class JDBCDatabase {
         int success = 0;
         try {
             con = getConn();
-            success = executeInsert(getConn(), query);
+            success = executeInsert(con, query);
         } finally {
             close(con);
             if (con!=null && con.isClosed()==false) {
