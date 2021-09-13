@@ -25,7 +25,7 @@ public class fsSeason_createRostersAction extends BaseAction {
 //            prefix = "commissioner/golf/";
         }
 
-        nextPage = prefix + "fsSeasonView";
+        nextPage = prefix + "/topdawgsports/commissioner/fsSeasonView";
 
         UserSession userSession = UserSession.getUserSession(request, response);
         HttpSession session = userSession.getHttpSession();

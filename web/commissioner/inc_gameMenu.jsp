@@ -18,7 +18,7 @@
                 </tr>
                 <tr height="22" class="rowData">
                     <td align="center"><a href="fantasy/fsLeague_modifyDraft.htm">Draft Results</a></td>
-                    <td align="center"></td>
+                    <td align="center"><a href="fantasy/fsSeason_figureStarters.htm">Figure Starters</a></td>
                     <td align="center"></td>
                 </tr>
                 <tr height="22" class="rowData">

@@ -196,6 +196,7 @@ public class FootballStats_ProFootballAPI {
         if (playerStats.getReceiving() != null) {
             fantasypts += 6*((double)playerStats.getReceiving().getRecTD());
             fantasypts += ((double)playerStats.getReceiving().getRecYards()/10.0);
+            fantasypts += ((double)playerStats.getReceiving().getReceptions()/2);
         }
         fantasypts += 6*((double)xtratd);
         if (playerStats.getTwoPointAttempts() != null)

@@ -122,7 +122,7 @@
             }
 
             function getGameStats(me) {
-                alert("Here in getGameStats");
+                alert("Starting getGameStats...");
                 me.hide();
 
                 var gid = me.attr('gid');
@@ -134,12 +134,17 @@
                     dataType: "xml",
                     type:"POST",
                     data:"method=GetGameStats&gid="+gid+"&wk="+wk,
+                    success: function(result){
+                        alert("Game stats done.");
+                        me.show();
+                    },
                     error: function(){
                         alert("Unknown error, please try again.");
+                        me.show();
                     }
                 })
 
-                me.show();
+
             }
 
             function updateMarchMadnessScore(me) {

@@ -180,7 +180,7 @@ public class FSTeam implements Serializable {
                 ptssql.append(" inner join FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
                 ptssql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID ");
 //                ptssql.append(" inner join FootballStats s on s.StatsPlayerID = p.StatsPlayerID and s.SeasonWeekID = sw.SeasonWeekID ");
-                ptssql.append(" inner join FootballStats s on s.StatsPlayerID = p.NFLGameStatsID and s.SeasonWeekID = sw.SeasonWeekID ");
+                ptssql.append(" inner join FootballStats s on s.PlayerID = p.PlayerID and s.SeasonWeekID = sw.SeasonWeekID ");
                 ptssql.append(" where t.FSTeamID = ").append(_FSTeamID);
                 ptssql.append(" and r.StarterState = 'starter' ");
                 ptssql.append(" and p.PlayerID = ").append(roster.getPlayerID());

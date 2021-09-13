@@ -1,6 +1,6 @@
 package tds.commissioner.fantasy.control;
 
-import tds.fantasy.scripts.FootballPlayers_ProFootballAPI;
+import tds.fantasy.scripts.FootballResults;
 import tds.main.bo.CTApplication;
 import tds.main.bo.UserSession;
 import tds.main.control.BaseAction;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class fsSeason_updatePlayersAction extends BaseAction {
+public class fsSeason_figureStartersAction extends BaseAction {
 
     @Override
     public String process(HttpServletRequest request, HttpServletResponse response) {
@@ -31,24 +31,24 @@ public class fsSeason_updatePlayersAction extends BaseAction {
         HttpSession session = userSession.getHttpSession();
 
         try {
-            // Update the NFL Players List, if requested
+            // Update the team starters, if requested
             String update = request.getParameter("hfUpdate");
             if ("hfUpdateTrue".equals(update)) {
 
                 try {
-                    FootballPlayers_ProFootballAPI playerUpdate = new FootballPlayers_ProFootballAPI();
-                    System.out.println("Calling run to Update Players...");
-                    playerUpdate.run();
-                    System.out.println("Done Updating Players.");
+                    FootballResults results = new FootballResults();
+                    System.out.println("Calling run to Figure each team's best starters...");
+                    results.run();
+                    System.out.println("Done Figuring Starters.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
         } catch (Exception e) {
-//            System.out.println("Error : " + e.getMessage());
+            System.out.println("Error : " + e.getMessage());
             CTApplication._CT_LOG.error(request, e);
-            UserSession.getUserSession(request, response).setErrorMessage("Error processing field changes.");
+            UserSession.getUserSession(request, response).setErrorMessage("Error creating roster.");
         }
 
         return nextPage;

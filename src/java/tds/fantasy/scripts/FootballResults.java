@@ -107,6 +107,7 @@ public class FootballResults  {
         } catch (Exception e) {
             _ResultCode = ResultCode.RC_ERROR;
             _Logger.log(Level.SEVERE, "Exception in FootballStats.run()", e);
+            e.printStackTrace();
         } finally {
         }
     }
