@@ -86,7 +86,14 @@
                     <li>Game : ${activeTeam.FSLeague.FSSeason.FSGame.gameName}</li>
                     <li>League : ${activeTeam.FSLeague.leagueName}</li>
                     <li>League Size : ${activeTeam.FSLeague.numTeams}</li>
-                    <li>Team : <a href="${activeTeam.FSLeague.FSSeason.FSGame.homeURLShort}?tid=${activeTeam.FSTeamID}">${activeTeam.teamName}</a></li>                    
+                    <c:choose>
+                        <c:when test="${activeTeam.FSLeague.FSSeason.FSGameID == PRO_WINS_POOL_GAMEID}">
+                            <li>Team : <a href="${activeTeam.FSLeague.FSSeason.FSGame.homeURL}" target="_blank">${activeTeam.teamName}</a></li>                    
+                        </c:when>
+                        <c:otherwise>
+                            <li>Team : <a href="${activeTeam.FSLeague.FSSeason.FSGame.homeURLShort}?tid=${activeTeam.FSTeamID}">${activeTeam.teamName}</a></li>                    
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </c:forEach>
             

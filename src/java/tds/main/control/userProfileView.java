@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import tds.main.bo.FSGame;
 import tds.main.bo.FSTeam;
 import tds.main.bo.FSUser;
 import tds.main.bo.Season;
@@ -80,6 +81,8 @@ public class userProfileView extends BaseView {
         session.getHttpSession().setAttribute("allUserTeams", allUserTeams);
         session.getHttpSession().setAttribute("activeTeams", activeTeams);
         session.getHttpSession().setAttribute("inactiveTeams", inactiveTeams);
+        session.getHttpSession().setAttribute("HEAD_TO_HEAD_GAMEID", FSGame.HEAD_TO_HEAD);
+        session.getHttpSession().setAttribute("PRO_WINS_POOL_GAMEID", FSGame.PRO_WINS_POOL);
         
         return page;
     }    

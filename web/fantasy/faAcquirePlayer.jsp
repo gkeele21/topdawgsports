@@ -98,6 +98,11 @@
                             <a href="faAcquirePlayer.htm?pos=WR">WR</a>
                             <a href="faAcquirePlayer.htm?pos=TE">TE</a>
                             <a href="faAcquirePlayer.htm?pos=PK">PK</a>
+                            <c:if test="${fsteam.FSLeagueID == 159}">
+                                <a href="faAcquirePlayer.htm?pos=DL">DL</a>
+                                <a href="faAcquirePlayer.htm?pos=LB">LB</a>
+                                <a href="faAcquirePlayer.htm?pos=DB">DB</a>
+                            </c:if>
                         </div>
 
                         <table>

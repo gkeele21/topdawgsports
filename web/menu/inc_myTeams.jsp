@@ -22,15 +22,15 @@
         </c:if>
 
         <!-- DISPLAY THE TEAM NAME -->
-        <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURLShort}?tid=${team.FSTeamID}">
-            <c:choose>
-                <c:when test="${team.FSLeague.FSSeason.FSGame.FSGameID == 1}">
-                    <c:out value="${team.FSLeague.leagueName}" />
-                </c:when>
-                <c:otherwise>
-                    <c:out value="${team.teamName}" />
-                </c:otherwise>
-            </c:choose>
+        <c:if test="${team.FSLeague.FSSeason.FSGameID == PRO_WINS_POOL_GAMEID}">
+            <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURL}" target="_blank">
+        </c:if>
+        <c:if test="${team.FSLeague.FSSeason.FSGameID != PRO_WINS_POOL_GAMEID}">
+            <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURLShort}?tid=${team.FSTeamID}">
+        </c:if>
+        <c:if test="${team.FSLeague.FSSeason.FSGameID == HEAD_TO_HEAD_GAMEID}">${team.FSLeague.leagueName}</c:if>
+        <c:if test="${team.FSLeague.FSSeason.FSGameID != HEAD_TO_HEAD_GAMEID}">${team.teamName}</c:if>
+        
         </a>
 
 </c:forEach>
