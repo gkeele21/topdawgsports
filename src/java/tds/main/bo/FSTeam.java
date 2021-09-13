@@ -233,7 +233,7 @@ public class FSTeam implements Serializable {
             sql.append(" INNER JOIN FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
             sql.append(" INNER JOIN SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID ");
 //            sql.append(" LEFT JOIN FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
-            sql.append(" LEFT JOIN FootballStats st on st.StatsPlayerID = p.NFLGameStatsId and st.SeasonWeekID = sw.SeasonWeekID ");
+            sql.append(" LEFT JOIN FootballStats st on st.PlayerID = p.PlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
             sql.append(" where r.FSTeamID = ").append(_FSTeamID);
             sql.append(" and r.FSSeasonWeekID = ").append(fsseasonweekid);
             sql.append(" and r.ActiveState = 'active' ");
