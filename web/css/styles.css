@@ -85,8 +85,8 @@ body {
 #titleBox {
     background-image: url(/coltarama/images/grad-gray-10x100.png); 
     width: 100%;  
-    border-top: solid white; 1px; 
-    border-bottom: solid white; 1px;
+    border-top: solid white 1px; 
+    border-bottom: solid white 1px;
     height: 40px;
 }
 

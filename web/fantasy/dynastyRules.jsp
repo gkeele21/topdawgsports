@@ -110,11 +110,21 @@
                         <h3>Receiving Yards :</h3>
                             <label>Total receiving yards divided by 10.</label><br />
                         <h3>Touchdowns :</h3>
-                            <label>6 points for every TD (passing, rushing, receiving, special teams, fumble rec, etc.).</label><br />
+                            <label>6 points for every TD (passing, rushing, receiving, special teams, fumble rec, int's.).</label><br />
                         <h3>Field Goals :</h3>
                             <label>Length of field goal divided by 10 (a minimum of 3 points per field goal will be given).</label><br />
                         <h3>Extra Points :</h3>
                             <label>1 point for every one kicking; 2 points for every one passing, rushing, or receiving.</label><br />
+                        <h3>Tackles :</h3>
+                            <label>1 point for every tackle for an individual defensive player. Half tackles are included for 0.5 points</label><br />
+                        <h3>Sacks :</h3>
+                            <label>3 points for an individual defensive player.</label><br />
+                        <h3>Interceptions :</h3>
+                            <label>4 points for an individual defensive player. A thrown INT on offense does not minus points.</label><br />
+                        <h3>Forced Fumble :</h3>
+                            <label>1 point for an individual defensive player that forced a fumble.</label><br />
+                        <h3>Fumble Recovery :</h3>
+                            <label>3 points for an individual defensive player that recovered a fumble.</label><br />
                         <h3>Negative Points :</h3>
                             <label>There are no negative points. If a player ends a game with negative yardage in any category (i.e. -11 yards rushing), he is given 0 points for that category.</label><br />
                         <h3>Wins and Losses :</h3>
