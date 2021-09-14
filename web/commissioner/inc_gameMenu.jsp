@@ -23,12 +23,12 @@
                 </tr>
                 <tr height="22" class="rowData">
                     <td align="center"><a href="fantasy/fsSeason_createRosters.htm">Create Rosters</a></td>
-                    <td align="center"><a href="fantasy/fsSeason_calculateResults.htm">Calculate Results</a></td>
+                    <td align="center"><a href="fantasy/fsSeason_seasonStats.htm">Total Season Stats</a></td>
                     <td align="center"></td>
                 </tr>
                 <tr height="22" class="rowData">
                     <td align="center"><a href="fantasy/fsSeason_createMatchups.htm">Create Matchups</a></td>
-                    <td align="center"></td>
+                    <td align="center"><a href="fantasy/fsSeason_calculateResults.htm">Calculate Results</a></td>
                     <td align="center"></td>
                 </tr>
             </table>

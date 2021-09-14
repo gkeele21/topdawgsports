@@ -206,8 +206,8 @@ public class FSLeague implements Serializable {
         sql.append(" LEFT JOIN FSSeasonWeek fsw ON fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
 //        sql.append(" LEFT JOIN FootballStats st ON st.StatsPlayerID = p.StatsPlayerID AND st.SeasonWeekID = fsw.SeasonWeekID ");
 //        sql.append(" LEFT JOIN FootballStats tst ON tst.StatsPlayerID = p.StatsPlayerID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
-        sql.append(" LEFT JOIN FootballStats st ON st.StatsPlayerID = p.NFLGameStatsID AND st.SeasonWeekID = fsw.SeasonWeekID ");
-        sql.append(" LEFT JOIN FootballStats tst ON tst.StatsPlayerID = p.NFLGameStatsID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
+        sql.append(" LEFT JOIN FootballStats st ON st.PlayerID = p.PlayerID AND st.SeasonWeekID = fsw.SeasonWeekID ");
+        sql.append(" LEFT JOIN FootballStats tst ON tst.PlayerID = p.PlayerID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
         sql.append(" WHERE r.PlayerID is null ");
         sql.append(" AND ps.PositionName = '").append(positionName).append("'");
         sql.append(" AND p.IsActive = 1 ");
