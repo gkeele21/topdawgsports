@@ -15,6 +15,98 @@ public class FootballStats_ProFootballAPI {
     private static final String DOMAIN = "https://profootballapi.com";
 //    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
+    private static void insertIntoFootballStatsTable_Defense(Stats_PlayerObj playerObj, Player player, int seasonweekid) throws Exception {
+        Stats_PlayerStats playerStats = playerObj.getPlayerStats().get(0);
+
+        double fantasypts = calculateDefensivePlayerFantasyPoints(playerStats);
+        double salfantasypts = fantasypts;
+
+        System.out.println("PlayerID : " + player.getPlayerID() + ",Fantasy Pts : " + fantasypts);
+        System.out.println("PlayerID : " + player.getPlayerID() + ",Sal Fantasy Pts : " + salfantasypts);
+
+        int played = playerStats.getSnapCounts().getDefenseSnaps() > 0 ? 1 : 0;
+        int tacklesSolo = 0;
+        int tacklesAsst = 0;
+        double sacks = 0.0;
+        int sackYards = 0;
+        if (playerStats.getTackles() != null) {
+            tacklesSolo = playerStats.getTackles().getTackleSolo();
+            tacklesAsst = playerStats.getTackles().getTackleAst();
+            sacks = playerStats.getTackles().getSacks();
+            sackYards = playerStats.getTackles().getSackYds();
+        }
+        int interceptions = 0;
+        int interceptionTD = 0;
+        int intYards = 0;
+        int passesDefensed = 0;
+        int safeties = 0;
+        if (playerStats.getInterceptions() != null) {
+            interceptions = playerStats.getInterceptions().getInterceptions();
+            interceptionTD = playerStats.getInterceptions().getIntTD();
+            intYards = playerStats.getInterceptions().getIntYds();
+            passesDefensed = playerStats.getInterceptions().getPassesDefended();
+            safeties = playerStats.getInterceptions().getSafeties();
+        }
+        int fumblesForced = 0;
+        int fumblesRec = 0;
+        int fumbleTD = 0;
+        int fumbleYards = 0;
+        if (playerStats.getFumbles() != null) {
+            fumblesForced = playerStats.getFumbles().getFumForced();
+            fumblesRec = playerStats.getFumbles().getFumOppRec();
+            fumbleTD = playerStats.getFumbles().getFumTD();
+            fumbleYards = playerStats.getFumbles().getFumRecYds();
+        }
+
+        int rushtd = 0;
+        if (playerStats.getRushing() != null) {
+            rushtd = playerStats.getRushing().getRushTD();
+        }
+        int rectd = 0;
+        if (playerStats.getReceiving() != null) {
+            rectd = playerStats.getReceiving().getRecTD();
+        }
+
+        // Insert record into FootballStats table
+        StringBuilder sql = new StringBuilder();
+        sql.append("insert into FootballStats " +
+                "(StatsPlayerID,SeasonWeekID,SeasonID,TeamID,Position,Started,Played," +
+                "IDPAssists,IDPTackles,IDPSacks,IDPSackYardsLost," +
+                "IDPFumbleRecoveries,IDPFumbleReturnsForTD,IDPFumblesForced,IDPFumbleReturnYards," +
+                "IDPInterceptions,IDPIntReturnsForTD,IDPIntReturnYards,IDPPassesDefensed,IDPSafeties," +
+                "RushTD,RecTD,XtraTD," +
+                "FantasyPts,SalFantasyPts,PlayerID) " +
+                "values (" + playerObj.getPlayer().getId() + "," +
+                seasonweekid + "," +
+                Season._CurrentSeasonID + "," +
+                player.getTeamID() + ",'" +
+                playerObj.getPlayer().getPosition() + "'," +
+                playerStats.getMiscellaneous().getGamesStarted() + "," +
+                played + "," +
+                tacklesAsst + "," +
+                tacklesSolo + "," +
+                sacks + "," +
+                sackYards + "," +
+                fumblesRec + "," +
+                fumbleTD + "," +
+                fumblesForced + "," +
+                fumbleYards + "," +
+                interceptions + "," +
+                interceptionTD + "," +
+                intYards + "," +
+                passesDefensed + "," +
+                safeties + "," +
+                rushtd + "," +
+                rectd + "," +
+                (playerStats.getKickoffReturns().getKrTD() + playerStats.getPuntReturns().getPrTD()) + "," +
+                fantasypts + "," +
+                salfantasypts + "," +
+                player.getPlayerID() + ")");
+        System.out.println(sql);
+        CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+
+    }
+
     private static void insertIntoFootballStatsTable_Offense(Stats_PlayerObj playerObj, Player player, int seasonweekid) throws Exception {
         Stats_PlayerStats playerStats = playerObj.getPlayerStats().get(0);
 
@@ -142,6 +234,22 @@ public class FootballStats_ProFootballAPI {
 
     }
 
+    public static void saveFootballStatsTable_Defense(Stats_PlayerObj playerObj, Player player, int seasonweekid) throws Exception {
+
+        if (playerObj.getPlayerStats() == null || playerObj.getPlayerStats().size() < 1) {
+            return;
+        }
+
+        // check to see if a record already exists.  If so, then delete it.
+        FootballStats existing = FootballStats.getRecordByPlayerIDSeasonWeekID(player.getPlayerID(), seasonweekid);
+        if (existing != null) {
+            // delete it first
+            existing.Delete();
+        }
+        insertIntoFootballStatsTable_Defense(playerObj, player, seasonweekid);
+
+    }
+
     public static void saveFootballStatsTable_Offense(Stats_PlayerObj playerObj, Player player, int seasonweekid) throws Exception {
 
         if (playerObj.getPlayerStats() == null || playerObj.getPlayerStats().size() < 1) {
@@ -179,6 +287,36 @@ public class FootballStats_ProFootballAPI {
         salfantasypts = Double.valueOf(twoDForm.format(salfantasypts));
 
         return salfantasypts;
+    }
+
+    private static double calculateDefensivePlayerFantasyPoints(Stats_PlayerStats playerStats) {
+        // calculate Player Fantasy Points
+        double fantasypts = 0.00;
+        if (playerStats.getRushing() != null) {
+            fantasypts += 6*((double)playerStats.getRushing().getRushTD());
+        }
+        if (playerStats.getReceiving() != null) {
+            fantasypts += 6*((double)playerStats.getReceiving().getRecTD());
+        }
+        if (playerStats.getFumbles() != null) {
+            fantasypts += 6*((double)playerStats.getFumbles().getFumTD());
+            fantasypts += playerStats.getFumbles().getFumForced();
+            fantasypts += 3*((double)playerStats.getFumbles().getFumOppRec());
+        }
+        if (playerStats.getTackles() != null) {
+            fantasypts += playerStats.getTackles().getTackleSolo();
+            fantasypts += (double)playerStats.getTackles().getTackleAst()/2;
+            fantasypts += 3*(playerStats.getTackles().getSacks());
+        }
+        if (playerStats.getInterceptions() != null) {
+            fantasypts += 6*((double)playerStats.getInterceptions().getIntTD());
+            fantasypts += 4*((double)playerStats.getInterceptions().getInterceptions());
+        }
+
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+
+        fantasypts = Double.valueOf(twoDForm.format(fantasypts));
+        return fantasypts;
     }
 
     private static double calculateOffensivePlayerFantasyPoints(Stats_PlayerStats playerStats) {

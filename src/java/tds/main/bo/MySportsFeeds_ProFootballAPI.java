@@ -56,6 +56,7 @@ public class MySportsFeeds_ProFootballAPI {
                 FootballStats_ProFootballAPI.saveFootballStatsTable_Offense(playerObj, player, seasonweekid);
             } else if (player.getPositionID() >= 9 && player.getPositionID() < 12) {
                 // Defensive player
+                FootballStats_ProFootballAPI.saveFootballStatsTable_Defense(playerObj, player, seasonweekid);
             }
         } catch (Exception e) {
             e.printStackTrace();
