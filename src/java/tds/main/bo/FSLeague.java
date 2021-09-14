@@ -43,6 +43,7 @@ public class FSLeague implements Serializable {
     private String _SignupType;
     private String _Status;
     private Integer _IncludeTEasWR;
+    private Integer _IncludeIDP;
 
     // OBJECTS
     private FSSeason _FSSeason;
@@ -108,6 +109,7 @@ public class FSLeague implements Serializable {
     public String getSignupType() {return _SignupType;}
     public String getStatus() {return _Status;}
     public Integer getIncludeTEasWR() {return _IncludeTEasWR;}
+    public Integer getIncludeIDP() {return _IncludeIDP;}
     public FSSeason getFSSeason() {if (_FSSeason == null && _FSSeasonID > 0) {_FSSeason = new FSSeason(_FSSeasonID);}return _FSSeason;}
 
     // SETTERS
@@ -133,6 +135,7 @@ public class FSLeague implements Serializable {
     public void setSignupType(String SignupType) {_SignupType = SignupType;}
     public void setStatus(String Status) {_Status = Status;}
     public void setIncludeTEasWR(Integer IncludeTEasWR) {_IncludeTEasWR = IncludeTEasWR;}
+    public void setIncludeIDP(Integer IncludeIDP) {_IncludeIDP = IncludeIDP;}
     public void setFSSeason(FSSeason FSSeason) {_FSSeason = FSSeason;}
 
     // PUBLIC METHODS
@@ -279,8 +282,8 @@ public class FSLeague implements Serializable {
         sql.append(" left join FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
 //        sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = fsw.SeasonWeekID ");
 //        sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(getFSSeason().getSeasonID());
-        sql.append(" left join FootballStats st on st.StatsPlayerID = p.NFLGameStatsID and st.SeasonWeekID = fsw.SeasonWeekID ");
-        sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(getFSSeason().getSeasonID());
+        sql.append(" left join FootballStats st on st.PlayerID = p.PlayerID and st.SeasonWeekID = fsw.SeasonWeekID ");
+        sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(getFSSeason().getSeasonID());
         sql.append(" where ps.PositionName = '").append(positionName).append("'");
         sql.append(" and p.IsActive = 1 ");
         if (!("").equals(except.toString()) && except.length() >= 1) {
@@ -519,6 +522,7 @@ public class FSLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "SignupType")) { setSignupType(crs.getString(prefix + "SignupType")); }
             if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
             if (FSUtils.fieldExists(crs, prefix, "IncludeTEasWR")) { setIncludeTEasWR(crs.getInt(prefix + "IncludeTEasWR")); }
+            if (FSUtils.fieldExists(crs, prefix, "IncludeIDP")) { setIncludeIDP(crs.getInt(prefix + "IncludeIDP")); }
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeason$", "FSSeasonID")) { setFSSeason(new FSSeason(crs, "FSSeason$")); }
@@ -533,7 +537,7 @@ public class FSLeague implements Serializable {
 
         sql.append("INSERT INTO FSLeague ");
         sql.append("(FSLeagueID, FSSeasonID, LeagueName, LeaguePassword, IsFull, IsPublic, NumTeams, Description, IsGeneral, StartFSSeasonWeekID, VendorID, DraftType, DraftDate, ");
-        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status, IncludeTEasWR) ");
+        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status, IncludeTEasWR, IncludeIDP) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getFSLeagueID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonID()));
@@ -557,6 +561,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getSignupType()));
         sql.append(FSUtils.InsertDBFieldValue(getStatus(), true));
         sql.append(FSUtils.InsertDBFieldValue(getIncludeTEasWR()));
+        sql.append(FSUtils.InsertDBFieldValue(getIncludeIDP()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -591,6 +596,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("SignupType", getSignupType()));
         sql.append(FSUtils.UpdateDBFieldValue("Status", getStatus(), true));
         sql.append(FSUtils.UpdateDBFieldValue("InclueTEasWR", getIncludeTEasWR()));
+        sql.append(FSUtils.UpdateDBFieldValue("InclueIDP", getIncludeIDP()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSLeagueID = ").append(getFSLeagueID());
 

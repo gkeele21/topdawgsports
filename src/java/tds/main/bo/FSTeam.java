@@ -203,10 +203,27 @@ public class FSTeam implements Serializable {
         return totalpts;
     }
 
-    public void figureBestStarters(int fsseasonweekid, boolean includeTEasWR, int fsleagueid) throws Exception {
+    public void figureBestStarters(int fsseasonweekid, FSLeague league) throws Exception {
+
+        boolean includeTEasWR = (league.getIncludeTEasWR() != null && league.getIncludeTEasWR() != 0);
+        boolean includeIDP = (league.getIncludeIDP() != null && league.getIncludeIDP() != 0);
+        int fsleagueid = league.getFSLeagueID();
 
         // Positions
-        List list = includeTEasWR ? Arrays.asList(new String[]{"1","2","3,4","5"}) : Arrays.asList(new String[]{"1","2","3","4","5"});
+        List list = null;
+        if (includeTEasWR) {
+            if (includeIDP) {
+                list = Arrays.asList(new String[]{"1","2","3,4","5","9","10","11"});
+            } else {
+                list = Arrays.asList(new String[]{"1","2","3,4","5"});
+            }
+        } else {
+            if (includeIDP) {
+                list = Arrays.asList(new String[]{"1", "2", "3", "4", "5", "9", "10", "11"});
+            } else {
+                list = Arrays.asList(new String[]{"1", "2", "3", "4", "5"});
+            }
+        }
 
         CTApplication._CT_QUICK_DB.executeUpdate("update FSRoster " +
                             " set StarterState = 'bench' " +

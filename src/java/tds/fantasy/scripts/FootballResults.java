@@ -136,8 +136,8 @@ public class FootballResults  {
                 if (figurebeststarters) {
                     //boolean includeTEasWR = league.getFSLeagueID() == _TenmanID ? false : true;
                     boolean includeTEasWR = (league.getIncludeTEasWR() != 0);
-                    team1.figureBestStarters(fsseasonweekid,includeTEasWR, league.getFSLeagueID());
-                    team2.figureBestStarters(fsseasonweekid,includeTEasWR, league.getFSLeagueID());
+                    team1.figureBestStarters(fsseasonweekid,league);
+                    team2.figureBestStarters(fsseasonweekid,league);
                 }
 
                 double tm1pts = 0.00;
