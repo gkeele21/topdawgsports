@@ -347,7 +347,7 @@ public class FootballResults  {
                 sql.append("insert into FSFootballStandings " +
                             " (FSTeamID,FSSeasonWeekID,FantasyPts,TotalFantasyPts," +
                             " Wins,Losses,Ties,WinPercentage,FantasyPtsAgainst,TotalFantasyPtsAgainst," +
-                            " HiScore,TotalHiScores,Rank,CurrentStreak,LastFive) " +
+                            " HiScore,TotalHiScores,`Rank`,CurrentStreak,LastFive) " +
                             "values (" + team1id + "," +
                             fsseasonweekid + "," +
                             fantasypts + "," +

@@ -11,9 +11,10 @@ import bglib.util.Application;
 import bglib.util.AuUtil;
 import bglib.util.FSUtils;
 import sun.jdbc.rowset.CachedRowSet;
-import tds.main.bo.*;
-import tds.main.bo.football.stats.MySportsFeeds.Stats_PlayerObj;
-import tds.main.bo.football.stats.MySportsFeeds.Stats_PlayerStats;
+import tds.main.bo.CTApplication;
+import tds.main.bo.FSGame;
+import tds.main.bo.FSSeason;
+import tds.main.bo.FSSeasonWeek;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -48,7 +49,7 @@ public class FootballStats implements Harnessable {
     private List<MissingPlayer> missingPlayers = new ArrayList<MissingPlayer>();
 
     public static final String PLAYERNAME = "Name";
-    public static final String PLAYERID = "StatsPlayerID";
+    public static final String PLAYERID = "PlayerID";
     public static final String PROTEAM = "ProTeam";
     public static final String PROTEAMID = "ProTeamID";
     public static final String POSITION = "Position";
@@ -825,7 +826,7 @@ public class FootballStats implements Harnessable {
         }
     }
 
-    private void insertIntoTotalFootballStats(int seasonid, int statsofficial) throws Exception {
+    public void insertIntoTotalFootballStats(int seasonid, int statsofficial) throws Exception {
 
         Connection con = null;
         Statement stmt = null;
@@ -839,7 +840,7 @@ public class FootballStats implements Harnessable {
 
             // Import Offensive Stats
             StringBuffer sql = new StringBuffer();
-            sql.append("select s.StatsPlayerID as StatsPlayerID, sum(Started) as Started,sum(Played) as Played,sum(Inactive) as Inactive " +
+            sql.append("select s.PlayerID as PlayerID, sum(Started) as Started,sum(Played) as Played,sum(Inactive) as Inactive " +
                     " ,sum(PassComp) as PassComp, sum(PassAtt) as PassAtt, sum(PassInt) as PassInt " +
                     " ,sum(PassYards) as PassYards, sum(PassTD) as PassTD, sum(PassTwoPt) as PassTwoPt " +
                     " ,sum(Sacked) as Sacked, sum(SackedYardsLost) as SackedYardsLost, sum(RushAtt) as RushAtt " +
@@ -859,7 +860,7 @@ public class FootballStats implements Harnessable {
                     " from FootballStats s " +
                     " where s.SeasonID = " + seasonid +
                     " and s.SeasonWeekID > 0 " +
-                    " group by s.StatsPlayerID");
+                    " group by s.PlayerID");
 
             System.out.println("Total Stats : " + sql);
             stmt = con.createStatement();
@@ -867,7 +868,7 @@ public class FootballStats implements Harnessable {
 
             int count = 0;
             while (crs.next()) {
-                //System.out.println("Processing...");
+                System.out.println("Processing...");
 
                 count++;
                 int playerid = crs.getInt(PLAYERID);
@@ -923,12 +924,12 @@ public class FootballStats implements Harnessable {
                 double salfantasypts = crs.getDouble("SalFantasyPts");
 
 
-                _Logger.info("PlayerID : " + playerid + ",Total Fantasy Pts : " + fantasypts);
+                System.out.println("PlayerID : " + playerid + ",Total Fantasy Pts : " + fantasypts);
 
                 // Insert record into FootballStats table for TotalFantasyPts (seasonweekid = 0)
                 sql = new StringBuffer();
                 sql.append("insert into FootballStats " +
-                        "(StatsPlayerID,SeasonWeekID,SeasonID,Started,Played," +
+                        "(PlayerID,SeasonWeekID,SeasonID,Started,Played," +
                         "Inactive,PassComp,PassAtt,PassYards,PassInt,PassTD,PassTwoPt,Sacked,SackedYardsLost, " +
                         "RushAtt,RushYards,RushTD,RushTwoPt,RecCatches,RecYards,RecTD,RecTwoPt,XPM,XPA,XPBlocked," +
                         "FGM,FGA,FGBlocked,FG29Minus,FG30to39,FG40to49,FG50Plus,FumblesLost,XtraTD," +
@@ -987,12 +988,12 @@ public class FootballStats implements Harnessable {
                         statsofficial + "," +
                         fantasypts + "," +
                         salfantasypts + ")");
-                _Logger.info(sql.toString());
+                System.out.println(sql.toString());
                 CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
             }
-            con.commit();
 
         } catch (Exception exception) {
+            exception.printStackTrace();
         } finally {
             if (crs!=null) {
                 crs.close();

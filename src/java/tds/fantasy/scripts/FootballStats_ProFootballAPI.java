@@ -24,7 +24,8 @@ public class FootballStats_ProFootballAPI {
         System.out.println("PlayerID : " + player.getPlayerID() + ",Fantasy Pts : " + fantasypts);
         System.out.println("PlayerID : " + player.getPlayerID() + ",Sal Fantasy Pts : " + salfantasypts);
 
-        int played = playerStats.getSnapCounts().getDefenseSnaps() > 0 ? 1 : 0;
+//        int played = playerStats.getSnapCounts().getDefenseSnaps() > 0 ? 1 : 0;
+        int played = 1;
         int tacklesSolo = 0;
         int tacklesAsst = 0;
         double sacks = 0.0;
@@ -116,7 +117,8 @@ public class FootballStats_ProFootballAPI {
         System.out.println("PlayerID : " + player.getPlayerID() + ",Fantasy Pts : " + fantasypts);
         System.out.println("PlayerID : " + player.getPlayerID() + ",Sal Fantasy Pts : " + salfantasypts);
 
-        int played = playerStats.getSnapCounts().getOffenseSnaps() > 0 ? 1 : 0;
+//        int played = playerStats.getSnapCounts().getOffenseSnaps() > 0 ? 1 : 0;
+        int played = 1;
         int passcomp = 0;
         int passatt = 0;
         int passyards = 0;

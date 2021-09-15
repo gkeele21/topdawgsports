@@ -365,11 +365,11 @@ public class FSRoster {
                 setFSSeasonWeek(new FSSeasonWeek(crs, "FSSeasonWeek$FSSeasonWeekID"));
             }
 
-            if (FSUtils.fieldExists(crs, "FootballStats$", "StatsPlayerID")) {
+            if (FSUtils.fieldExists(crs, "FootballStats$", "PlayerID")) {
                 setFootballStats(new FootballStats(crs, "FootballStats$"));
             }
 
-            if (FSUtils.fieldExists(crs, "TotalFootballStats$", "StatsPlayerID")) {
+            if (FSUtils.fieldExists(crs, "TotalFootballStats$", "PlayerID")) {
                 setTotalFootballStats(new FootballStats(crs, "TotalFootballStats$"));
             }
 
