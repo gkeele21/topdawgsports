@@ -232,68 +232,75 @@ public class FSLeague implements Serializable {
         return players;
     }
 
-    public List<PlayerStats> GetPlayerStats(int fsseasonweekID, String positionName) {
-        return GetPlayerStats(fsseasonweekID,positionName,"");
-    }
+    public List<PlayerStats> GetPlayerStatsByWeek(int fsSeasonWeekID, String positionName) {
+        List<PlayerStats> players = new ArrayList<>();
 
-    public List<PlayerStats> GetPlayerStats(int fsseasonweekID, String positionName, String orderBy) {
-        List<PlayerStats> players = new ArrayList<PlayerStats>();
-
-        // Retrieve the Teams in this league
-        List<FSTeam> teams = GetTeams();
-        StringBuffer teamsStr = new StringBuffer();
-        int count = 0;
-        for (FSTeam team : teams) {
-            count++;
-            if (count > 1) {
-                teamsStr.append(",");
-            }
-            teamsStr.append(team.getFSTeamID());
-        }
-
-        // Add in the players dropped this week.
-        List<FSFootballTransaction> transactions = GetTransactions(fsseasonweekID);
-        StringBuffer except = new StringBuffer();
-        count = 0;
-        for (FSFootballTransaction transaction : transactions) {
-            count++;
-            if (count > 1) {
-                except.append(",");
-            }
-            except.append(transaction.getDropPlayerID());
-        }
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
-        sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+        StringBuilder sql = new StringBuilder();        
+        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));        
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
-        sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fsw.", "FSSeasonWeek$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "FootballStats$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","tst.", "TotalFootballStats$"));
-        sql.append(",").append("if(tst.Played > 0,tst.FantasyPts / tst.Played, 0) as TotalFootballStats$AvgFantasyPts");
-        sql.append(",").append(_Cols.getColumnList("FSTeam","tm.", "FSTeam$"));
-        sql.append(" from Player p ");
-        sql.append(" inner join Position ps on ps.PositionID = p.PositionID ");
-        sql.append(" inner join Team t on t.TeamID = p.TeamID ");
-        sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID ");
-        sql.append("  and r.FSSeasonWeekID = ").append(fsseasonweekID);
-        sql.append("  and r.FSTeamID in (").append(teamsStr).append(")");
-        sql.append(" left join FSTeam tm on tm.FSTeamID = r.FSTeamID and tm.FSLeagueID = ").append(_FSLeagueID);
-        sql.append(" left join FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
-//        sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = fsw.SeasonWeekID ");
-//        sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(getFSSeason().getSeasonID());
-        sql.append(" left join FootballStats st on st.PlayerID = p.PlayerID and st.SeasonWeekID = fsw.SeasonWeekID ");
-        sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(getFSSeason().getSeasonID());
-        sql.append(" where ps.PositionName = '").append(positionName).append("'");
-        sql.append(" and p.IsActive = 1 ");
-        if (!("").equals(except.toString()) && except.length() >= 1) {
-            sql.append(" and p.PlayerID not in (").append(except).append(")");
+        sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
+        sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fssw.", "FSSeasonWeek$"));        
+        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
+        sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
+        sql.append(" from Player p");
+        sql.append(" join Position ps on ps.PositionID = p.PositionID");
+        sql.append(" join Team t on t.TeamID = p.TeamID");
+        sql.append(" join FootballStats st on st.PlayerID = p.PlayerID");
+        sql.append(" join FSSeasonWeek fssw on fssw.SeasonWeekID = st.SeasonWeekID");
+        sql.append(" and fssw.FSSeasonWeekID = ").append(fsSeasonWeekID);
+        sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
+        sql.append(" and r.FSSeasonWeekID = fssw.FSSeasonWeekID");       
+        sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
+        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");        
+        sql.append(" where p.IsActive = 1");
+        sql.append(" and st.FantasyPts > 0");
+        if (positionName.length() > 0) {
+            sql.append(" and ps.PositionName = '").append(positionName).append("'");
         }
-        if (FSUtils.isEmpty(orderBy)) {
-            sql.append(" order by tst.FantasyPts desc ");
-        } else {
-            sql.append(" order by ").append(orderBy).append(" desc ");
+        sql.append(" order by st.FantasyPts desc");
+
+        CachedRowSet crs = null;
+        try {
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
+
+            while (crs.next()) {
+                players.add(new PlayerStats(crs));
+            }
+        } catch (Exception exception) {
+            CTApplication._CT_LOG.error(exception);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
         }
+
+        return players;
+    }
+    
+    public List<PlayerStats> GetPlayerStatsTotal(int fsSeasonWeekID, String positionName) {
+        List<PlayerStats> players = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder();        
+        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));        
+        sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
+        sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));      
+        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
+        sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
+        sql.append(" from Player p");
+        sql.append(" join Position ps on ps.PositionID = p.PositionID");
+        sql.append(" join Team t on t.TeamID = p.TeamID");
+        sql.append(" join FootballStats st on st.PlayerID = p.PlayerID");
+        sql.append(" and st.SeasonWeekID = 0 and st.SeasonID =").append(getFSSeason().getSeasonID());
+        sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
+        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);        
+        sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
+        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");        
+        sql.append(" where p.IsActive = 1");
+        sql.append(" and st.FantasyPts > 0");
+        if (positionName.length() > 0) {
+            sql.append(" and ps.PositionName = '").append(positionName).append("'");
+        }
+        sql.append(" order by st.FantasyPts desc");
 
         CachedRowSet crs = null;
         try {
