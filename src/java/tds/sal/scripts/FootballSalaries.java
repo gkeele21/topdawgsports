@@ -29,7 +29,7 @@ public class FootballSalaries implements Harnessable {
     int _FSSeasonWeekID;
     private static final double _Multiplier = 10000;
     public static final double MIN_SALARY = 20000;
-    public static final double MAX_SALARY = 450000;
+    public static final double MAX_SALARY = 400000;
     private static final int _FSSeasonID = 115;
     private static final int _SeasonID = 46;
 
@@ -111,15 +111,15 @@ public class FootballSalaries implements Harnessable {
         double total = 0.00;
         ListIterator<Player> it = list.listIterator();
         int count = 0;
-        while (it.hasNext() && count < 5) {
+        while (it.hasNext() && count < 10) {
             count++;
             Player p = it.next();
-            total = p.getAvgSalFantasyPts();
+            total += p.getAvgSalFantasyPts();
             System.out.println("Total " + total);
         }
         double avg = count > 0 ? total / count : 0;
 
-        return total;
+        return avg;
     }
 
     public void createPlayerSalaries(List<Player> list,double avg) throws Exception {
