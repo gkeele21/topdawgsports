@@ -137,7 +137,7 @@
                             <!-- DEFENSE Total -->
                             <c:if test="${statPlayer.position.positionName == 'DL' || statPlayer.position.positionName == 'LB' || statPlayer.position.positionName == 'DB'}">
                                 <td><fmt:formatNumber minFractionDigits="0" value="${idptkl.total}"/></td>
-                                <td><fmt:formatNumber minFractionDigits="1" value="${idpast.total}"/></td>
+                                <td><fmt:formatNumber minFractionDigits="0" value="${idpast.total}"/></td>
                                 <td><fmt:formatNumber minFractionDigits="0" value="${sacks.total}"/></td>
                                 <td><fmt:formatNumber minFractionDigits="0" value="${idpints.total}"/></td>
                                 <td><fmt:formatNumber minFractionDigits="0" value="${idpff.total}"/></td>

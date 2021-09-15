@@ -42,10 +42,10 @@
     <li ${pageClass}><a href="/topdawgsports/fantasy/draftResults.htm">Draft Results</a></li>
     <c:set var="pageClass" value="" />
 
-    <c:if test="${pageName == 'totalStatsPK' || pageName == 'totalStatsQB' || pageName == 'totalStatsRB' || pageName == 'totalStatsTE' || pageName == 'totalStatsWR'}">
+    <c:if test="${pageName == 'statLeaders'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>
-    <li ${pageClass}><a href="/topdawgsports/fantasy/totalStatsQB.htm">Stat Leaders</a></li>
+    <li ${pageClass}><a href="/topdawgsports/fantasy/statLeaders.htm">Stat Leaders</a></li>
     <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'tenmanRules'}">

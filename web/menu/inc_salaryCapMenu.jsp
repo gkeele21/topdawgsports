@@ -14,6 +14,12 @@
     </c:if>
     <li ${pageClass}><a href="/topdawgsports/sal/standings.htm">Standings</a></li>
     <c:set var="pageClass" value="" />
+    
+    <c:if test="${pageName == 'statLeaders'}">
+        <c:set var="pageClass" value="class=menuSelection" />
+    </c:if>
+    <li ${pageClass}><a href="/topdawgsports/fantasy/statLeaders.htm">Stat Leaders</a></li>
+    <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'rules'}">
         <c:set var="pageClass" value="class=menuSelection" />
