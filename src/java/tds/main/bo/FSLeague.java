@@ -206,8 +206,8 @@ public class FSLeague implements Serializable {
         sql.append(" LEFT JOIN FSSeasonWeek fsw ON fsw.FSSeasonWeekID = r.FSSeasonWeekID ");
 //        sql.append(" LEFT JOIN FootballStats st ON st.StatsPlayerID = p.StatsPlayerID AND st.SeasonWeekID = fsw.SeasonWeekID ");
 //        sql.append(" LEFT JOIN FootballStats tst ON tst.StatsPlayerID = p.StatsPlayerID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
-        sql.append(" LEFT JOIN FootballStats st ON st.StatsPlayerID = p.NFLGameStatsID AND st.SeasonWeekID = fsw.SeasonWeekID ");
-        sql.append(" LEFT JOIN FootballStats tst ON tst.StatsPlayerID = p.NFLGameStatsID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
+        sql.append(" LEFT JOIN FootballStats st ON st.PlayerID = p.PlayerID AND st.SeasonWeekID = fsw.SeasonWeekID ");
+        sql.append(" LEFT JOIN FootballStats tst ON tst.PlayerID = p.PlayerID AND tst.SeasonWeekID = 0 AND tst.SeasonID = ").append(getFSSeason().getSeasonID());
         sql.append(" WHERE r.PlayerID is null ");
         sql.append(" AND ps.PositionName = '").append(positionName).append("'");
         sql.append(" AND p.IsActive = 1 ");
@@ -235,12 +235,12 @@ public class FSLeague implements Serializable {
     public List<PlayerStats> GetPlayerStatsByWeek(int fsSeasonWeekID, String positionName) {
         List<PlayerStats> players = new ArrayList<>();
 
-        StringBuilder sql = new StringBuilder();        
-        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));        
+        StringBuilder sql = new StringBuilder();
+        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
         sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
-        sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fssw.", "FSSeasonWeek$"));        
+        sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fssw.", "FSSeasonWeek$"));
         sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
         sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
         sql.append(" from Player p");
@@ -250,9 +250,9 @@ public class FSLeague implements Serializable {
         sql.append(" join FSSeasonWeek fssw on fssw.SeasonWeekID = st.SeasonWeekID");
         sql.append(" and fssw.FSSeasonWeekID = ").append(fsSeasonWeekID);
         sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
-        sql.append(" and r.FSSeasonWeekID = fssw.FSSeasonWeekID");       
+        sql.append(" and r.FSSeasonWeekID = fssw.FSSeasonWeekID");
         sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
-        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");        
+        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
         sql.append(" where p.IsActive = 1");
         sql.append(" and st.FantasyPts > 0");
         if (positionName.length() > 0) {
@@ -275,15 +275,15 @@ public class FSLeague implements Serializable {
 
         return players;
     }
-    
+
     public List<PlayerStats> GetPlayerStatsTotal(int fsSeasonWeekID, String positionName) {
         List<PlayerStats> players = new ArrayList<>();
 
-        StringBuilder sql = new StringBuilder();        
-        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));        
+        StringBuilder sql = new StringBuilder();
+        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));      
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
         sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
         sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
         sql.append(" from Player p");
@@ -292,9 +292,9 @@ public class FSLeague implements Serializable {
         sql.append(" join FootballStats st on st.PlayerID = p.PlayerID");
         sql.append(" and st.SeasonWeekID = 0 and st.SeasonID =").append(getFSSeason().getSeasonID());
         sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
-        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);        
+        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
         sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
-        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");        
+        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
         sql.append(" where p.IsActive = 1");
         sql.append(" and st.FantasyPts > 0");
         if (positionName.length() > 0) {

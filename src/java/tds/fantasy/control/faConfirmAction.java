@@ -119,7 +119,7 @@ public class faConfirmAction extends BaseAction {
             numPlayers--;
 
            // check if the player being picked up will make too many players for a given position.
-           FSFootballRosterPositions position = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),puposid);
+           FSFootballRosterPositions position = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),puposid,team.getFSLeagueID());
            numPlayers = rosterPositions.get(puposid);
             if (numPlayers > position.getMaxNum()) {
                 valid = false;
@@ -127,9 +127,9 @@ public class faConfirmAction extends BaseAction {
             }
 
             // check if the player being dropped will make too few players for a given position.
-            position = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),dropposid);
+
+            position = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),dropposid, team.getFSLeagueID());
             numPlayers = rosterPositions.get(dropposid);
-            // TODO : The FSFootballRosterPositions table needs to be league-based so we can have different values
             // for each league
             int minnum = position.getMinNum();
             //if (team.getFSLeagueID() == 10 && position.getPositionID() == 4) {

@@ -1,12 +1,11 @@
 package tds.data;
 
-import tds.main.bo.CTApplication;
 import static tds.data.CTColumnLists._Cols;
 
 public enum CTDataSetDef {
     // Rules:
     // - the number of underscores in the idbreakcol must match the greatest number of underscores in the collist.
-    // - the idbreakcol can't end in an underscore; if the last break col occurs at a higher level, then _repeat it_ to the end. 
+    // - the idbreakcol can't end in an underscore; if the last break col occurs at a higher level, then _repeat it_ to the end.
 
     COUNTRY_BY_COUNTRYID(
             "select " + _Cols.getColumnList("Country", "", "") +
@@ -27,7 +26,7 @@ public enum CTDataSetDef {
             " inner join Player p on p.PlayerID=r.PlayerID " +
             " inner join FSSeasonWeek fsw on fsw.FSSeasonWeekID = r.FSSeasonWeekID " +
             " inner join SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID " +
-            " inner join FootballStats s on s.StatsPlayerID = p.StatsPlayerID and s.SeasonWeekID = sw.SeasonWeekID " +
+            " inner join FootballStats s on s.PlayerID = p.PlayerID and s.SeasonWeekID = sw.SeasonWeekID " +
             " where t.FSTeamID = ? " +
             " group by t.FSTeamID"
     ),
@@ -393,11 +392,11 @@ public enum CTDataSetDef {
             " from " + "FSUser u where u.FSUserID = ?"
     ),
     FSUSER_BY_USERNAME(
-            "select " + _Cols.getColumnList("FSUser", "u.", "") + 
+            "select " + _Cols.getColumnList("FSUser", "u.", "") +
             " from " + "FSUser u where u.Username = ?"
     ),
     FSUSER_BY_USERNAME_PASSWORD(
-            "select " + _Cols.getColumnList("FSUser", "u.", "") + 
+            "select " + _Cols.getColumnList("FSUser", "u.", "") +
             " from " + "FSUser u where UserName=? and Password=?"
     ),
     GAME_BY_GAMEID(
@@ -430,7 +429,7 @@ public enum CTDataSetDef {
             "insert into " + "FSFootballStandings(FSTeamID,FSSeasonWeekID,FantasyPts,TotalFantasyPts, " +
             " GamePoints,TotalGamePoints,SalarySpent,Wins,Losses,Ties,WinPercentage,FantasyPtsAgainst, " +
             " HiScore,TotalHiScores,GamesCorrect,TotalGamesCorrect,GamesWrong,TotalGamesWrong, " +
-            " Rank,CurrentStreak,LastFive) " +
+            " `Rank`,CurrentStreak,LastFive) " +
             " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     INSERT_FSROSTER(
@@ -444,7 +443,7 @@ public enum CTDataSetDef {
             "values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     INSERT_NEW_FSFOOTBALLTRANSACTIONREQUEST(
-            "insert into " + "FSFootballTransactionRequest(FSSeasonWeekID, FSTeamID, Rank, DropPlayerID, " +
+            "insert into " + "FSFootballTransactionRequest(FSSeasonWeekID, FSTeamID, `Rank`, DropPlayerID, " +
             " DropType, PUPlayerID, PUType, RequestDate, Processed, Granted) " +
             "values (?, ?, ?, ?, ?, ?, ?, ?, 0, 0)"
     ),
@@ -517,7 +516,7 @@ public enum CTDataSetDef {
             " from " + "Sport s where s.SportID = ?"
     ),
     TEAM_BY_TEAMID(
-            "select " + _Cols.getColumnList("Team", "t.", "") + 
+            "select " + _Cols.getColumnList("Team", "t.", "") +
             " from " + "Team t where TeamID=?"
     ),
     TEAMS(
@@ -536,7 +535,7 @@ public enum CTDataSetDef {
     ),
     UPDATE_FSFOOTBALLTRANSACTIONREQUEST(
             " update FSFootballTransactionRequest" +
-            " set FSSeasonWeekID = ?, FSTeamID = ?, Rank = ?, DropPlayerID = ?, " +
+            " set FSSeasonWeekID = ?, FSTeamID = ?, `Rank` = ?, DropPlayerID = ?, " +
             " DropType = ?, PUPlayerID = ?, PUType = ?, RequestDate = ?, Processed = ?, Granted = ? " +
             " where RequestID = ?"
     ),

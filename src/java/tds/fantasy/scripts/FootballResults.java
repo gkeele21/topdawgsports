@@ -540,7 +540,7 @@ public class FootballResults  {
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select s.* ");
                 sql.append(" from FootballStats s ");
-                sql.append(" inner join Player p on p.StatsPlayerID = s.StatsPlayerID ");
+                sql.append(" inner join Player p on p.PlayerID = s.PlayerID ");
                 sql.append(" where p.PositionID = ").append(position.getPositionID());
                 sql.append(" and s.SeasonWeekID = ").append(seasonweekid);
                 sql.append(" and s.SeasonID = ").append(seasonid);
@@ -552,7 +552,7 @@ public class FootballResults  {
                 double prevpts = 0;
                 while (crs.next()) {
 
-                    String statsplayerid = crs.getString("StatsPlayerID");
+                    String playerid = crs.getString("PlayerID");
                     double fantasypts = crs.getDouble("FantasyPts");
 
                     int currposnum = posnum;
@@ -569,11 +569,11 @@ public class FootballResults  {
                     StringBuffer upsql = new StringBuffer();
                     upsql.append("update FootballStats ");
                     upsql.append(" set PositionRank = '").append(ranking).append("' ");
-                    upsql.append(" where StatsPlayerID = '").append(statsplayerid).append("' ");
+                    upsql.append(" where PlayerID = '").append(playerid).append("' ");
                     upsql.append(" and SeasonWeekID = ").append(seasonweekid);
                     upsql.append(" and SeasonID = ").append(seasonid);
 
-                    System.out.println("StatsPlayerID : " + statsplayerid + ", Rank : " + ranking + ", Query : " + upsql);
+                    System.out.println("PlayerID : " + playerid + ", Rank : " + ranking + ", Query : " + upsql);
 
                     CTApplication._CT_QUICK_DB.executeUpdate(upsql.toString());
                 }
