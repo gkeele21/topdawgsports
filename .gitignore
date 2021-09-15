@@ -2,6 +2,9 @@
 .idea/
 code.iml
 out/
+build.xml
+build/
+nbproject/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
