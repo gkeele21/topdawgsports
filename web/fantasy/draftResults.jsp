@@ -56,22 +56,31 @@
                             </jsp:attribute>
                             <jsp:attribute name="rowHeader">
                                 <tr class="rowHeader">
-                                    <td width="8%" align="center"><strong>Round</strong></td>
-                                    <td width="8%" align="center"><strong>Pick #</strong></td>
-                                    <td width="8%" align="center"><strong>Team</strong></td>
-                                    <td width="25%" align="center"><strong>Player</strong></td>
-                                    <td width="8%" align="center"><strong>Pos</strong></td>
-                                    <td width="8%" align="center"><strong>Team</strong></td>
+                                    <td><strong>Round</strong></td>
+                                    <td><strong>Pick #</strong></td>
+                                    <td><strong>Owner</strong></td>
+                                    <td><strong>Pos</strong></td>
+                                    <td><strong>Team</strong></td>
+                                    <td><strong>Player</strong></td>
+                                    
                                 </tr>
                             </jsp:attribute>
                             <jsp:attribute name="rowData">
                                 <tr ${highlightRow1} class="rowData">
-                                    <td align="center"><c:out value="${draft.round}" /></td>
-                                    <td align="center"><c:out value="${draft.place}" /></td>
-                                    <td align="center"><c:out value="${draft.FSTeam.teamName}" /></td>
-                                    <td align="center"><c:out value="${draft.player.fullName}" /></td>
-                                    <td align="center"><c:out value="${draft.player.position.positionName}" /></td>
-                                    <td align="center"><c:out value="${draft.player.team.displayName}" /></td>
+                                    <c:choose>
+                                        <c:when test="${draft.round == 99}">
+                                            <td align="center" colspan="2">Retained</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>${draft.round}
+                                            <td>${draft.place}</td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <td>${draft.FSTeam.teamName}</td>
+                                    <td>${draft.player.position.positionName}</td>
+                                    <td>${draft.player.team.abbreviation}</td>
+                                    <td>${draft.player.fullName}</td>
+                                    
                                 </tr>
                             </jsp:attribute>
                             <jsp:attribute name="rowEmpty">

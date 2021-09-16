@@ -51,14 +51,13 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
-                                        <td>Active</td>
-                                        <td>Status</td>
                                         <td>Pos</td>
                                         <td>Team</td>
                                         <td>Player</td>
                                         <td>Total FP</td>
                                         <td>Avg. FP</td>
                                         <td>Opp</td>
+                                        <td>Game Date</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -68,14 +67,16 @@
                                         <c:set var="opp" value="${tds:getOpponentString(game,roster.player.team.teamID)}" />
                                     </c:if>
                                     <tr ${highlightRow1} class="rowData">
-                                        <td><c:out value="${roster.activeState}" /></td>
-                                        <td><c:out value="${roster.starterState}" /></td>
                                         <td><c:out value="${roster.player.position.positionName}" /></td>
                                         <td><c:out value="${roster.player.team.abbreviation}" /></td>
                                         <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
                                         <td><fmt:formatNumber value="${roster.totalFootballStats.fantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
                                         <td><fmt:formatNumber value="${roster.totalFootballStats.avgFantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
                                         <td><c:out value="${opp}" /></td>
+                                        <td>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
+                                        </td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -112,7 +113,7 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowTitle">
                                     <tr class="rowTitle">
-                                        <td colspan="8">Free Agents</td>
+                                        <td colspan="9">Free Agents</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
@@ -124,6 +125,7 @@
                                         <td>Total FP</td>
                                         <td>Avg. FP</td>
                                         <td>Opp</td>
+                                        <td>Game Date</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -147,21 +149,25 @@
                                         <td><fmt:formatNumber value="${player.totalFootballStats.fantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
                                         <td><fmt:formatNumber value="${player.totalFootballStats.avgFantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
                                         <td><c:out value="${opp}" /></td>
+                                        <td>
+                                            <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                            <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
+                                        </td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
                                     <tr>
-                                        <td colspan="8">There are no free agents available for this week.</td>
+                                        <td colspan="9">There are no free agents available for this week.</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowNavigation">
                                     <tr>
-                                        <td colspan="8"><hr /></td>
+                                        <td colspan="9"><hr /></td>
                                     </tr>
                                     <tr class="rowData2">
                                         <td><tds:navFirst link="faAcquirePlayer.htm">FIRST</tds:navFirst></td>
                                         <td colspan="2"><tds:navPrev link="faAcquirePlayer.htm"><< PREV</tds:navPrev></td>
-                                        <td colspan="2">${fromRows1} to ${toRows1} of ${totalRows1}</td>
+                                        <td colspan="3">${fromRows1} to ${toRows1} of ${totalRows1}</td>
                                         <td colspan="2"><tds:navNext link="faAcquirePlayer.htm">NEXT >></tds:navNext></td>
                                         <td><tds:navLast link="faAcquirePlayer.htm">LAST</tds:navLast></td>
                                     </tr>

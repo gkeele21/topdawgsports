@@ -91,7 +91,7 @@
                                             </td>--%>
                                             <td><c:out value="${roster.player.position.positionName}" /></td>
                                             <td><c:out value="${roster.player.team.abbreviation}" /></td>
-                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /> (${roster.player.totalFootballStats.positionRank})</td>
+                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
                                             <td><fmt:formatNumber value="${roster.player.totalFootballStats.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                             <td><fmt:formatNumber value="${roster.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                             <td><c:out value="${tds:getOpponentString(game,roster.player.team.teamID)}" /></td>
@@ -158,7 +158,7 @@
                                                 </td>--%>
                                                 <td><c:out value="${roster.player.position.positionName}" /></td>
                                                 <td><c:out value="${roster.player.team.abbreviation}" /></td>
-                                                <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /> (${roster.player.totalFootballStats.positionRank})</td>
+                                                <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
                                                 <td><fmt:formatNumber value="${roster.player.totalFootballStats.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                                 <td><fmt:formatNumber value="${roster.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                                 <td><c:out value="${tds:getOpponentString(game,roster.player.team.teamID)}" /></td>
@@ -194,24 +194,18 @@
                                     </jsp:attribute>
                                     <jsp:attribute name="rowHeader">
                                         <tr class="rowHeader">
-                                            <td>Active</td>
                                             <td>Pos</td>
-                                            <td>Player</td>
                                             <td>Team</td>
-                                            <td>Total FP</td>
-                                            <td>Avg. FP</td>
+                                            <td>Player</td>                                            
                                             <td>Added Week</td>
                                         </tr>
                                     </jsp:attribute>
                                     <jsp:attribute name="rowData">
                                         <c:set var="weekOnIR" value="${tds:getWeekPutOnIR(roster.FSTeam.FSLeagueID,roster.FSTeam.FSTeamID, roster.playerID)}" />
                                         <tr ${highlightRow1} class="rowData">
-                                            <td>IR</td>
                                             <td><c:out value="${roster.player.position.positionName}" /></td>
-                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="true" /> (${roster.player.totalFootballStats.positionRank})</td>
                                             <td><c:out value="${roster.player.team.abbreviation}" /></td>
-                                            <td><fmt:formatNumber value="${roster.player.totalFootballStats.fantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
-                                            <td><fmt:formatNumber value="${roster.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
+                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="true" /></td>
                                             <td><c:out value="${weekOnIR.FSSeasonWeekNo}" /></td>
                                         </tr>
                                     </jsp:attribute>

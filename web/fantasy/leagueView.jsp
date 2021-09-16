@@ -66,13 +66,12 @@
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
                                         <td>Rank</td>
-                                        <td>Team</td>
-                                        <td>Rec</td>
+                                        <td>Owner</td>
+                                        <td>W-L</td>
                                         <td>Pts F</td>
                                         <td>Pts A</td>
                                         <td>Hi</td>
                                         <td>Strk</td>
-                                        <td>Last 5</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -93,7 +92,6 @@
                                         <td><fmt:formatNumber value="${standings.totalFantasyPtsAgainst}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                         <td><c:out value="${standings.totalHiScores}" /></td>
                                         <td><c:if test="${standings.currentStreak > 0}"><c:out value="+" /></c:if><c:out value="${standings.currentStreak}" /></td>
-                                        <td><c:out value="${standings.lastFive}" /></td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -229,15 +227,15 @@
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
                                         <td>DATE</td>
-                                        <td>TEAM</td>
+                                        <td>OWNER</td>
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>                                        
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>                                        
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -248,13 +246,13 @@
                                         </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
-                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.dropPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>                                        
                                         <td><c:out value="${transaction.PUType}" /></td>
-                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.PUPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>                                        
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -276,15 +274,15 @@
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
                                         <td>DATE</td>
-                                        <td>TEAM</td>
+                                        <td>OWNER</td>
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>                                        
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -295,13 +293,13 @@
                                         </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
-                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.dropPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>                                        
                                         <td><c:out value="${transaction.PUType}" /></td>
-                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.PUPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>                                        
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">

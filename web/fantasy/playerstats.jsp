@@ -20,12 +20,13 @@
                 <tds:tableRows items="${playerStats}" var="stats" highlightRowAttribute="class" highlightRowValue="rowData2">
                     <jsp:attribute name="rowTitle">
                         <tr class="rowTitle">
-                            <td colspan="14"><h2>${statPlayer.fullName}</h2></td>
+                            <td colspan="15"><h2>${statPlayer.fullName}</h2></td>
                         </tr>
                     </jsp:attribute>
                     <jsp:attribute name="rowHeader">
                         <tr class="rowHeader">
                             <td>Week</td>
+                            <td>Opp</td>
                             <!-- PASSING RUSHING / RECEIVING COLUMN HEADERS -->
                             <c:if test="${statPlayer.position.positionName == 'QB' || statPlayer.position.positionName == 'RB' || statPlayer.position.positionName == 'WR' || statPlayer.position.positionName == 'TE'}">
                                 <td>Comp</td>
@@ -64,8 +65,14 @@
                     </jsp:attribute>
                     <jsp:attribute name="rowData">
                         <c:if test="${stats.seasonWeek.weekNo >= 1}">
+                            <c:set var="game" value="${tds:getGame(stats.seasonWeekID, statPlayer.team.teamID)}" />
+                            <c:set var="opp" value="" />
+                            <c:if test="${game != null}">
+                                <c:set var="opp" value="${tds:getOpponentString(game, statPlayer.team.teamID)}" />
+                            </c:if>
                             <tr ${highlightRow1} class="rowData">
                                 <td>${stats.seasonWeek.weekNo}</td>
+                                <td>${opp}</td>
                                 <!-- PASSING / RUSHING / RECEIVING Stats -->
                                 <c:if test="${statPlayer.position.positionName == 'QB' || statPlayer.position.positionName == 'RB' || statPlayer.position.positionName == 'WR' || statPlayer.position.positionName == 'TE'}">
                                     <td>${stats.passComp}<tds:addRowTotal name="comp" value="${stats.passComp}" /></td>
@@ -105,13 +112,14 @@
                     </jsp:attribute>
                     <jsp:attribute name="rowEmpty">
                         <tr>
-                            <td colspan="14">No Games Played.</td>
+                            <td colspan="15">No Games Played.</td>
                         </tr>
                     </jsp:attribute>
                     <jsp:attribute name="rowTotal">
                         
                         <tr class="rowHeader">
                             <td>Total</td>
+                            <td></td>
                             <!-- PASSING / RUSHING / RECEIVING Total -->
                             <c:if test="${statPlayer.position.positionName == 'QB' || statPlayer.position.positionName == 'RB' || statPlayer.position.positionName == 'WR' || statPlayer.position.positionName == 'TE'}">
                                 <td><fmt:formatNumber minFractionDigits="0" value="${comp.total}"/></td>

@@ -2,6 +2,7 @@
 
 <!-- Initialization -->
 <c:set var="prevGame" value="" />
+<c:set var="prevActiveStatus" value="true" />
 
 <img src="/topdawgsports/images/myteams.png" alt=""/>
 
@@ -14,6 +15,12 @@
                 <c:set var="teamClass" value="class=menuSelection" />
             </c:if>
         </c:if>
+        
+        <!-- Add an extra blank line for Inactive teams -->
+        <c:if test="${team.isActive == false && prevActiveStatus == true}">
+            <br />
+            <c:set var="prevActiveStatus" value="false" />
+        </c:if>
 
         <!-- DISPLAY THE GAME -->
         <c:if test="${prevGame != team.FSLeague.FSSeason.FSGame.FSGameID}">
@@ -21,7 +28,7 @@
             <c:set var="prevGame" value="${team.FSLeague.FSSeason.FSGame.FSGameID}" />
         </c:if>
 
-        <!-- DISPLAY THE TEAM NAME -->
+        <!-- DISPLAY THE TEAM NAME -->        
         <c:if test="${team.FSLeague.FSSeason.FSGameID == PRO_WINS_POOL_GAMEID}">
             <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURL}" target="_blank">
         </c:if>

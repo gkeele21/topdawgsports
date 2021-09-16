@@ -254,7 +254,7 @@ public class FSUser implements Serializable {
             sql.append("LEFT JOIN Sport sp ON sp.SportID = g.SportID ");
             sql.append("LEFT JOIN FSFootballSeasonDetail fsd ON fsd.FSSeasonID = fss.FSSeasonID ");
             sql.append("WHERE t.FSUserID = ").append(getFSUserID()).append(" AND (s.SportYear = ").append(sportYear).append(" OR s.SportYear IS NULL) ");
-            sql.append("ORDER BY fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
+            sql.append("ORDER BY t.isActive desc, fss.FSGameID, l.FSLeagueID, t.FSTeamID ");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             while (crs.next()) {

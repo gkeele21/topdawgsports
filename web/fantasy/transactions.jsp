@@ -13,9 +13,6 @@
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script type="text/javascript" src="../js/script.js" ></script>
-    <style type="text/css">
-        #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-    </style>
   </head>
   <body>
 
@@ -64,15 +61,15 @@
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
                                         <td>DATE</td>
-                                        <td>TEAM</td>
+                                        <td>OWNER</td>
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>                                        
                                         <td>TYPE</td>
-                                        <td>PLAYER</td>
                                         <td>POS</td>
                                         <td>TM</td>
+                                        <td>PLAYER</td>                                        
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -83,13 +80,13 @@
                                         </td>
                                         <td><c:out value="${transaction.FSTeam.teamName}" /></td>
                                         <td><c:out value="${transaction.dropType}" /></td>
-                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.dropPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>                                        
                                         <td><c:out value="${transaction.PUType}" /></td>
-                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.PUPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.team.abbreviation}" /></td>
+                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>                                        
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
