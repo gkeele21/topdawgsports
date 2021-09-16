@@ -96,7 +96,7 @@
                                             <c:if test="${!game.gameHasStarted || game.isByeWeek}">
                                                 <a href="faConfirm.htm?drop=${roster.ID}&dropType=drop">drop</a>
                                                 &#160;
-                                                <c:if test="${fsteam.FSLeagueID != 94}">
+                                                <c:if test="${fsteam.FSLeague.includeIR == 1}">
                                                 |&#160;<a href="faConfirm.htm?drop=${roster.ID}&dropType=onir">onir</a>
                                                 </c:if>
                                             </c:if>

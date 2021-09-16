@@ -100,7 +100,6 @@ public class FootballTransactionRequests implements Harnessable {
 
                 _Logger.info("Processing Requests for League : " + leagueid + "[END]");
 
-                con.commit();
             }
 
         } catch (Exception e) {
@@ -137,7 +136,7 @@ public class FootballTransactionRequests implements Harnessable {
 
                         alldone = false;
 
-                        CTReturnCode rc = FSFootballTransaction.insert(request);
+                        CTReturnCode rc = FSFootballTransaction.insert(request, 1);
                         if (rc.isSuccess()) {
                             // mark this request as granted
                             request.setProcessed(1);

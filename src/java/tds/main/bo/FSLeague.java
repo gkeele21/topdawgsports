@@ -44,6 +44,7 @@ public class FSLeague implements Serializable {
     private String _Status;
     private Integer _IncludeTEasWR;
     private Integer _IncludeIDP;
+    private Integer _IncludeIR;
 
     // OBJECTS
     private FSSeason _FSSeason;
@@ -110,6 +111,7 @@ public class FSLeague implements Serializable {
     public String getStatus() {return _Status;}
     public Integer getIncludeTEasWR() {return _IncludeTEasWR;}
     public Integer getIncludeIDP() {return _IncludeIDP;}
+    public Integer getIncludeIR() {return _IncludeIR;}
     public FSSeason getFSSeason() {if (_FSSeason == null && _FSSeasonID > 0) {_FSSeason = new FSSeason(_FSSeasonID);}return _FSSeason;}
 
     // SETTERS
@@ -136,6 +138,7 @@ public class FSLeague implements Serializable {
     public void setStatus(String Status) {_Status = Status;}
     public void setIncludeTEasWR(Integer IncludeTEasWR) {_IncludeTEasWR = IncludeTEasWR;}
     public void setIncludeIDP(Integer IncludeIDP) {_IncludeIDP = IncludeIDP;}
+    public void setIncludeIR(Integer IncludeIR) {_IncludeIR = IncludeIR;}
     public void setFSSeason(FSSeason FSSeason) {_FSSeason = FSSeason;}
 
     // PUBLIC METHODS
@@ -164,10 +167,10 @@ public class FSLeague implements Serializable {
         List<Player> players = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder();
-        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));        
+        sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));      
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
         sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
         sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
         sql.append(" from Player p");
@@ -176,9 +179,9 @@ public class FSLeague implements Serializable {
         sql.append(" left join FootballStats st on st.PlayerID = p.PlayerID");
         sql.append(" and st.SeasonWeekID = 0 and st.SeasonID =").append(getFSSeason().getSeasonID());
         sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
-        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);        
+        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
         sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
-        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");        
+        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
         sql.append(" where p.IsActive = 1");
         if (positionName.length() > 0) {
             sql.append(" and ps.PositionName = '").append(positionName).append("'");
@@ -500,6 +503,7 @@ public class FSLeague implements Serializable {
             if (FSUtils.fieldExists(crs, prefix, "Status")) { setStatus(crs.getString(prefix + "Status")); }
             if (FSUtils.fieldExists(crs, prefix, "IncludeTEasWR")) { setIncludeTEasWR(crs.getInt(prefix + "IncludeTEasWR")); }
             if (FSUtils.fieldExists(crs, prefix, "IncludeIDP")) { setIncludeIDP(crs.getInt(prefix + "IncludeIDP")); }
+            if (FSUtils.fieldExists(crs, prefix, "IncludeIR")) { setIncludeIR(crs.getInt(prefix + "IncludeIR")); }
 
             // OBJECTS
             if (FSUtils.fieldExists(crs, "FSSeason$", "FSSeasonID")) { setFSSeason(new FSSeason(crs, "FSSeason$")); }
@@ -514,7 +518,7 @@ public class FSLeague implements Serializable {
 
         sql.append("INSERT INTO FSLeague ");
         sql.append("(FSLeagueID, FSSeasonID, LeagueName, LeaguePassword, IsFull, IsPublic, NumTeams, Description, IsGeneral, StartFSSeasonWeekID, VendorID, DraftType, DraftDate, ");
-        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status, IncludeTEasWR, IncludeIDP) ");
+        sql.append("HasPaid, IsDraftComplete, CommissionerUserID, IsCustomLeague, ScheduleName, IsDefaultLeague, SignupType, Status, IncludeTEasWR, IncludeIDP, IncludeIR) ");
         sql.append("VALUES (");
         sql.append(FSUtils.InsertDBFieldValue(getFSLeagueID()));
         sql.append(FSUtils.InsertDBFieldValue(getFSSeasonID()));
@@ -539,6 +543,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.InsertDBFieldValue(getStatus(), true));
         sql.append(FSUtils.InsertDBFieldValue(getIncludeTEasWR()));
         sql.append(FSUtils.InsertDBFieldValue(getIncludeIDP()));
+        sql.append(FSUtils.InsertDBFieldValue(getIncludeIR()));
         sql.deleteCharAt(sql.length()-1).append(")");
 
         try {
@@ -574,6 +579,7 @@ public class FSLeague implements Serializable {
         sql.append(FSUtils.UpdateDBFieldValue("Status", getStatus(), true));
         sql.append(FSUtils.UpdateDBFieldValue("InclueTEasWR", getIncludeTEasWR()));
         sql.append(FSUtils.UpdateDBFieldValue("InclueIDP", getIncludeIDP()));
+        sql.append(FSUtils.UpdateDBFieldValue("InclueIR", getIncludeIR()));
         sql.deleteCharAt(sql.length()-1).append(" ");
         sql.append("WHERE FSLeagueID = ").append(getFSLeagueID());
 

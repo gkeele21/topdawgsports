@@ -439,8 +439,8 @@ public enum CTDataSetDef {
     ),
     INSERT_NEW_FSFOOTBALLTRANSACTION(
             "insert into " + "FSFootballTransaction(FSLeagueID, FSTeamID, FSSeasonWeekID, TransactionDate, " +
-            " DropPlayerID, DropType, PUPlayerID, PUType, TransactionType) " +
-            "values (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            " DropPlayerID, DropType, PUPlayerID, PUType, TransactionType, BeforeDeadline) " +
+            "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     INSERT_NEW_FSFOOTBALLTRANSACTIONREQUEST(
             "insert into " + "FSFootballTransactionRequest(FSSeasonWeekID, FSTeamID, `Rank`, DropPlayerID, " +

@@ -437,9 +437,6 @@ public class Player implements Serializable {
             if (getWeeklyStats() == null) {
                 setWeeklyStats(new TreeMap<Integer,FootballStats>());
             }
-            if (con == null) {
-                con = CTApplication._CT_QUICK_DB.getConn();
-            }
 
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ").append(_Cols.getColumnList("FootballStats", "st.", "FootballStats$"));

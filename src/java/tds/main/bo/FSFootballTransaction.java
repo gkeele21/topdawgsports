@@ -26,6 +26,7 @@ public class FSFootballTransaction {
     private String _PUType;
     private String _TransactionType;
     private int _FSLeagueID;
+    private boolean _BeforeDeadline;
 
     // OBJECTS
     private FSTeam _FSTeam;
@@ -97,6 +98,7 @@ public class FSFootballTransaction {
     public FSSeasonWeek getFSSeasonWeek() {if (_FSSeasonWeek == null && _FSSeasonWeekID > 0) {_FSSeasonWeek = new FSSeasonWeek(_FSSeasonWeekID);}return _FSSeasonWeek;}
     public Player getDropPlayer() {if (_DropPlayer == null && _DropPlayerID > 0) {_DropPlayer = Player.getInstance(_DropPlayerID);}return _DropPlayer;}
     public Player getPUPlayer() {if (_PUPlayer == null && _PUPlayerID > 0) {_PUPlayer = Player.getInstance(_PUPlayerID);}return _PUPlayer;}
+    public boolean getBeforeDeadline() { return _BeforeDeadline; }
 
     // SETTERS
     public void setFSTransactionID(int FSTransactionID) {_FSTransactionID = FSTransactionID;}
@@ -109,6 +111,7 @@ public class FSFootballTransaction {
     public void setPUType(String PUType) {_PUType = PUType;}
     public void setTransactionType(String TransactionType) {_TransactionType = TransactionType;}
     public void setFSLeagueID(int FSLeagueID) {_FSLeagueID = FSLeagueID;}
+    public void setBeforeDeadline(boolean BeforeDeadline) { _BeforeDeadline = BeforeDeadline; }
     public void setFSTeam(FSTeam FSTeam) {_FSTeam = FSTeam;}
     public void setFSSeasonWeek(FSSeasonWeek FSSeasonWeek) {_FSSeasonWeek = FSSeasonWeek;}
     public void setDropPlayer(Player DropPlayer) {_DropPlayer = DropPlayer;}
@@ -161,18 +164,18 @@ public class FSFootballTransaction {
 
     public CTReturnCode insert() throws Exception {
 
-        int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, getFSLeagueID(), getFSTeamID(), getFSSeasonWeekID(), LocalDateTime.now(), getDropPlayerID(), getDropType(), getPUPlayerID(), getPUType(), getTransactionType());
+        int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, getFSLeagueID(), getFSTeamID(), getFSSeasonWeekID(), LocalDateTime.now(), getDropPlayerID(), getDropType(), getPUPlayerID(), getPUType(), getTransactionType(), getBeforeDeadline());
 
         CTReturnCode ret = (id > 0) ? new CTReturnCode(tds.util.CTReturnType.SUCCESS,id) : new CTReturnCode(tds.util.CTReturnType.DB_ERROR,id);
 
         return ret;
     }
 
-    public static CTReturnCode insert(FSFootballTransactionRequest request) throws Exception {
+    public static CTReturnCode insert(FSFootballTransactionRequest request, int beforeDeadline) throws Exception {
 
         int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, request.getFSTeam().getFSLeagueID(), request.getFSTeamID(),
                 request.getFSSeasonWeekID(), LocalDateTime.now(), request.getDropPlayerID(),
-                request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU");
+                request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU", beforeDeadline);
 
         CTReturnCode ret = (id > 0) ? new CTReturnCode(tds.util.CTReturnType.SUCCESS,id) : new CTReturnCode(tds.util.CTReturnType.DB_ERROR,id);
 
@@ -362,6 +365,10 @@ public class FSFootballTransaction {
 
             if (FSUtils.fieldExists(crs, prefix, "FSLeagueID")) {
                 setFSLeagueID(crs.getInt(prefix + "FSLeagueID"));
+            }
+
+            if (FSUtils.fieldExists(crs, prefix, "BeforeDeadline")) {
+                setBeforeDeadline(crs.getBoolean(prefix + "BeforeDeadline"));
             }
 
             // OBJECTS

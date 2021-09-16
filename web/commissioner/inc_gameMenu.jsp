@@ -31,6 +31,11 @@
                     <td align="center"><a href="fantasy/fsSeason_calculateResults.htm">Calculate Results</a></td>
                     <td align="center"></td>
                 </tr>
+                <tr height="22" class="rowData">
+                    <td align="center"></td>
+                    <td align="center"><a href="fantasy/fsSeason_processTransactions.htm">Process Transactions</a></td>
+                    <td align="center"></td>
+                </tr>
             </table>
         </c:when>
         <c:when test="${commFSSeason.FSGameID == 2}">
