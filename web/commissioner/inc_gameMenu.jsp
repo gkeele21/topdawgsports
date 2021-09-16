@@ -48,6 +48,11 @@
                     <td align="center"><a href="sal/fsSeason_calculateResults.htm">Calculate Results</a></td>
                     <td align="center"></td>
                 </tr>
+                <tr height="22" class="rowData">
+                    <td align="center"></td>
+                    <td align="center"><a href="sal/fsSeason_createSalaries.htm">Create Salaries</a></td>
+                    <td align="center"></td>
+                </tr>
             </table>
         </c:when>
         <c:when test="${commFSSeason.FSGameID == 12}">

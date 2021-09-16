@@ -309,7 +309,7 @@ public class Player implements Serializable {
         sql.append(" LEFT JOIN Standings vst on vst.TeamId = vt.TeamId and vst.SeasonWeekID = ").append(seasonweekid);
 //        sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = fsw.SeasonWeekID ");
 //        sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(seasonid);
-        sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(seasonid);
+        sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = ").append(seasonid);
         sql.append(" where pv.FSSeasonWeekID = ").append(fsseasonweekId);
         sql.append(" and p.PositionID = ").append(posID);
         sql.append(" and p.PlayerID not in (").append(exceptStr).append(")");
@@ -539,7 +539,8 @@ public class Player implements Serializable {
         sql.append(" inner join Team tm on tm.TeamID = p.TeamID ");
         if (includeStats) {
 //            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonId = " + seasonid);
-            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonId = " + seasonid);
+//            sql.append(" left join FootballStats tst on tst.StatsStatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonId = " + seasonid);
+            sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonId = " + seasonid);
         }
         sql.append(" where p.TeamID <> 0 and p.TeamID <> 132 and p.IsActive = 1 ");
         if (pos != null && pos.getPositionID() > 0) {

@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="../../css/styles.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="../../css/frontpage.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="../../css/registration.css" media="screen" />
-        <title>TopDawgSports - Calculate Results</title>
+        <title>TopDawgSports - Create Salaries</title>
     </head>
     <body>
         <div id="container">
@@ -35,13 +35,13 @@
                         <a href="fsSeasonView.htm">Back to Season View</a>
                     </h3>
                     <br />
-                    <div align="center" class="rowTitle"><strong><h2>CALCULATE WEEK'S RESULTS</h2></strong></div>
+                    <div align="center" class="rowTitle"><strong><h2>CREATE WEEK'S SALARIES</h2></strong></div>
 
-                    <form method="post" action="fsSeason_calculateResults.do">
+                    <form method="post" action="fsSeason_createSalaries.do">
                         <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                             <tr colspan="7">
                                 <input type="hidden" name="hfUpdate" value="hfUpdateTrue" />
-                                <td colspan="2" align="center"><input type="submit" name="submit" value="Calculate Week's Results" /></td>
+                                <td colspan="2" align="center"><input type="submit" name="submit" value="Create Week's Salaries" /></td>
                             </tr>
                         </table>
                     </form>

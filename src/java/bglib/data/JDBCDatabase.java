@@ -8,6 +8,7 @@ import sun.jdbc.rowset.CachedRowSet;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.*;
 
@@ -481,6 +482,12 @@ public class JDBCDatabase {
                 stmt.setDouble(i+1, (Double)args[i]);
             } else if (args[i] instanceof AuDate) {
                 stmt.setTime(i+1, new Time(((AuDate)args[i]).getDateInMillis()));
+            } else if (args[i] instanceof LocalDateTime) {
+//                Time t = Time.valueOf(((LocalDateTime)args[i]).toLocalTime());
+                LocalDateTime d = (LocalDateTime)args[i];
+                java.sql.Timestamp stamp = java.sql.Timestamp.valueOf(d);
+                stmt.setTimestamp(i+1, java.sql.Timestamp.valueOf(d));
+                System.out.println("Here");
             } else if (args[i] instanceof Long) {
                 stmt.setLong(i+1, (Long)args[i]);
             } else {
