@@ -62,8 +62,10 @@
                         <%-- Week Number Links --%>
                         <div id="weekNumLinks">
                             <label>Week #</label>
+                            <a <c:if test="${reqWeek == 0}">class="currWeek"</c:if> href="statLeaders.htm?pos=${posname}">TOTAL</a>
                             <c:forEach items="${displayWeeks}" var="week">
-                                <a href="statLeaders.htm?wk=${week.FSSeasonWeekID}">${week.FSSeasonWeekNo}</a>
+                                <a <c:if test="${week.FSSeasonWeekID == reqWeek}">class="currWeek"</c:if>
+                                    href="statLeaders.htm?pos=${posname}&wk=${week.FSSeasonWeekID}">${week.FSSeasonWeekNo}</a>
                             </c:forEach>
                         </div>
 
@@ -106,7 +108,7 @@
                                             <td>XPA</td>
                                             <td>FG</td>
                                             <td>FGA</td>
-                                            <td>Distances</td>
+                                            <c:if test="${reqWeek > 0}"><td>Distances</td></c:if>
                                         </c:if>
                                         <!-- DEFENSE MAIN HEADER -->
                                         <c:if test="${posname == 'DL' || posname == 'LB' || posname == 'DB'}">
@@ -157,7 +159,7 @@
                                             <td>${playerstats.player.totalFootballStats.XPA}</td>
                                             <td>${playerstats.player.totalFootballStats.FGM}</td>
                                             <td>${playerstats.player.totalFootballStats.FGA}</td>
-                                            <td>${playerstats.player.totalFootballStats.TDDistances}</td>
+                                            <c:if test="${reqWeek > 0}"><td>${playerstats.player.totalFootballStats.TDDistances}</td></c:if>
                                         </c:if>  
                                         <!-- DEFENSE Stats -->
                                         <c:if test="${playerstats.player.position.positionName == 'DL' || playerstats.player.position.positionName == 'LB' || playerstats.player.position.positionName == 'DB'}">

@@ -64,13 +64,12 @@ public class statLeadersView extends BaseTeamView {
         }
         
         //Retrieve stats      
-        request.setAttribute("startingRowNum",startingRowNum);
-        request.setAttribute("reqWeek",reqWeek);
-        request.setAttribute("displayWeeks",displayWeeks); 
-        request.setAttribute("players",players);
         request.setAttribute("posname",posname);
+        request.setAttribute("reqWeek",reqWeek);
+        request.setAttribute("startingRowNum",startingRowNum);
+        request.setAttribute("players",players);
+        request.setAttribute("displayWeeks",displayWeeks);
         request.setAttribute("showDefense",_FSTeam.getFSLeague().getDraftType().equals("dynasty"));
-        request.setAttribute("currentWeek",_CurrentFSSeasonWeek.getFSSeasonWeekID());
        
         return page;
     }

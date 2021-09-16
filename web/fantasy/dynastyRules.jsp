@@ -115,11 +115,13 @@
                             <label>Length of field goal divided by 10 (a minimum of 3 points per field goal will be given).</label><br />
                         <h3>Extra Points :</h3>
                             <label>1 point for every one kicking; 2 points for every one passing, rushing, or receiving.</label><br />
-                        <h3>Tackles :</h3>
-                            <label>1 point for every tackle for an individual defensive player. Half tackles are included for 0.5 points</label><br />
+                        <h3>Solo Tackles :</h3>
+                            <label>1 point for every solo tackle for an individual defensive player. Half tackles are included for 0.5 points</label><br />
+                        <h3>Ast. Tackles :</h3>
+                            <label>0.5 point for every assisted tackle for an individual defensive player.</label><br />
                         <h3>Sacks :</h3>
                             <label>3 points for an individual defensive player.</label><br />
-                        <h3>Interceptions :</h3>
+                        <h3>Int's :</h3>
                             <label>4 points for an individual defensive player. A thrown INT on offense does not minus points.</label><br />
                         <h3>Forced Fumble :</h3>
                             <label>1 point for an individual defensive player that forced a fumble.</label><br />

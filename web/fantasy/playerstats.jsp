@@ -50,8 +50,8 @@
                             </c:if>
                             <!-- DEFENSE MAIN HEADER -->
                             <c:if test="${statPlayer.position.positionName == 'DL' || statPlayer.position.positionName == 'LB' || statPlayer.position.positionName == 'DB'}">
-                                <td>Solo Tkl</td>
-                                <td>Asst Tkl</td>
+                                <td>Tkl</td>
+                                <td>Ast</td>
                                 <td>Sacks</td>
                                 <td>Int's</td>
                                 <td>FF</td>
@@ -59,7 +59,7 @@
                                 <td>TD's</td>
                             </c:if>
                             <td>2 Pt</td>
-                            <td>FP</td>
+                            <td>Points</td>
                         </tr>
                     </jsp:attribute>
                     <jsp:attribute name="rowData">
