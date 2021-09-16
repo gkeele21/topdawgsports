@@ -293,27 +293,10 @@ body #playerStats {
 }
 
 /* WEEKNUM LINKS DIV */
-#weekNumLinks {
-    margin: 25px 25px;
-    font-size: 1.1em;
-    text-align: center;
-}
-
-#weekNumLinks a {
-    padding-left: 20px;
-    color: #1C5953;
-    font-size: 1.1em;
-}
-
-#weekNumLinks a:hover {
-    color: #BF8339;
-}
-
-#weekNumLinks a.highlightedWeek {
-    color: #BF8339;
-    font-size: 1.6em;
-    text-decoration: none;
-}
+#weekNumLinks { clear: both; font-size: 1.1em; text-align: center; }
+#weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; text-decoration: none; }
+#weekNumLinks a:hover { color: #BF8339; }
+#weekNumLinks a.currWeek { color: #BF8339; font-size: 1.4em; }
 
 /* BYE TEAMS DIV */
 #byeTeams {

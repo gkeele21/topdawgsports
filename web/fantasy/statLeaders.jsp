@@ -13,13 +13,6 @@
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script type="text/javascript" src="../js/script.js" ></script>
-    <style type="text/css">
-        #weekNumLinks { clear: both; }
-        #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
-        #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
-        #weekNumLinks a:hover { color: #BF8339; }
-        #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-    </style>
   </head>
   <body>
 
@@ -82,7 +75,7 @@
                                 <jsp:attribute name="rowHeader">
                                     <tr class="rowHeader">
                                         <td>#</td>
-                                        <td>Owner</td>
+                                        <c:if test="${showOwner == true}"><td>Owner</td></c:if>
                                         <td>Team</td>
                                         <td>Player</td>
                                         <c:if test="${posname == 'QB'}">
@@ -128,13 +121,15 @@
                                 <jsp:attribute name="rowData">
                                     <tr ${highlightRow1} class="rowData">
                                         <td>${currentRowOverall1}.</td>
-                                        <td>
-                                            <c:if test="${playerstats.FSTeam != null && playerstats.FSTeam.FSTeamID > 0}">
-                                                <c:out value="${playerstats.FSTeam.teamName}" />
-                                            </c:if>
-                                        </td>
+                                        <c:if test="${showOwner == true}">                                            
+                                            <td>
+                                                <c:if test="${playerstats.FSTeam != null && playerstats.FSTeam.FSTeamID > 0}">
+                                                    <c:out value="${playerstats.FSTeam.teamName}" />
+                                                </c:if>
+                                            </td>
+                                        </c:if>
                                         <td><c:out value="${playerstats.player.team.abbreviation}" /></td>
-                                        <td><tds:player player="${playerstats.player}" displayStatsLink="true" displayInjury="false" /></td>                                        
+                                        <td align="left"><tds:player player="${playerstats.player}" displayStatsLink="true" displayInjury="false" /></td>                                        
                                         <!-- PASSING / RUSHING / RECEIVING Stats -->
                                         <c:if test="${posname == 'QB'}">
                                             <td>${playerstats.player.totalFootballStats.passComp}</td>

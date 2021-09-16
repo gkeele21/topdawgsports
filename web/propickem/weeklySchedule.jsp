@@ -11,6 +11,7 @@
     <title>TopDawgSports - Pro Pickem</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript" src="../js/script.js" ></script>
@@ -34,12 +35,6 @@
         #leftPH h2 { color: #103B40; display:inline; }
         #leftPH label { color: #BF8339; font-size: 1.4em; margin-left: 10px; }
         #rightPH { float: right; }
-
-        #weekNumLinks { clear: both; }
-        #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
-        #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
-        #weekNumLinks a:hover { color: #BF8339; }
-        #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
 
         #confidencePtsToAssign { clear: both; text-align: center; display: inline;}
         #confidencePtsToAssign td { border: 2px solid #103B40; margin-left: 3px; text-align: center; width: 35px; }

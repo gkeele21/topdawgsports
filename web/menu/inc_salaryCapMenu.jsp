@@ -27,8 +27,4 @@
     <li ${pageClass}><a href="/topdawgsports/sal/rules.htm">Rules</a></li>
     <c:set var="pageClass" value="" />
 
-    <c:if test="${pageName == 'gameSignup'}">
-        <c:set var="pageClass" value="class=menuSelection" />
-    </c:if>
-    <li ${pageClass}><a href="/topdawgsports/gameSignup.htm?fsGameId=2">Sign Up</a></li>
 </ul>

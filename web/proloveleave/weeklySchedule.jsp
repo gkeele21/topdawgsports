@@ -11,6 +11,7 @@
     <title>TopDawgSports - Pro Love Em & Leave Em Weekly Schedule</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script type="text/javascript" src="../js/script.js" ></script>
     <style type="text/css">
         h2 { text-align: center; }
@@ -22,12 +23,6 @@
         #leftPH h2 { color: #103B40; display:inline; }
         #leftPH label { color: #BF8339; font-size: 1.4em; margin-left: 10px; }
         #rightPH { float: right; }
-
-        #weekNumLinks { clear: both; }
-        #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
-        #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
-        #weekNumLinks a:hover { color: #BF8339; }
-        #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
 
         #byeTeams { clear: both; }
         #byeTeams img { height : 60px; width : 75px; }
@@ -44,11 +39,9 @@
         #innerWeeklyPicks { margin: 5px; }
         #innerWeeklyPicks td, #innerWeeklyPicks img { height : 35px; width : 45px; }
         #innerWeeklyPicks .checkmark { height: 25px; width: 25px; }
-        #innerWeeklyPicks a { color: #1C5953; font-size: 1.3em; text-decoration: underline; }
-        #innerWeeklyPicks a:hover { color: #BF8339; }
-        #innerWeeklyPicks a.highlightedWeek { color: #BF8339; font-size: 1.7em; text-decoration: none; }
         #innerWeeklyPicks table { border: solid black thick; }
         #innerWeeklyPicks td { border-bottom: 1px solid black; border-right: 1px solid black; }
+        #weekNumLinks a { padding: 0px; }
 
         img[id*=helmet] { height : 60px; width : 75px; }
 
@@ -104,16 +97,6 @@
 
                 </div>
 
-                <%-- Week Number Links --%>
-                <div id="weekNumLinks">
-                    <label>Week #</label>
-                    <c:forEach items="${allWeeks}" var="week">
-                        <a <c:if test="${week.FSSeasonWeekID == displayWeek.FSSeasonWeekID}">class="currWeek"</c:if>
-                            href="weeklySchedule.htm?wk=${week.FSSeasonWeekID}&dtid=${displayTeam.FSTeamID}">${week.FSSeasonWeekNo}
-                        </a>
-                    </c:forEach>
-                </div>
-
                 <div id="weeklyPicks">
                     <div id="innerWeeklyPicks">
 
@@ -121,9 +104,13 @@
                         <c:set var="prevGameDate" value="" />
 
                         <table>
-                            <tr>
-                                <c:forEach items="${picks}" var="pick">
-                                    <td>${pick.FSSeasonWeek.FSSeasonWeekNo}</td>
+                            <tr id="weekNumLinks">
+                                <c:forEach items="${allWeeks}" var="week">
+                                    <td>
+                                        <a <c:if test="${week.FSSeasonWeekID == displayWeek.FSSeasonWeekID}">class="currWeek"</c:if>
+                                            href="weeklySchedule.htm?wk=${week.FSSeasonWeekID}&dtid=${displayTeam.FSTeamID}">${week.FSSeasonWeekNo}
+                                        </a>
+                                    </td>
                                 </c:forEach>
                             </tr>
 

@@ -1,12 +1,3 @@
-/*
- * registerView.java
- *
- * Created on July 3, 2008, 10:16 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
 package tds.fantasy.control;
 
 import bglib.util.FSUtils;
@@ -14,16 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import tds.constants.FSGame;
 import tds.main.bo.FSLeague;
 import tds.main.bo.FSSeasonWeek;
 import tds.main.bo.SeasonWeek;
 import tds.main.bo.PlayerStats;
 import tds.main.control.BaseTeamView;
 
-/**
- *
- * @author grant.keele
- */
 public class statLeadersView extends BaseTeamView {
     
     @Override
@@ -63,15 +51,18 @@ public class statLeadersView extends BaseTeamView {
             players = league.GetPlayerStatsByWeek(reqWeek, posname);
         }
         
+        boolean showDefense = _FSTeam.getFSLeague().getDraftType()!= null &&_FSTeam.getFSLeague().getDraftType().equals("dynasty");
+        boolean showOwner = _FSTeam.getFSLeague().getFSSeason().getFSGameID() == FSGame.HEADTOHEAD;
+        
         //Retrieve stats      
         request.setAttribute("posname",posname);
         request.setAttribute("reqWeek",reqWeek);
         request.setAttribute("startingRowNum",startingRowNum);
         request.setAttribute("players",players);
         request.setAttribute("displayWeeks",displayWeeks);
-        request.setAttribute("showDefense",_FSTeam.getFSLeague().getDraftType().equals("dynasty"));
+        request.setAttribute("showDefense",showDefense);
+        request.setAttribute("showOwner",showOwner);
        
         return page;
-    }
-    
+    }    
 }
