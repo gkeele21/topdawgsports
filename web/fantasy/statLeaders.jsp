@@ -8,11 +8,27 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
   <head>
-    <title></title>
+    <title>Stat Leaders</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
+    <script src="../js/jquery-1.6.2.min.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("table").tablesorter({widgets: ['zebra']});
+        });
+    </script>
     <script type="text/javascript" src="../js/script.js" ></script>
+    <style type="text/css">        
+        table a:hover { color: white; cursor: pointer; }
+        thead { background-color: white; color: #731702; cursor: pointer; font-size: 1em; font-weight: bold; text-transform: uppercase; }
+        thead tr:first-child { color: #103B40; cursor: default; }
+        th:hover { color: #BF8339; cursor: pointer; }
+        tr.even { background-color: #103B40; color: #F2BC57; }
+        table { background-color: #1C5953; color: #F2BC57; }
+        
+    </style>
   </head>
   <body>
 
@@ -63,64 +79,68 @@
                         </div>
 
                         <table>
+                            <thead>
                             <tds:tableRows items="${players}" var="playerstats" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2" displayRows="50" startingRowNum="${startingRowNum}">
                                 <jsp:attribute name="rowInfo">
                                     
                                 </jsp:attribute>
                                 <jsp:attribute name="rowTitle">
                                     <tr class="rowTitle">
-                                        <td colspan="15">${posname} Leaders</td>
+                                        <td colspan="14">${posname} Leaders</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
-                                    <tr class="rowHeader">
-                                        <td>#</td>
-                                        <c:if test="${showOwner == true}"><td>Owner</td></c:if>
-                                        <td>Team</td>
-                                        <td>Player</td>
+                                    <tr>
+                                        <th>#</th>
+                                        <c:if test="${showOwner == true}"><th>Owner</th></c:if>
+                                        <th>Team</th>
+                                        <th>Player</th>
                                         <c:if test="${posname == 'QB'}">
-                                            <td>Comp</td>
-                                            <td>Att</td>
-                                            <td>Yards</td>
-                                            <td>TD's</td>
-                                            <td>Int's</td> 
+                                            <th>Comp</th>
+                                            <th>Att</th>
+                                            <th>Yards</th>
+                                            <th>TD's</th>
+                                            <th>Int's</th> 
                                         </c:if>
                                         <c:if test="${posname == 'QB' || posname == 'RB' || posname == 'WR'}">
-                                            <td>Rush</td>
-                                            <td>Yards</td>
-                                            <td>TD's</td>
+                                            <th>Rush</th>
+                                            <th>Yards</th>
+                                            <th>TD's</th>
                                         </c:if>
                                         <c:if test="${posname == 'RB' ||posname == 'WR' || posname == 'TE'}">
-                                            <td>Rec</td>
-                                            <td>Yards</td>
-                                            <td>TD's</td>
+                                            <th>Rec</th>
+                                            <th>Yards</th>
+                                            <th>TD's</th>
                                         </c:if>
                                         <!-- KICKING COLUMN HEADERS -->
                                         <c:if test="${posname == 'PK'}">
-                                            <td>XP</td>
-                                            <td>XPA</td>
-                                            <td>FG</td>
-                                            <td>FGA</td>
-                                            <c:if test="${reqWeek > 0}"><td>Distances</td></c:if>
+                                            <th>XP</th>
+                                            <th>XPA</th>
+                                            <th>FG</th>
+                                            <th>FGA</th>
+                                            <c:if test="${reqWeek > 0}"><th>Distances</th></c:if>
                                         </c:if>
                                         <!-- DEFENSE MAIN HEADER -->
                                         <c:if test="${posname == 'DL' || posname == 'LB' || posname == 'DB'}">
-                                            <td>Tkl</td>
-                                            <td>Ast</td>
-                                            <td>Sacks</td>
-                                            <td>Int's</td>
-                                            <td>FF</td>
-                                            <td>FR</td>
-                                            <td>TD's</td>
+                                            <th>Tkl</th>
+                                            <th>Ast</th>
+                                            <th>Sacks</th>
+                                            <th>Int's</th>
+                                            <th>FF</th>
+                                            <th>FR</th>
+                                            <th>TD's</th>
                                         </c:if>
-                                        <td>2 Pt</td>
-                                        <td>Points</td>
-                                        <td>Avg</td>
+                                        <th>2 Pt</th>
+                                        <th>Points</th>
+                                        <th>Avg</th>
                                     </tr>
+                                </thead>
                                 </jsp:attribute>
+                                
                                 <jsp:attribute name="rowData">
-                                    <tr ${highlightRow1} class="rowData">
-                                        <td>${currentRowOverall1}.</td>
+                                    
+                                    <tr>
+                                        <td>${currentRowOverall1}</td>
                                         <c:if test="${showOwner == true}">                                            
                                             <td>
                                                 <c:if test="${playerstats.FSTeam != null && playerstats.FSTeam.FSTeamID > 0}">
@@ -169,24 +189,26 @@
                                         <td>${playerstats.player.totalFootballStats.passTwoPt + stats.rushTwoPt + stats.recTwoPt}</td>
                                         <td><fmt:formatNumber value="${playerstats.player.totalFootballStats.fantasyPts}" minFractionDigits="2" /></td>
                                         <td><fmt:formatNumber value="${playerstats.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" /></td>
-                                    </tr>
+                                    </tr>                                    
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
                                     <tr>
-                                        <td colspan="15">There are no stats available for this week.</td>
+                                        <td colspan="14">There are no stats available for this week.</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowNavigation">
-                                    <tr>
-                                        <td colspan="15"><hr /></td>
-                                    </tr>
-                                    <tr class="rowData2">
-                                        <td colspan="3"><tds:navFirst link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">FIRST</tds:navFirst></td>
-                                        <td colspan="1"><tds:navPrev link="statLeaders.htm?pos=${posname}&wk=${reqWeek}"><< PREV</tds:navPrev></td>
-                                        <td colspan="4">${fromRows1} to ${toRows1} of ${totalRows1}</td>
-                                        <td colspan="4"><tds:navNext link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">NEXT >></tds:navNext></td>
-                                        <td colspan="3"><tds:navLast link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">LAST</tds:navLast></td>
-                                    </tr>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="14"><hr /></td>
+                                        </tr>
+                                        <tr class="rowData2">
+                                            <td colspan="2"><tds:navFirst link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">FIRST</tds:navFirst></td>
+                                            <td><tds:navPrev link="statLeaders.htm?pos=${posname}&wk=${reqWeek}"><< PREV</tds:navPrev></td>
+                                            <td colspan="3">${fromRows1} to ${toRows1} of ${totalRows1}</td>
+                                            <td colspan="2"><tds:navNext link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">NEXT >></tds:navNext></td>
+                                            <td><tds:navLast link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">LAST</tds:navLast></td>
+                                        </tr>
+                                    </tfoot>
                                </jsp:attribute>
                             </tds:tableRows>
                         </table>

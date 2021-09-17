@@ -230,17 +230,19 @@ public class FSLeague implements Serializable {
         sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
         sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fssw.", "FSSeasonWeek$"));
         sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
-        sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
+        if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) { sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$")); }
         sql.append(" from Player p");
         sql.append(" join Position ps on ps.PositionID = p.PositionID");
         sql.append(" join Team t on t.TeamID = p.TeamID");
         sql.append(" join FootballStats st on st.PlayerID = p.PlayerID");
         sql.append(" join FSSeasonWeek fssw on fssw.SeasonWeekID = st.SeasonWeekID");
         sql.append(" and fssw.FSSeasonWeekID = ").append(fsSeasonWeekID);
-        sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
-        sql.append(" and r.FSSeasonWeekID = fssw.FSSeasonWeekID");
-        sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
-        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
+        if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) {
+            sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
+            sql.append(" and r.FSSeasonWeekID = fssw.FSSeasonWeekID");
+            sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
+            sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
+        }
         sql.append(" where p.IsActive = 1");
         sql.append(" and st.FantasyPts > 0");
         if (positionName.length() > 0) {
@@ -273,16 +275,18 @@ public class FSLeague implements Serializable {
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
         sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
         sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
-        sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
+        if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) { sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$")); }
         sql.append(" from Player p");
         sql.append(" join Position ps on ps.PositionID = p.PositionID");
         sql.append(" join Team t on t.TeamID = p.TeamID");
         sql.append(" join FootballStats st on st.PlayerID = p.PlayerID");
         sql.append(" and st.SeasonWeekID = 0 and st.SeasonID =").append(getFSSeason().getSeasonID());
-        sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
-        sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
-        sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
-        sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
+        if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) {
+            sql.append(" left join FSRoster r on r.PlayerID = p.PlayerID");
+            sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
+            sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
+            sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
+        }        
         sql.append(" where p.IsActive = 1");
         sql.append(" and st.FantasyPts > 0");
         if (positionName.length() > 0) {

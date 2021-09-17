@@ -31,10 +31,10 @@
                         <tr class="rowHeader">
                             <td colspan="4"></td>
                             <td colspan="3">Passing</td>
-                            <td colspan="2">Rushing</td>
-                            <td colspan="2">Receiving</td>
-                            <td>Ret</td>
+                            <td colspan="2">Rushing</td>                            
+                            <td colspan="3">Receiving</td>
                             <td></td>
+                            <td>Ret</td>
                             <td>Fum</td>
                             <td>Total</td>
                         </tr>
@@ -47,13 +47,14 @@
                             <td>TD</td>
                             <td>Int</td>
                             <td>Yds</td>
-                            <td>TD</td>
+                            <td>TD</td>                            
+                            <td>Rec</td>
                             <td>Yds</td>
+                            <td>TD</td>                            
+                            <td>2 pt</td> 
                             <td>TD</td>
-                            <td>TD</td>
-                            <td>2 pt</td>
                             <td>Lost</td>
-                            <td>FP</td>
+                            <td>Points</td>
                         </tr>
                     </jsp:attribute>
                     <jsp:attribute name="rowData" >
@@ -61,20 +62,21 @@
                             <tr ${highlightRow1} class="rowData">
                                 <c:set var="game" value="${tds:getGame(rosterWeek.seasonWeekID,roster.player.teamID)}" />
                                 <c:set var="opp" value="${tds:getOpponentString(game,roster.player.teamID)}" />
-                                <td><c:out value="${roster.player.position.positionName}" /></td>
-                                <td><c:out value="${roster.player.team.abbreviation}"/></td>
+                                <td>${roster.player.position.positionName}</td>
+                                <td>${roster.player.team.abbreviation}</td>
                                 <td><tds:player player="${roster.player}" displayStatsLink="true" /></td>                                
-                                <td><c:out value="${opp}"/></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.passYards}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.passTD}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.passInt}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.rushYards}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.rushTD}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.recYards}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.recTD}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.xtraTD}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.passTwoPt}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.fumblesLost}" maxFractionDigits="0" /></td>
+                                <td>${opp}</td>
+                                <td>${roster.footballStats.passYards}</td>
+                                <td>${roster.footballStats.passTD}</td>
+                                <td>${roster.footballStats.passInt}</td>
+                                <td>${roster.footballStats.rushYards}</td>
+                                <td>${roster.footballStats.rushTD}</td>                                
+                                <td>${roster.footballStats.recCatches}</td>
+                                <td>${roster.footballStats.recYards}</td>
+                                <td>${roster.footballStats.recTD}</td>                                
+                                <td>${roster.footballStats.passTwoPt}</td>
+                                <td>${roster.footballStats.xtraTD}</td>
+                                <td>${roster.footballStats.fumblesLost}</td>
                                 <td>
                                     <c:set var="fpts" value="${roster.footballStats.salFantasyPts}" />
                                     <fmt:formatNumber value="${fpts}" minFractionDigits="2" />
@@ -104,14 +106,12 @@
                             <td>Team</td>
                             <td>Player</td>                            
                             <td>Opp</td>
-                            <td>XPM</td>
+                            <td>XP</td>
                             <td>XPA</td>
-                            <td>0-29</td>
-                            <td>30-39</td>
-                            <td>40-49</td>
-                            <td>50+</td>
+                            <td>FG</td>
                             <td>FGA</td>
-                            <td>Ftsy Pts</td>
+                            <td>Distances</td>
+                            <td>Points</td>
                         </tr>
                     </jsp:attribute>
                     <jsp:attribute name="rowData" >
@@ -120,17 +120,15 @@
                                 <c:set var="game" value="${tds:getGame(rosterWeek.seasonWeekID,roster.player.teamID)}" />
                                 <c:set var="opp" value="${tds:getOpponentString(game,roster.player.teamID)}" />
 								
-                                <td><c:out value="${roster.player.position.positionName}" /></td>
-                                <td><c:out value="${roster.player.team.abbreviation}"/></td>
+                                <td>${roster.player.position.positionName}</td>
+                                <td>${roster.player.team.abbreviation}</td>
                                 <td><tds:player player="${roster.player}" displayStatsLink="true" /></td>                                
-                                <td><c:out value="${opp}"/></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.XPM}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.XPA}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.FG29Minus}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.FG30to39}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.FG40to49}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.FG50Plus}" maxFractionDigits="0" /></td>
-                                <td><fmt:formatNumber value="${roster.footballStats.FGA}" maxFractionDigits="0" /></td>
+                                <td>${opp}</td>
+                                <td>${roster.footballStats.XPM}</td>
+                                <td>${roster.footballStats.XPA}</td>
+                                <td>${roster.footballStats.FGM}</td>
+                                <td>${roster.footballStats.FGA}</td>
+                                <td>${roster.footballStats.TDDistances}</td>
                                 <td>
                                     <c:set var="fpts" value="${roster.footballStats.salFantasyPts}" />
                                     <fmt:formatNumber value="${fpts}" minFractionDigits="2" />

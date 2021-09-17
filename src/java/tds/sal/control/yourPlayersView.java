@@ -220,7 +220,7 @@ public class yourPlayersView extends BaseTeamView {
     }
 
     public static String resolveSortColumn(String sortParam) {
-        String[] cols = { "p.LastName", "Team$TeamName", "AvgFantasyPts", "pv.Value" };
+        String[] cols = { "p.LastName", "Team$TeamName", "TotalFootballStats$AvgFantasyPts", "pv.Value" };
         String[] sortParamArr = sortParam.split("_");
         int sortColNo = 0;
         try {
@@ -230,7 +230,7 @@ public class yourPlayersView extends BaseTeamView {
 
         String ret = null;
         if (sortColNo==0) {
-            ret = "pv.Value desc";
+            ret = "pv.Value, TotalFootballStats$AvgFantasyPts desc ";
         } else {
             ret = cols[sortColNo-1];
             if (sortParamArr.length>1) {
@@ -240,6 +240,7 @@ public class yourPlayersView extends BaseTeamView {
                     ret += " desc";
                 }
             }
+            ret += ",TotalFootballStats$AvgFantasyPts desc ";
         }
 
         return ret;

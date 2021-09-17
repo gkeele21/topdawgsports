@@ -74,7 +74,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${QB1.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${QB1.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${QB1!=null && opp!='BYE'}">
@@ -105,7 +105,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${RB1.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${RB1.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${RB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${RB1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${RB1!=null && opp!='BYE'}">
@@ -136,7 +136,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${RB2.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${RB2.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${RB2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${RB2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${RB2!=null && opp!='BYE'}">
@@ -167,7 +167,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${WR1.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${WR1.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${WR1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${WR1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${WR1!=null && opp!='BYE'}">
@@ -198,7 +198,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${WR2.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${WR2.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${WR2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${WR2.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${WR2!=null && opp!='BYE'}">
@@ -229,7 +229,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${TE1.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${TE1.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${TE1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${TE1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${TE1!=null && opp!='BYE'}">
@@ -260,7 +260,7 @@
                                     </td>
                                     <td class="playerName"><tds:player player="${PK1.player}" displayStatsLink="true" displayInjury="false" /></td>
                                     <td><fmt:formatNumber type="currency" value="${PK1.value}" maxFractionDigits="0" /></td>
-                                    <td><%--<fmt:formatNumber value="${PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                    <td><fmt:formatNumber value="${PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                     <td>${opp}</td>
                                     <td>
                                         <c:if test="${PK1!=null && opp!='BYE'}">
@@ -279,7 +279,7 @@
                                 <td colspan="3"></td>
                                 <td>Totals:</td>
                                 <td><fmt:formatNumber type="currency" value="${QB1.value + RB1.value + RB2.value + WR1.value + WR2.value + TE1.value + PK1.value }" maxFractionDigits="0" /></td>
-                                <td><%--<fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts + RB1.player.totalFootballStats.avgFantasyPts + RB2.player.totalFootballStats.avgFantasyPts + WR1.player.totalFootballStats.avgFantasyPts + WR2.player.totalFootballStats.avgFantasyPts + TE1.player.totalFootballStats.avgFantasyPts + PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" />--%></td>
+                                <td><fmt:formatNumber value="${QB1.player.totalFootballStats.avgFantasyPts + RB1.player.totalFootballStats.avgFantasyPts + RB2.player.totalFootballStats.avgFantasyPts + WR1.player.totalFootballStats.avgFantasyPts + WR2.player.totalFootballStats.avgFantasyPts + TE1.player.totalFootballStats.avgFantasyPts + PK1.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                             </tr>
                             <tr class="salaryRemaining">
                                 <td colspan="3"></td>
@@ -303,7 +303,7 @@
 
                         <!-- NFL Players -->
                         <table>
-                            <tds:tableRows displayRows="25" items="${playerSalaries}" var="playervalue" startingRowNum="${startingRowNum}" tableNumber="1">
+                            <tds:tableRows displayRows="40" items="${playerSalaries}" var="playervalue" startingRowNum="${startingRowNum}" tableNumber="1">
                                 <jsp:attribute name="rowInfo">
 
                                 </jsp:attribute>
@@ -322,6 +322,7 @@
                                             <a href="yourPlayers.htm?sort=4${(listSort=="4_d") ? "" : "_d"}">Salary</a>
                                             <img src="${(listSort=="4") ? "/topdawgsports/images/arrow_up.gif" : ((listSort=="4_d") ? "/topdawgsports/images/arrow_down.gif" : "/topdawgsports/images/spacer.gif")}" alt="" />
                                         </td>
+                                        <td>Total Pts</td>
                                         <td>Avg Pts</td>
                                         <td>Opp</td>
                                         <td>Game Time</td>
@@ -346,7 +347,8 @@
                                             <tds:player player="${playervalue.player}" displayStatsLink="true" displayInjury="false" />
                                         </td>
                                         <td><fmt:formatNumber type="currency" value="${playervalue.value}" maxFractionDigits="0" /></td>
-                                        <td><fmt:formatNumber type="number" value="${playervalue.totalFootballStats.avgSalFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>
+                                        <td><fmt:formatNumber type="number" value="${playervalue.player.totalFootballStats.salFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>
+                                        <td><fmt:formatNumber type="number" value="${playervalue.player.totalFootballStats.avgSalFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>
                                         <td>${opp}</td>
                                         <td>
                                             <c:if test="${opp != 'BYE'}">
@@ -354,22 +356,21 @@
                                                 <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
                                             </c:if>
                                         </td>
-                                        <%--<td><fmt:formatNumber type="number" value="${playervalue.totalFootballStats.salFantasyPts}" maxFractionDigits="1" minFractionDigits="1" /></td>--%>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
                                     <tr class="rowData2">
-                                        <td colspan="8">There are no players to display.</td>
+                                        <td colspan="9">There are no players to display.</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowNavigation">
                                     <tr>
-                                        <td colspan="7"><hr /></td>
+                                        <td colspan="9"><hr /></td>
                                     </tr>
                                     <tr class="rowData">
                                         <td><tds:navFirst link="yourPlayers.htm?sort=${salSort}">FIRST</tds:navFirst></td>
                                         <td colspan="2"><tds:navPrev link="yourPlayers.htm?sort=${salSort}"><< PREV</tds:navPrev></td>
-                                        <td colspan="3">${fromRows1} to ${toRows1} of ${totalRows1}</td>
+                                        <td colspan="4">${fromRows1} to ${toRows1} of ${totalRows1}</td>
                                         <td><tds:navNext link="yourPlayers.htm?sort=${salSort}">NEXT >></tds:navNext></td>
                                         <td><tds:navLast link="yourPlayers.htm?sort=${salSort}">LAST</tds:navLast></td>
                                     </tr>

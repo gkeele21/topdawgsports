@@ -291,6 +291,7 @@ public class Player implements Serializable {
         sql.append(",").append(_Cols.getColumnList("Standings","vst.", "VisitorStandings$"));
 //        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "FootballStats$"));
         sql.append(",").append(_Cols.getColumnList("FootballStats","tst.", "TotalFootballStats$"));
+        sql.append(",").append("if(tst.Played > 0, tst.SalFantasyPts / tst.Played, 0) as TotalFootballStats$AvgFantasyPts");
         sql.append(" from Player p ");
         sql.append(" inner join Team t on t.TeamID = p.TeamID ");
         sql.append(" inner join Position ps on ps.PositionID = p.PositionID ");

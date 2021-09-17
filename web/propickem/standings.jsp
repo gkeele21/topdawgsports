@@ -10,6 +10,7 @@
 <html>
   <head>
     <title>TopDawgSports - Pro Pickem Standings</title>
+    <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <script src="../js/jquery-1.6.2.min.js" type="text/javascript"></script>
     <script src="../js/jquery.tablesorter.js" type="text/javascript"></script>
@@ -27,13 +28,7 @@
         thead { background-color: white; color: #731702; cursor: pointer; font-size: 1em; font-weight: bold; text-transform: uppercase; }
         thead tr:first-child { color: #103B40; cursor: default; }
         th:hover { color: #BF8339; cursor: pointer; }
-        tr.odd { background-color: #1C5953; color: #F2BC57; }        
-        
-        #weekNumLinks { font-size: 1.1em; margin: 25px 25px; text-align: center; }
-        #weekNumLinks a { color: #1C5953; font-size: 1.1em; padding-left: 20px; }
-        #weekNumLinks a:hover { color: #BF8339; }
-        #weekNumLinks a.currWeek { color: #BF8339; font-size: 1.6em; text-decoration: none; }
-
+        tr.odd { background-color: #1C5953; color: #F2BC57; }
     </style>
   </head>
 

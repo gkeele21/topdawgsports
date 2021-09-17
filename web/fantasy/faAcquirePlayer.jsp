@@ -135,7 +135,7 @@
                                         <c:set var="opp" value="${tds:getOpponentString(game,player.team.teamID)}" />
                                     </c:if>
                                     <tr ${highlightRow1} class="rowData">                                
-                                        <td>${currentRowOverall1}.</td>
+                                        <td>${currentRowOverall1}</td>
                                         <td><c:out value="${player.position.positionName}" /></td>                                        
                                         <td><c:out value="${player.team.abbreviation}" /></td>
                                         <td>
