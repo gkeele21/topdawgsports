@@ -198,7 +198,6 @@ public class Player implements Serializable {
 
     }
 
-
     public static Player getInstance(int playerID) {
 
         Player player = getPlayerCache().get(playerID);
@@ -664,6 +663,38 @@ public class Player implements Serializable {
 
     public void setPlayerInjury(PlayerInjury PlayerInjury) {
         this._PlayerInjury = PlayerInjury;
+    }
+
+    public static Player ReadKickerByNameAndTeam(String lastName, int externalTeamID) {
+        Player player = null;
+        CachedRowSet crs = null;
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ").append(_Cols.getColumnList("Player", "p.", ""));
+            sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
+            sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
+            sql.append(",").append(_Cols.getColumnList("Country", "c.", ""));
+            sql.append(" FROM Player p ");
+            sql.append(" INNER JOIN Team t ON t.TeamID = p.TeamID ");
+            sql.append(" INNER JOIN Position ps ON ps.PositionID = p.PositionID ");
+            sql.append(" LEFT JOIN Country c ON c.CountryID = p.CountryID ");
+            sql.append(" WHERE p.LastName = '").append(lastName).append("' ");
+            sql.append(" AND t.LiveStatsTeamID = ").append(externalTeamID);
+            sql.append(" AND p.PositionID in (7,5)");
+
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
+            if (crs != null) {
+                player = new Player();
+                crs.next();
+                player.initFromCRS(crs, "");
+            }
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+        }
+
+        return player;
     }
 
     // PRIVATE METHODS

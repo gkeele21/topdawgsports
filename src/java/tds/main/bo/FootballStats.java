@@ -327,6 +327,63 @@ public class FootballStats implements Serializable {
         return stats;
     }
 
+    public static int updateTDDistances(int playerID, int seasonWeekID, String newValue) throws Exception {
+        int success = -1;
+        StringBuilder sql = new StringBuilder();
+
+        sql.append(" UPDATE FootballStats SET TDDistances = '").append(newValue).append("' ");
+        sql.append(" WHERE PlayerID = ").append(playerID);
+        sql.append(" AND SeasonWeekID = ").append(seasonWeekID);
+
+        try {
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+            success = 0;
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+            throw new Exception("Error updating FootballStats", e);
+        }
+
+        return success;
+    }
+
+    public static int updateFantasyPoints(int playerID, int seasonWeekID, double newValue) throws Exception {
+        int success = -1;
+        StringBuilder sql = new StringBuilder();
+
+        sql.append(" UPDATE FootballStats SET FantasyPts = '").append(newValue).append("' ");
+        sql.append(" WHERE PlayerID = ").append(playerID);
+        sql.append(" AND SeasonWeekID = ").append(seasonWeekID);
+
+        try {
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+            success = 0;
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+            throw new Exception("Error updating FootballStats", e);
+        }
+
+        return success;
+    }
+
+    public static int updateSalFantasyPoints(int playerID, int seasonWeekID, double newValue) throws Exception {
+        int success = -1;
+        StringBuilder sql = new StringBuilder();
+
+        sql.append(" UPDATE FootballStats SET SalFantasyPts = '").append(newValue).append("' ");
+        sql.append(" WHERE PlayerID = ").append(playerID);
+        sql.append(" AND SeasonWeekID = ").append(seasonWeekID);
+
+        try {
+            CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+            success = 0;
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+            throw new Exception("Error updating FootballStats", e);
+        }
+
+        return success;
+    }
+
     public CTReturnCode Delete() {
         int res = 0;
         StringBuilder sql = new StringBuilder();

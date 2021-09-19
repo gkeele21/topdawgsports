@@ -117,7 +117,7 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
                         position = "DL";
                     } else if ("SS".equals(position))
                     {
-                        position = "DL";
+                        position = "DB";
                     } else if ("OLB".equals(position))
                     {
                         position = "LB";
@@ -260,6 +260,7 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
                     sql.append(" SET IsActive = 1");
                     sql.append(" ,TeamID = ").append(teamid);
                     sql.append(" ,StatsPlayerID2 = ").append(statsPlayerId);
+                    sql.append(" ,PositionID = ").append(positionId);
                     sql.append(" WHERE PlayerID = ").append(playerId);
                     System.out.println(sql);
                     CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());

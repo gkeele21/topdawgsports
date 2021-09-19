@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tds.fantasy.scripts.FootballStats_ProFootballAPI;
 import tds.main.bo.football.stats.MySportsFeeds.Players_PlayerObj;
+import tds.main.bo.football.stats.MySportsFeeds.Scoring_QuarterObj;
+import tds.main.bo.football.stats.MySportsFeeds.Scoring_ScoringPlayObj;
 import tds.main.bo.football.stats.MySportsFeeds.Stats_PlayerObj;
 
 import java.io.BufferedReader;
@@ -84,6 +86,137 @@ public class MySportsFeeds_ProFootballAPI {
         }
     }
 
+    private static void addKickerFGDistance(int seasonweekid, int teamid, String scoringPlayDesc) {
+        // parse out the kicker's name
+        System.out.println("Desc : " + scoringPlayDesc);
+        String[] splitStr = scoringPlayDesc.trim().split("\\s+");
+
+        // indexes:
+        // 0 = time
+        // 1 = player with jersey #
+        // 2 = fg length
+        if (splitStr != null) {
+            String playerStr = splitStr[1];
+            int fgLength = Integer.parseInt(splitStr[2]);
+            String playerNameFull = playerStr.substring(playerStr.indexOf("-")+1);
+            System.out.println("Player Name: " + playerNameFull);
+            String[] playerNameSplit = playerNameFull.split("\\.");
+            String firstInitial = playerNameSplit[0];
+            String lastName = playerNameSplit[1];
+
+            // Find the kicker in the db
+            Player player = Player.ReadKickerByNameAndTeam(lastName, teamid);
+            if (player.getPlayerID() == 0) {
+                return;
+            }
+
+            try {
+                FootballStats stats = FootballStats.getRecordByPlayerIDSeasonWeekID(player.getPlayerID(), seasonweekid);
+                String fgLengths = "";
+                if (stats != null && stats.getTDDistances() != null) {
+                    fgLengths = stats.getTDDistances();
+                }
+
+                if (fgLengths != null && fgLengths.length() > 0) {
+                    fgLengths += ",";
+                }
+                fgLengths += fgLength;
+
+                FootballStats.updateTDDistances(player.getPlayerID(), seasonweekid, fgLengths);
+
+                // because the fantasy pts aren't calculated off of exact lengths,
+                // update fantasy pts
+                if (fgLength > 30) {
+
+                    double doubleNumber = fgLength % 10;
+                    double fantasyPtsToAdd = doubleNumber / 10;
+//                    BigDecimal bigDecimal = new BigDecimal(String.valueOf(doubleNumber));
+//                    int intValue = bigDecimal.intValue();
+//                    System.out.println("Double Number: " + bigDecimal.toPlainString());
+//                    System.out.println("Integer Part: " + intValue);
+//                    System.out.println("Decimal Part: " + bigDecimal.subtract(
+//                            new BigDecimal(intValue)).toPlainString());
+//                    BigDecimal fantasyPtsToAddBD = bigDecimal.subtract(new BigDecimal(intValue));
+//                    double fantasyPtsToAdd = fantasyPtsToAddBD.doubleValue();
+                    if (fantasyPtsToAdd > 0.0) {
+                        double fantasyPts = stats.getFantasyPts();
+                        FootballStats.updateFantasyPoints(player.getPlayerID(), seasonweekid, fantasyPts + fantasyPtsToAdd);
+
+                        double salFantasyPts = stats.getSalFantasyPts();
+                        FootballStats.updateSalFantasyPoints(player.getPlayerID(), seasonweekid, salFantasyPts + fantasyPtsToAdd);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void getKickingDistances(Game game, JsonNode scoringNode, ObjectMapper mapper, int seasonweekid) {
+        try {
+
+            JsonNode quartersArray = scoringNode.get("quarters");
+
+            if (quartersArray.isArray()) {
+
+                List<Scoring_QuarterObj> quarters = mapper.readValue(quartersArray.toString(), new TypeReference<List<Scoring_QuarterObj>>(){});
+                for (Scoring_QuarterObj quarterObj : quarters) {
+
+                    List<Scoring_ScoringPlayObj> scoringPlays =  quarterObj.getScoringPlays();
+                    if (scoringPlays != null) {
+                        for (Scoring_ScoringPlayObj scoringPlay : scoringPlays) {
+                            String desc = scoringPlay.getPlayDescription();
+
+                            if (desc.contains("field goal")) {
+                                addKickerFGDistance(seasonweekid, scoringPlay.getTeam().getId(), desc);
+                            }
+                        }
+                    }
+                }
+                System.out.println("All player stats are done.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void updateGameScore(Game game, JsonNode scoringNode) {
+        if (game.getWinnerID() > 0) {
+            return;
+        }
+
+        try {
+            int awayScore = scoringNode.get("awayScoreTotal").intValue();
+            int homeScore = scoringNode.get("homeScoreTotal").intValue();
+
+            if (awayScore > homeScore) {
+                game.setWinnerID(game.getVisitorID());
+            } else if (homeScore > awayScore) {
+                game.setWinnerID(game.getHomeID());
+            } else {
+                game.setWinnerID(0);
+            }
+
+            game.setVisitorPts(awayScore);
+            game.setHomePts(homeScore);
+
+            game.Save();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getScoringStatsFromGame(Game game, JsonNode scoringNode, ObjectMapper mapper, int seasonweekid, String gameStatus) {
+
+        if (PLAYED_STATUS_COMPLETED.equals(gameStatus)) {
+            updateGameScore(game, scoringNode);
+        }
+
+        getKickingDistances(game, scoringNode, mapper, seasonweekid);
+    }
+
     private static void getPlayerStatsFromGame(JsonNode statsNode, ObjectMapper mapper, int seasonweekid) {
         try {
             JsonNode homeNode = statsNode.get("home");
@@ -118,6 +251,8 @@ public class MySportsFeeds_ProFootballAPI {
                 String gameStatus = gameNode.get("playedStatus").asText();
 
                 getPlayerStatsFromGame(statsNode, mapper, seasonweekid);
+
+                getScoringStatsFromGame(game, scoringNode, mapper, seasonweekid, gameStatus);
             }
 
         } catch (Exception e) {
