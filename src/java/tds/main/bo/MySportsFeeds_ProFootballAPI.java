@@ -130,14 +130,6 @@ public class MySportsFeeds_ProFootballAPI {
 
                     double doubleNumber = fgLength % 10;
                     double fantasyPtsToAdd = doubleNumber / 10;
-//                    BigDecimal bigDecimal = new BigDecimal(String.valueOf(doubleNumber));
-//                    int intValue = bigDecimal.intValue();
-//                    System.out.println("Double Number: " + bigDecimal.toPlainString());
-//                    System.out.println("Integer Part: " + intValue);
-//                    System.out.println("Decimal Part: " + bigDecimal.subtract(
-//                            new BigDecimal(intValue)).toPlainString());
-//                    BigDecimal fantasyPtsToAddBD = bigDecimal.subtract(new BigDecimal(intValue));
-//                    double fantasyPtsToAdd = fantasyPtsToAddBD.doubleValue();
                     if (fantasyPtsToAdd > 0.0) {
                         double fantasyPts = stats.getFantasyPts();
                         FootballStats.updateFantasyPoints(player.getPlayerID(), seasonweekid, fantasyPts + fantasyPtsToAdd);
