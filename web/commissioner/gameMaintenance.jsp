@@ -228,7 +228,7 @@
                             <%-- Game Date --%>
                             <td>
                                 <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
-                                <input type="text" name="gameDate_${game.gameID}" value="<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" timeZone="America/Denver" value="${gameDate}"/>" />
+                                <input type="text" name="gameDate_${game.gameID}" value="<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${gameDate}"/>" />
                             </td>
 
                             <%-- Visitor Name --%>
