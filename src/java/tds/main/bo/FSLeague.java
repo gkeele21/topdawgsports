@@ -165,7 +165,7 @@ public class FSLeague implements Serializable {
 
     public List<Player> GetFreeAgents(int fsSeasonWeekID, String positionName) {
         List<Player> players = new ArrayList<>();
-        
+
         // Add in the players dropped this week.
         List<FSFootballTransaction> transactions = GetTransactions(fsSeasonWeekID);
         StringBuilder except = new StringBuilder();
@@ -286,7 +286,7 @@ public class FSLeague implements Serializable {
             sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
             sql.append(" and r.FSTeamID in (select FSTeamID from FSTeam WHERE FSLeagueID =").append(_FSLeagueID).append(")");
             sql.append(" left join FSTeam fst on fst.FSTeamID = r.FSTeamID");
-        }        
+        }
         sql.append(" where p.IsActive = 1");
         sql.append(" and st.FantasyPts > 0");
         if (positionName.length() > 0) {
