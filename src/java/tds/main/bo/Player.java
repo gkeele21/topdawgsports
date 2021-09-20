@@ -357,20 +357,12 @@ public class Player implements Serializable {
             stats = getWeeklyStats().get(seasonweekid);
         } else {
 
-            Connection con = null;
             try {
-                con = CTApplication._CT_QUICK_DB.getConn();
                 //System.out.println("Building Weekly Stats from scratch for Week #" + seasonweekid);
-                buildWeeklyStats(con,seasonweekid);
+                buildWeeklyStats(seasonweekid);
                 stats = getWeeklyStats().get(seasonweekid);
             } catch (Exception e) {
                 _CT_LOG.error(e);
-            } finally {
-                if (con != null) {
-                    try {
-                        con.close();
-                    } catch (Exception e) {}
-                }
             }
         }
 
@@ -462,14 +454,14 @@ public class Player implements Serializable {
         }
     }
 
-    public void buildWeeklyStats(Connection con, int seasonWeekID) {
+    public void buildWeeklyStats(int seasonWeekID) {
         CachedRowSet crs = null;
         try {
             if (getWeeklyStats() == null) {
                 setWeeklyStats(new TreeMap<Integer,FootballStats>());
             }
 
-            if (!"0".equals(getStatsPlayerID2())) {
+            if (!"0".equals(getPlayerID())) {
 
                 StringBuilder sql = new StringBuilder();
                 sql.append(" SELECT ").append(_Cols.getColumnList("FootballStats", "st.", "FootballStats$"));
@@ -783,7 +775,7 @@ public class Player implements Serializable {
                 setCountry(new Country(crs, "Country$"));
             }
 
-            if (FSUtils.fieldExists(crs, "TotalFootballStats$", "StatsPlayerID")) {
+            if (FSUtils.fieldExists(crs, "TotalFootballStats$", "PlayerID")) {
                 buildWeeklyStats(0, crs, "TotalFootballStats$");
             }
 
