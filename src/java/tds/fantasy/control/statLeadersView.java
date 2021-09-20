@@ -39,7 +39,7 @@ public class statLeadersView extends BaseTeamView {
         for (FSSeasonWeek week : allWeeks) {
             
             // We will only show completed weeks on the page
-            if (week.getStatus().equals(SeasonWeek.Status.COMPLETED.toString())) {
+            if (!week.getStatus().equals(SeasonWeek.Status.PENDING.toString())) {
                 displayWeeks.add(week);                    
             }
         } 
