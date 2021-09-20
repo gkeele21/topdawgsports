@@ -175,7 +175,7 @@ public class MySportsFeeds_ProFootballAPI {
     }
 
     private static void updateGameScore(Game game, JsonNode scoringNode) {
-        if (game.getWinnerID() > 0) {
+        if (game.getWinnerID() != null && game.getWinnerID() > 0) {
             return;
         }
 
