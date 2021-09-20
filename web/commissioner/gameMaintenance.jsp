@@ -8,8 +8,8 @@
 <html>
     <head>
         <title>TopDawgSports - Game Maintenance</title>
-        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
         <style>
             button { background-color: #103B40; border-color: #731702; color: white; margin-left: 10px;}
             form { display:inline; margin-left: 20px; }
@@ -227,7 +227,8 @@
                         <tr>
                             <%-- Game Date --%>
                             <td>
-                                <input type="text" name="gameDate_${game.gameID}" value="${game.gameDate}" />
+                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                <input type="text" name="gameDate_${game.gameID}" value="<fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" timeZone="America/Denver" value="${gameDate}"/>" />
                             </td>
 
                             <%-- Visitor Name --%>
