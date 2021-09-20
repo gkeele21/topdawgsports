@@ -51,7 +51,7 @@ public class statLeadersView extends BaseTeamView {
             players = league.GetPlayerStatsByWeek(reqWeek, posname);
         }
         
-        boolean showDefense = _FSTeam.getFSLeague().getDraftType()!= null &&_FSTeam.getFSLeague().getDraftType().equals("dynasty");
+        boolean isDynasty = _FSTeam.getFSLeague().getDraftType()!= null &&_FSTeam.getFSLeague().getDraftType().equals("dynasty");
         boolean showOwner = _FSTeam.getFSLeague().getFSSeason().getFSGameID() == FSGame.HEADTOHEAD;
         
         //Retrieve stats      
@@ -60,7 +60,7 @@ public class statLeadersView extends BaseTeamView {
         request.setAttribute("startingRowNum",startingRowNum);
         request.setAttribute("players",players);
         request.setAttribute("displayWeeks",displayWeeks);
-        request.setAttribute("showDefense",showDefense);
+        request.setAttribute("isDynasty",isDynasty);
         request.setAttribute("showOwner",showOwner);
        
         return page;

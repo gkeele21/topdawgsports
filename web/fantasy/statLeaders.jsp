@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
     <script src="../js/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="../js/jquery.tablesorter.js" type="text/javascript"></script>
     
     <script type="text/javascript">
         $(document).ready(function() {
@@ -61,7 +62,7 @@
                             <a href="statLeaders.htm?pos=WR&wk=${reqWeek}">WR</a>
                             <a href="statLeaders.htm?pos=TE&wk=${reqWeek}">TE</a>
                             <a href="statLeaders.htm?pos=PK&wk=${reqWeek}">PK</a>
-                            <c:if test="${showDefense == true}">
+                            <c:if test="${isDynasty == true}">
                                 <a href="statLeaders.htm?pos=DL&wk=${reqWeek}">DL</a>
                                 <a href="statLeaders.htm?pos=LB&wk=${reqWeek}">LB</a>
                                 <a href="statLeaders.htm?pos=DB&wk=${reqWeek}">DB</a>
@@ -86,7 +87,7 @@
                                 </jsp:attribute>
                                 <jsp:attribute name="rowTitle">
                                     <tr class="rowTitle">
-                                        <td colspan="14">${posname} Leaders</td>
+                                        <td colspan="15">${posname} Leaders</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
@@ -132,7 +133,7 @@
                                         </c:if>
                                         <th>2 Pt</th>
                                         <th>Points</th>
-                                        <th>Avg</th>
+                                        <c:if test="${reqWeek == 0}"><th>Avg</th></c:if>
                                     </tr>
                                 </thead>
                                 </jsp:attribute>
@@ -188,18 +189,18 @@
                                         </c:if>
                                         <td>${playerstats.player.totalFootballStats.passTwoPt + stats.rushTwoPt + stats.recTwoPt}</td>
                                         <td><fmt:formatNumber value="${playerstats.player.totalFootballStats.fantasyPts}" minFractionDigits="2" /></td>
-                                        <td><fmt:formatNumber value="${playerstats.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" /></td>
+                                        <c:if test="${reqWeek == 0}"><td><fmt:formatNumber value="${playerstats.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" /></td></c:if>
                                     </tr>                                    
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
                                     <tr>
-                                        <td colspan="14">There are no stats available for this week.</td>
+                                        <td colspan="15">There are no stats available for this week.</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowNavigation">
                                     <tfoot>
                                         <tr>
-                                            <td colspan="14"><hr /></td>
+                                            <td colspan="15"><hr /></td>
                                         </tr>
                                         <tr class="rowData2">
                                             <td colspan="2"><tds:navFirst link="statLeaders.htm?pos=${posname}&wk=${reqWeek}">FIRST</tds:navFirst></td>

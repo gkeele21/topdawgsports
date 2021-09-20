@@ -182,8 +182,8 @@ public class FSLeague implements Serializable {
         sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
-        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "FootballStats$"));
+        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as FootballStats$AvgFantasyPts");
         sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$"));
         sql.append(" from Player p");
         sql.append(" join Position ps on ps.PositionID = p.PositionID");
@@ -227,9 +227,9 @@ public class FSLeague implements Serializable {
         sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "FootballStats$"));
         sql.append(",").append(_Cols.getColumnList("FSSeasonWeek","fssw.", "FSSeasonWeek$"));
-        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
+        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as FootballStats$AvgFantasyPts");
         if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) { sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$")); }
         sql.append(" from Player p");
         sql.append(" join Position ps on ps.PositionID = p.PositionID");
@@ -273,8 +273,8 @@ public class FSLeague implements Serializable {
         sql.append("select ").append(_Cols.getColumnList("Player", "p.", "Player$"));
         sql.append(",").append(_Cols.getColumnList("Position", "ps.", "Position$"));
         sql.append(",").append(_Cols.getColumnList("Team", "t.", "Team$"));
-        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "TotalFootballStats$"));
-        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as TotalFootballStats$AvgFantasyPts");
+        sql.append(",").append(_Cols.getColumnList("FootballStats","st.", "FootballStats$"));
+        sql.append(",").append("if(st.Played > 0,st.FantasyPts / st.Played, 0) as FootballStats$AvgFantasyPts");
         if (getFSSeason().getFSGameID() == FSGame.HEAD_TO_HEAD) { sql.append(",").append(_Cols.getColumnList("FSTeam","fst.", "FSTeam$")); }
         sql.append(" from Player p");
         sql.append(" join Position ps on ps.PositionID = p.PositionID");
