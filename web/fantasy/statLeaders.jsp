@@ -153,43 +153,43 @@
                                         <td align="left"><tds:player player="${playerstats.player}" displayStatsLink="true" displayInjury="false" /></td>                                        
                                         <!-- PASSING / RUSHING / RECEIVING Stats -->
                                         <c:if test="${posname == 'QB'}">
-                                            <td>${playerstats.player.totalFootballStats.passComp}</td>
-                                            <td>${playerstats.player.totalFootballStats.passAtt}</td>
-                                            <td>${playerstats.player.totalFootballStats.passYards}</td>
-                                            <td>${playerstats.player.totalFootballStats.passTD}</td>
-                                            <td>${playerstats.player.totalFootballStats.passInt}<tds:addRowTotal name="interceptions" value="${playerstats.player.totalFootballStats.passInt}" /></td>
+                                            <td>${playerstats.footballStats.passComp}</td>
+                                            <td>${playerstats.footballStats.passAtt}</td>
+                                            <td>${playerstats.footballStats.passYards}</td>
+                                            <td>${playerstats.footballStats.passTD}</td>
+                                            <td>${playerstats.footballStats.passInt}<tds:addRowTotal name="interceptions" value="${playerstats.footballStats.passInt}" /></td>
                                         </c:if>
                                         <c:if test="${posname == 'QB' || posname == 'RB' || posname == 'WR'}">    
-                                            <td>${playerstats.player.totalFootballStats.rushAtt}</td>
-                                            <td>${playerstats.player.totalFootballStats.rushYards}</td>
-                                            <td>${playerstats.player.totalFootballStats.rushTD}</td>                                    
+                                            <td>${playerstats.footballStats.rushAtt}</td>
+                                            <td>${playerstats.footballStats.rushYards}</td>
+                                            <td>${playerstats.footballStats.rushTD}</td>                                    
                                         </c:if>
                                         <c:if test="${posname == 'RB' ||posname == 'WR' || posname == 'TE'}">    
-                                            <td>${playerstats.player.totalFootballStats.recCatches}</td>
-                                            <td>${playerstats.player.totalFootballStats.recYards}</td>
-                                            <td>${playerstats.player.totalFootballStats.recTD}</td>
+                                            <td>${playerstats.footballStats.recCatches}</td>
+                                            <td>${playerstats.footballStats.recYards}</td>
+                                            <td>${playerstats.footballStats.recTD}</td>
                                         </c:if>
                                         <!-- KICKING Stats -->
                                         <c:if test="${playerstats.player.position.positionName == 'PK'}">
-                                            <td>${playerstats.player.totalFootballStats.XPM}</td>
-                                            <td>${playerstats.player.totalFootballStats.XPA}</td>
-                                            <td>${playerstats.player.totalFootballStats.FGM}</td>
-                                            <td>${playerstats.player.totalFootballStats.FGA}</td>
-                                            <c:if test="${reqWeek > 0}"><td>${playerstats.player.totalFootballStats.TDDistances}</td></c:if>
+                                            <td>${playerstats.footballStats.XPM}</td>
+                                            <td>${playerstats.footballStats.XPA}</td>
+                                            <td>${playerstats.footballStats.FGM}</td>
+                                            <td>${playerstats.footballStats.FGA}</td>
+                                            <c:if test="${reqWeek > 0}"><td>${playerstats.footballStats.TDDistances}</td></c:if>
                                         </c:if>  
                                         <!-- DEFENSE Stats -->
                                         <c:if test="${playerstats.player.position.positionName == 'DL' || playerstats.player.position.positionName == 'LB' || playerstats.player.position.positionName == 'DB'}">
-                                            <td>${playerstats.player.totalFootballStats.IDPTackles}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPAssists}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPSacks}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPInterceptions}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPFumblesForced}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPFumbleRecoveries}</td>
-                                            <td>${playerstats.player.totalFootballStats.IDPIntReturnsForTD}</td>
+                                            <td>${playerstats.footballStats.IDPTackles}</td>
+                                            <td>${playerstats.footballStats.IDPAssists}</td>
+                                            <td>${playerstats.footballStats.IDPSacks}</td>
+                                            <td>${playerstats.footballStats.IDPInterceptions}</td>
+                                            <td>${playerstats.footballStats.IDPFumblesForced}</td>
+                                            <td>${playerstats.footballStats.IDPFumbleRecoveries}</td>
+                                            <td>${playerstats.footballStats.IDPIntReturnsForTD}</td>
                                         </c:if>
-                                        <td>${playerstats.player.totalFootballStats.passTwoPt + stats.rushTwoPt + stats.recTwoPt}</td>
-                                        <td><fmt:formatNumber value="${playerstats.player.totalFootballStats.fantasyPts}" minFractionDigits="2" /></td>
-                                        <c:if test="${reqWeek == 0}"><td><fmt:formatNumber value="${playerstats.player.totalFootballStats.avgFantasyPts}" minFractionDigits="2" /></td></c:if>
+                                        <td>${playerstats.footballStats.passTwoPt + stats.rushTwoPt + stats.recTwoPt}</td>
+                                        <td><fmt:formatNumber value="${playerstats.footballStats.fantasyPts}" minFractionDigits="2" /></td>
+                                        <c:if test="${reqWeek == 0}"><td><fmt:formatNumber value="${playerstats.footballStats.avgFantasyPts}" minFractionDigits="2" /></td></c:if>
                                     </tr>                                    
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">

@@ -49,7 +49,7 @@ public class PlayerStats implements Serializable {
             }
 
             if (FSUtils.fieldExists(crs, "FootballStats$", "FootballStatsID")) {
-                setFSTeam(new FootballStats(crs, "FootballStats$"));
+                setFootballStats(new FootballStats(crs, "FootballStats$"));
             }
 
         } catch (Exception e) {
