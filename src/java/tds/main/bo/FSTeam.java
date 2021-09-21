@@ -364,6 +364,79 @@ public class FSTeam implements Serializable {
 
         return teams;
    }
+    
+    public static List<PositionalBreakdown> GetPositionalBreakdown(int fsTeamId, int fsSeasonWeekId) {
+
+        List<PositionalBreakdown> stats = new ArrayList<>();
+        CachedRowSet crs = null;
+        StringBuilder sql = new StringBuilder();
+
+        // Create SQL statement
+        sql.append("select ");
+        sql.append("Week, Opp, ");
+        sql.append("sum(case when Pos = 'QB' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'QB', ");
+        sql.append("sum(case when Pos = 'RB' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'RB', ");
+        sql.append("sum(case when Pos = 'WR' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'WR', ");  
+        sql.append("sum(case when Pos = 'TE' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'TE', ");
+        sql.append("sum(case when Pos = 'WR' OR Pos='TE' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'WRTE', ");
+        sql.append("sum(case when Pos = 'PK' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'PK', ");
+        sql.append("sum(case when Pos = 'DL' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'DL', ");
+        sql.append("sum(case when Pos = 'LB' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'LB', ");
+        sql.append("sum(case when Pos = 'DB' then round((ifnull(MyPoints,0)-ifnull(OppPoints,0)),2) else 0 end) 'DB', ");
+        sql.append("sum(ifnull(MyPoints,0)) 'MyPts', ");
+        sql.append("sum(ifnull(OppPoints,0)) 'OppPts', ");
+        sql.append("sum(ifnull(MyPoints,0)-ifnull(OppPoints,0)) 'TotalDiff' ");
+        sql.append("from ( ");
+        sql.append("select fssw.FSSeasonWeekNo Week, ps.PositionName Pos, opp.TeamName Opp, round(sum(st.FantasyPts),2) 'MyPoints', ");
+        sql.append("round((select sum(st2.FantasyPts) ");
+        sql.append("from  FSRoster r2 ");
+        sql.append("join Player p2 on p2.PlayerID = r2.PlayerID ");
+        sql.append("join Position ps2 on ps2.PositionID = p2.PositionID ");
+        sql.append("join FSSeasonWeek fssw2 on fssw2.FSSeasonWeekID = r2.FSSeasonWeekID ");
+        sql.append("join FootballStats st2 on st2.PlayerID = p2.PlayerID ");
+        sql.append("and st2.SeasonWeekID = fssw2.SeasonWeekID ");
+        sql.append("left join FSFootballMatchup fm2 on (fm2.Team1ID = r2.FSTeamID or fm2.Team2ID = r2.FSTeamID) ");
+        sql.append("and fssw2.FSSeasonWeekID = fm2.FSSeasonWeekID ");
+        sql.append("left join FSTeam opp2 on (opp2.FSTeamID = fm2.Team1ID or opp2.FSTeamID = fm2.Team2ID) ");
+        sql.append("where r2.StarterState = 'starter' ");
+        sql.append("and r2.FSTeamID = opp.FSteamID ");
+        sql.append("and r2.FSSeasonWeekID = fssw.FSSeasonWeekID ");
+        sql.append("and opp2.FSTeamID != opp.FSteamID ");
+        sql.append("and ps2.PositionName = ps.PositionName ");
+        sql.append("),2) 'OppPoints' ");
+        sql.append("from FSRoster r ");
+        sql.append("join Player p on p.PlayerID = r.PlayerID ");
+        sql.append("join Position ps on ps.PositionID = p.PositionID ");
+        sql.append("join FSSeasonWeek fssw on fssw.FSSeasonWeekID = r.FSSeasonWeekID ");
+        sql.append("join FootballStats st on st.PlayerID = p.PlayerID ");
+        sql.append("and st.SeasonWeekID = fssw.SeasonWeekID ");
+        sql.append("left join FSFootballMatchup fm on (fm.Team1ID = r.FSTeamID or fm.Team2ID = r.FSTeamID) ");
+        sql.append("and fssw.FSSeasonWeekID = fm.FSSeasonWeekID ");
+        sql.append("left join FSTeam opp on (opp.FSTeamID = fm.Team1ID or opp.FSTeamID = fm.Team2ID) ");
+        sql.append("where r.StarterState = 'starter' ");
+        sql.append("and r.FSTeamID = ").append(fsTeamId).append(" ");
+        sql.append("and opp.FSTeamID != ").append(fsTeamId).append(" ");
+        if (fsSeasonWeekId > 0) { sql.append(" and fssw.FSSeasonWeekID = ").append(fsTeamId).append(" "); }        
+        sql.append("group by ps.PositionName, fssw.FSSeasonWeekNo, opp.teamName ");
+        sql.append("order by fssw.FSSeasonWeekNo, p.PositionID ");
+        sql.append(") PositionBreakdown ");
+        sql.append("group by Week ");
+
+        // Call QueryCreator
+        try {
+            crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
+            while (crs.next()) {
+                stats.add(new PositionalBreakdown(crs,""));
+            }
+
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        } finally {
+            JDBCDatabase.closeCRS(crs);
+        }
+
+        return stats;
+   }
 
     /*public int update() {
 

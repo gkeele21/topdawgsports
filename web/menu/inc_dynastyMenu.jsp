@@ -33,16 +33,22 @@
     <li ${pageClass}><a href="/topdawgsports/fantasy/transactions.htm">Transactions</a></li>
     <c:set var="pageClass" value="" />
 
-    <c:if test="${pageName == 'draftResults'}">
-        <c:set var="pageClass" value="class=menuSelection" />
-    </c:if>
-    <li ${pageClass}><a href="/topdawgsports/fantasy/draftResults.htm">Draft Results</a></li>
-    <c:set var="pageClass" value="" />
-
     <c:if test="${pageName == 'statLeaders'}">
         <c:set var="pageClass" value="class=menuSelection" />
     </c:if>
     <li ${pageClass}><a href="/topdawgsports/fantasy/statLeaders.htm">Stat Leaders</a></li>
+    <c:set var="pageClass" value="" />
+    
+    <c:if test="${pageName == 'positionBreakdown'}">
+        <c:set var="pageClass" value="class=menuSelection" />
+    </c:if>
+    <li ${pageClass}><a href="/topdawgsports/fantasy/positionBreakdown.htm">Position Breakdown</a></li>
+    <c:set var="pageClass" value="" />
+    
+    <c:if test="${pageName == 'draftResults'}">
+        <c:set var="pageClass" value="class=menuSelection" />
+    </c:if>
+    <li ${pageClass}><a href="/topdawgsports/fantasy/draftResults.htm">Draft Results</a></li>
     <c:set var="pageClass" value="" />
 
     <c:if test="${pageName == 'dynastyRules'}">
