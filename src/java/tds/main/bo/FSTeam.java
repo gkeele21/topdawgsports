@@ -420,7 +420,7 @@ public class FSTeam implements Serializable {
         sql.append("group by ps.PositionName, fssw.FSSeasonWeekNo, opp.TeamName ");
         sql.append("order by fssw.FSSeasonWeekNo, p.PositionID ");
         sql.append(") PositionBreakdown ");
-        sql.append("group by Week ");
+        sql.append("group by Week, Opp ");
 
         // Call QueryCreator
         try {
