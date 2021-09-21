@@ -417,7 +417,7 @@ public class FSTeam implements Serializable {
         sql.append("and r.FSTeamID = ").append(fsTeamId).append(" ");
         sql.append("and opp.FSTeamID != ").append(fsTeamId).append(" ");
         if (fsSeasonWeekId > 0) { sql.append(" and fssw.FSSeasonWeekID = ").append(fsTeamId).append(" "); }        
-        sql.append("group by ps.PositionName, fssw.FSSeasonWeekNo, opp.teamName ");
+        sql.append("group by ps.PositionName, fssw.FSSeasonWeekNo, opp.TeamName ");
         sql.append("order by fssw.FSSeasonWeekNo, p.PositionID ");
         sql.append(") PositionBreakdown ");
         sql.append("group by Week ");
