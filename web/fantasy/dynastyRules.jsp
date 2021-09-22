@@ -116,7 +116,7 @@
                         <h3>Extra Points :</h3>
                             <label>1 point for every one kicking; 2 points for every one passing, rushing, or receiving.</label><br />
                         <h3>Solo Tackles :</h3>
-                            <label>1 point for every solo tackle for an individual defensive player. Half tackles are included for 0.5 points</label><br />
+                            <label>1 point for every solo tackle for an individual defensive player.</label><br />
                         <h3>Ast. Tackles :</h3>
                             <label>0.5 point for every assisted tackle for an individual defensive player.</label><br />
                         <h3>Sacks :</h3>

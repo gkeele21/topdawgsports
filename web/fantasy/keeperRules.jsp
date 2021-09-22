@@ -50,45 +50,20 @@
                             <label>$25.00</label><br />
                         <h3>Commissioner :</h3>
                             <label>Bert Keele</label><br />
-                        <h3>Bookkeeper :</h3>
-                            <label>Grant Keele</label><br />
                         <h3>Rule Changes :</h3>
                             <ul>
-                                <li>The deadline for submitting new rule changes is set at the annual owner’s meeting.</li>
-                                <li>There must be a majority vote among the owners for any rules to be added or changed for the upcoming season.</li>
-                                <li>A tie means no change.</li>
+                                <li>Any rule change can be submitted and passed during the season with 100% owner approval.</li>
+                                <li>Any rule change proposals for the upcoming season need to be submitted to the commissioner by a specific date set by the league commissioner.</li>
+                                <li>In order for a rule change to pass, there must be a majority vote among all owners. (A tie means no change)</li>
                                 <li>A neutral vote by an owner does not count as a vote at all.</li>
-                                <li>Voting on proposals is done after the Tenman proposal results are comprised.</li>
-                                <li>A rule can be passed during the season only with a 100% owner approval.</li>
-                            </ul>
-                    <h2>Commissioner Responsibilities</h2>
-                        <h3>Off-Season Preparation :</h3>
-                            <ul>
-                                <li>Hold an owner’s meeting.</li>
-                                <li>Replace owners when necessary.</li>
-                                <li>Coordinate draft day.</li>
-                                <li>Collect and email all rule proposals.</li>
-                                <li>Gather and send out final results on all rule change proposals.</li>
-                                <li>Notify all owners of their end of season roster.</li>
-                                <li>Assemble all Pre-Draft Roster cuts.</li>
-                                <li>Disperse the draft order.</li>
-                                <li>Prepare hard copies of draft sheets.</li>
-                            </ul>
-                        <h3>In-Season :</h3>
-                            <ul>
-                                <li>Solve all matters fairly.</li>
-                                <li>Serve as league treasurer.</li>
-                            </ul>
-                    <h2>Owner's Meeting</h2>
-                        <h3>Agenda :</h3>
-                            <label>An annual owner’s meeting is to be held each year.  The commissioner should schedule a time to meet and discuss upcoming rule change proposals, refine our games involving new ideas, and schedule the time of when all rule change proposals are due.</label><br/>
+                            </ul>                    
                     <h2>Roster Requirements</h2>
                         <h3>Minimum Requirements :</h3>
                             <label>An owner must always have 1 QB, 2 RB’s, 3 WR’s, and 1 K, this includes the duration of the entire season as well as after the Pre-draft Roster cuts.</label><br />
                         <h3>Backup Positions :</h3>
                             <label>There are no requirements for the backup positions.  After fulfilling the minimum requirements, an owner can comprise the remaining roster spots from players at any position.</label><br />
                     <h2>Pre-Draft Roster</h2>
-                        <h3>Deadline :</h3>
+                        <h3>Cut Deadline :</h3>
                             <label>The Monday before draft day.</label><br/>
                         <h3>Roster Size :</h3>
                             <label>13</label><br/>
@@ -104,9 +79,7 @@
                         <h3>Additional Rounds :</h3>
                             <label>An owner will gain additional rounds in the draft to complete their roster for as many roster spots that they have unfilled. These additional rounds will be given at the end of the regular draft rounds and the same draft order will be maintained.</label><br/>
                         <h3>Draft Order :</h3>
-                            <label>None of the rounds in this draft will serpentine.  The order is the same for each round and is determined by the results from the previous year.  All categories are based on teams that finished at the bottom in the following order: money won, total fantasy points, final record in standings.  If there is still a tie, the year previous to that will be looked at using the same criteria.</label><br/>
-                        <h3>Position Requirements :</h3>
-                            <label>There are no position requirements.  An entire roster can be comprised of players at any position.</label><br />    
+                            <label>None of the rounds in this draft will serpentine.  The order is the same for each round and is determined by the results from the previous year.  All categories are based on teams that finished at the bottom in the following order: money won, total fantasy points.  If there is still a tie, the year previous to that will be looked at using the same criteria.</label><br/>                           
                         <h3>Regulations :</h3>
                             <label>You may not draft a player that is already on the NFL’s Injured Reserve list.</label><br />
                         <h3>Final Roster Size :</h3>
@@ -127,12 +100,12 @@
                                 <li>There is a limit of 3 trades per year between two owners.</li>
                             </ul>
                         <h3>Transaction Deadline :</h3>
-                            <label>Each week, all transactions should be submitted into the system from Sunday up to 6:00 AM MST Thursday morning.  The system will then carry out all submitted transactions based on the transaction order (see Transaction Order). Immediately following the processed transactions, all other submitted transactions for the week will be processed on a first-come first-served basis.</label><br />
+                            <label>Each week, all transactions should be submitted into the system from Sunday up to 10:00 AM MST Thursday morning.  The system will then carry out all submitted transactions based on the transaction order (see Transaction Order). Immediately following the processed transactions, all other submitted transactions for the week will be processed on a first-come first-served basis.</label><br />
                         <h3>Transaction Order :</h3>
                             <ul>
                                 <li>After the draft and before the first NFL game, the transaction order will be on a first-come first-served basis.</li>
                                 <li>After Week 1, transactions are always processed in an orderly fashion.  The initial order is based on the previous year’s results and follows the same criteria as the original draft order.</li>
-                                <li>Anytime an owner makes a transaction on a given week by the transaction deadline, that owner moves to the bottom of the order, while every other owner shifts up one. If more than one transaction per owner occurs by the deadline, the second round of transactions will be carried out in the exact same manner, and so on.  Any transactions made after the transaction deadline is allowed without moving an owner to the bottom of the order.</li>
+                                <li>Anytime an owner makes a transaction on a given week by the transaction deadline, that owner moves to the bottom of the order, while every other owner shifts up one. If more than one transaction per owner occurs by the deadline, the second round of transactions will be carried out in the exact same manner, and so on.  Transactions made after the transaction deadline is allowed without moving an owner to the bottom of the order until an owner has made 3 transactions.  Once 3 transactions occur then they will be placed at the bottom of the order.</li>
                             </ul>
                     <h2>Injured Reserve</h2>
                         <h3>Regulations :</h3>
@@ -174,7 +147,7 @@
                         <h3>Head-to-Head :</h3>
                             <label>The fantasy schedule created each year is determined by the owner’s team number.  The team numbers are auto-assigned, based on results from the previous year.  All categories are based on teams that finished at the top in the following order: money won, total fantasy points, final record in standings.  If there is still a tie, the year previous will be looked it using the same criteria.</label><br />
                         <h3>Season Duration :</h3>
-                            <label>The fantasy season begins with NFL’s week 1 and ends after week 16.</label><br />
+                            <label>The fantasy season begins with NFL’s week 1 and ends after week 17.</label><br />
 
                     <h2>Payoffs</h2>
                         <h3>Weekly Winner :</h3>
@@ -198,63 +171,7 @@
                                 <li>A tie in the Final Standings will result in the tied teams splitting the money evenly.</li>
                                 <li>A tie in Total Points will result in the tied teams splitting the money evenly.</li>
                             </ul>
-
-                    <h2>Owner Information</h2>
-                        <table>
-                            <tr>
-                                <th>Owner</th>
-                                <th>Home Phone</th>
-                                <th>Cell Phone</th>
-                                <th>Email</th>
-                            </tr>
-                            <tr>
-                                <td>Bert Keele</td>
-                                <td>801-226-2949</td>
-                                <td>801-830-2422</td>
-                                <td>bertkeele@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>Brian Keele</td>
-                                <td>801-561-4636</td>
-                                <td>801-673-4139</td>
-                                <td>briankeele@yahoo.com</td>
-                            </tr>
-                            <tr>
-                                <td>Dave Keele</td>
-                                <td>208-385-7151</td>
-                                <td>208-841-9756</td>
-                                <td>dkeele@micron.com</td>
-                            </tr>
-                            <tr>
-                                <td>Grant Keele</td>
-                                <td>801-765-1677</td>
-                                <td>801-830-2350</td>
-                                <td>grantkeele@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>Joe Willie</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td>John Keele</td>
-                                <td>801-224-3185</td>
-                                <td>801-376-3447</td>
-                                <td>johnfkeele@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>Mike Keele</td>
-                                <td>&nbsp;</td>
-                                <td>801-722-4457</td>
-                                <td>mkeele34@gmail.com</td>
-                            </tr>
-                            <tr>
-                                <td>Ryan Ragozzine</td>
-                                <td>619-773-6076</td>
-                                <td>619-871-7497</td>
-                                <td>mrragzzz@yahoo.com</td>
-                            </tr>
+                   
                         </table>
 
 
