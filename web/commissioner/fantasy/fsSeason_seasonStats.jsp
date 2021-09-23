@@ -41,7 +41,7 @@
                         <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                             <tr colspan="7">
                                 <input type="hidden" name="hfUpdate" value="hfUpdateTrue" />
-                                <td colspan="2" align="center"><input type="submit" name="submit" value="Figure each player's season stats." /></td>
+                                <td colspan="2" align="center"><input type="submit" name="submit" value="Figure each player's season stats" /></td>
                             </tr>
                         </table>
                     </form>

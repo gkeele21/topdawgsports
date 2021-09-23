@@ -41,7 +41,7 @@
                         <table width="100%" border="0" cellpadding="0" cellspacing="1" class="ctTable">
                             <tr colspan="7">
                                 <input type="hidden" name="hfUpdate" value="hfUpdateTrue" />
-                                <td colspan="2" align="center"><input type="submit" name="submit" value="Calculate Week's Results." /></td>
+                                <td colspan="2" align="center"><input type="submit" name="submit" value="Calculate Week's Results" /></td>
                             </tr>
                         </table>
                     </form>
