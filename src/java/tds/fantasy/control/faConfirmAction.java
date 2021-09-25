@@ -3,6 +3,7 @@ package tds.fantasy.control;
 import tds.main.bo.*;
 import tds.main.control.BaseAction;
 import tds.util.CTReturnCode;
+import tds.util.CTReturnType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +30,9 @@ public class faConfirmAction extends BaseAction {
         String cancel = request.getParameter("cancel.x");
         if (cancel != null) {
             System.out.println("User hit Cancel button");
-            session.getHttpSession().removeAttribute("dropRoster");
+            session.getHttpSession().removeAttribute("dropRosterSpoot");
             session.getHttpSession().removeAttribute("dropType");
+            session.getHttpSession().removeAttribute("addType");
             session.getHttpSession().removeAttribute("puPlayer");
             session.getHttpSession().removeAttribute("faTransaction");
 
@@ -79,13 +81,12 @@ public class faConfirmAction extends BaseAction {
             List<FSRoster> activeRoster = team.getRoster(currFSSeasonWeek.getFSSeasonWeekID());
             for (FSRoster roster : activeRoster) {
                 int posid = roster.getPlayer().getPositionID();
-                // TODO: this should not be hard-coded.
                 // if league does not use TE, then treat them as WR
-                //if (team.getFSLeagueID() == 10) {
+                if (team.getFSLeague().getIncludeTEasWR() != 1) {
                     if (posid == 4) {
                         posid = 3;
                     }
-                //}
+                }
                 int currnum = 0;
                 if (rosterPositions.containsKey(posid)) {
                     currnum = rosterPositions.get(posid);
@@ -97,11 +98,11 @@ public class faConfirmAction extends BaseAction {
 
             Player puPlayer = transaction.getPUPlayer();
             int puposid = puPlayer.getPositionID();
-            //if (team.getFSLeagueID() == 10) {
+            if (team.getFSLeague().getIncludeTEasWR() != 1) {
                 if (puposid == 4) {
                     puposid = 3;
                 }
-            //}
+            }
 
             int numPlayers = rosterPositions.get(puposid);
             numPlayers++;
@@ -109,11 +110,11 @@ public class faConfirmAction extends BaseAction {
 
             Player dropPlayer = transaction.getDropPlayer();
             int dropposid = puPlayer.getPositionID();
-            //if (team.getFSLeagueID() == 10) {
+            if (team.getFSLeague().getIncludeTEasWR() != 1) {
                 if (dropposid == 4) {
                     dropposid = 3;
                 }
-            //}
+            }
 
             numPlayers = rosterPositions.get(dropposid);
             numPlayers--;
@@ -173,8 +174,9 @@ public class faConfirmAction extends BaseAction {
                     CTReturnCode ret = trequest.insert();
                     if (ret.isSuccess()) {
                         // clear out all the session stuff
-                        session.getHttpSession().removeAttribute("dropRoster");
+                        session.getHttpSession().removeAttribute("dropRosterSpot");
                         session.getHttpSession().removeAttribute("dropType");
+                        session.getHttpSession().removeAttribute("addType");
                         session.getHttpSession().removeAttribute("faTransaction");
                         session.getHttpSession().removeAttribute("puPlayer");
                         nextPage = "transactionRequests";
@@ -185,38 +187,54 @@ public class faConfirmAction extends BaseAction {
                 } else {
                     CTReturnCode rc = transaction.insert();
                     if (rc.isSuccess()) {
-                        CTReturnCode ret;
-                        FSRoster roster = (FSRoster)session.getHttpSession().getAttribute("dropRoster");
-                        if ("ONIR".equals(transaction.getDropType()))
-                        {
-                            // add new roster spot and set existing to ir
+                        CTReturnCode retPU = new CTReturnCode(CTReturnType.SUCCESS);
+                        CTReturnCode retDROP;
+                        FSRoster dropRosterSpot = (FSRoster) session.getHttpSession().getAttribute("dropRosterSpot");
+
+                        // For the player being 'picked up'
+                        if ("OFFIR".equals(transaction.getPUType())) {
+                            // find the roster spot for this player
+                            FSRoster puRoster = FSRoster.getRosterByPlayerID(transaction.getFSTeamID(), transaction.getFSSeasonWeekID(), transaction.getPUPlayerID());
+                            if (puRoster != null) {
+                                puRoster.setActiveState("active");
+                                retPU = puRoster.Save();
+                            }
+                        } else {
+                            // PUType = 'PU'
+                            // add new roster spot based on the old spot
                             FSRoster newRoster = new FSRoster();
 
-                            newRoster.setActiveState(roster.getActiveState());
-                            newRoster.setFSSeasonWeekID(roster.getFSSeasonWeekID());
-                            newRoster.setFSTeamID(roster.getFSTeamID());
+                            newRoster.setActiveState(dropRosterSpot.getActiveState());
+                            newRoster.setFSSeasonWeekID(dropRosterSpot.getFSSeasonWeekID());
+                            newRoster.setFSTeamID(dropRosterSpot.getFSTeamID());
                             newRoster.setPlayerID(transaction.getPUPlayerID());
-                            newRoster.setStarterState(roster.getStarterState());
-                            newRoster.Save();
-
-                            roster.setActiveState("ir");
-                            ret = roster.Save();
-                        } else
-                        {
-                            // swap the players on this team's roster
-
-                            roster.setPlayerID(transaction.getPUPlayerID());
-                            ret = roster.Save();
-
+                            newRoster.setStarterState(dropRosterSpot.getStarterState());
+                            retPU = newRoster.Save();
                         }
 
-                        if (ret.isSuccess()) {
+                        // For the player being 'dropped'
+                        if ("ONIR".equals(transaction.getDropType())) {
+                            // set existing record to ir
+                            dropRosterSpot.setActiveState("ir");
+                            retDROP = dropRosterSpot.Save();
+                        } else if ("ONIR-COVID".equals(transaction.getDropType())) {
+                            // set existing record to ir
+                            dropRosterSpot.setActiveState("ir-covid");
+                            retDROP = dropRosterSpot.Save();
+                        } else {
+                            // dropType = 'DROP'
+                            retDROP = dropRosterSpot.Delete();
+                        }
+
+                        if (retDROP.isSuccess() && retPU.isSuccess()) {
                             // clear out all the session stuff
-                            session.getHttpSession().removeAttribute("dropRoster");
+                            session.getHttpSession().removeAttribute("dropRosterSpot");
                             session.getHttpSession().removeAttribute("faTransaction");
                             session.getHttpSession().removeAttribute("puPlayer");
+                            session.getHttpSession().removeAttribute("dropType");
+                            session.getHttpSession().removeAttribute("addType");
                         } else {
-                            errorMsg = ret.toString();
+                            errorMsg = retDROP + " : " + retPU.toString();
                         }
 
                     } else {

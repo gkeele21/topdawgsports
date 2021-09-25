@@ -89,27 +89,33 @@
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
-                                    <c:set var="game" value="${tds:getGame(fantasyCurrentWeek.seasonWeekID,roster.player.team.teamID)}" />
-                                    <c:set var="opp" value="${tds:getOpponentString(game,roster.player.team.teamID)}" />
-                                    <tr ${highlightRow1} class="rowData">
-                                        <td>
-                                            <c:if test="${!game.gameHasStarted || game.isByeWeek}">
-                                                <a href="faConfirm.htm?drop=${roster.ID}&dropType=drop">drop</a>
-                                                &#160;
-                                                <c:if test="${fsteam.FSLeague.includeIR == 1}">
-                                                |&#160;<a href="faConfirm.htm?drop=${roster.ID}&dropType=onir">onir</a>
+                                    <!-- Skip this roster player if it's the same because they're being brought off IR -->
+                                    <c:if test="${puPlayer.playerID != roster.player.playerID}">
+                                        <c:set var="game" value="${tds:getGame(fantasyCurrentWeek.seasonWeekID,roster.player.team.teamID)}" />
+                                        <c:set var="opp" value="${tds:getOpponentString(game,roster.player.team.teamID)}" />
+                                        <tr ${highlightRow1} class="rowData">
+                                            <td>
+                                                <c:if test="${!game.gameHasStarted || game.isByeWeek}">
+                                                    <c:if test="${roster.activeState == 'active'}">
+                                                        <a href="faConfirm.htm?drop=${roster.ID}&dropType=drop">drop</a>
+                                                        &#160;
+                                                        <c:if test="${fsteam.FSLeague.includeIR == 1}">
+                                                            |&#160;<a href="faConfirm.htm?drop=${roster.ID}&dropType=onir">onir</a>&#160;
+                                                            |&#160;<a href="faConfirm.htm?drop=${roster.ID}&dropType=onir-covid">onir-covid</a>
+                                                        </c:if>
+                                                    </c:if>
                                                 </c:if>
-                                            </c:if>
-                                        </td>
-                                        <td><c:out value="${roster.activeState}" /></td>
-                                        <td><c:out value="${roster.starterState}" /></td>
-                                        <td><c:out value="${roster.player.position.positionName}" /></td>
-                                        <td><c:out value="${roster.player.team.abbreviation}" /></td>
-                                        <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
-                                        <td><fmt:formatNumber value="${roster.totalFootballStats.fantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
-                                        <td><fmt:formatNumber value="${roster.totalFootballStats.avgFantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
-                                        <td><c:out value="${opp}" /></td>
-                                    </tr>
+                                            </td>
+                                            <td><c:out value="${roster.activeState}" /></td>
+                                            <td><c:out value="${roster.starterState}" /></td>
+                                            <td><c:out value="${roster.player.position.positionName}" /></td>
+                                            <td><c:out value="${roster.player.team.abbreviation}" /></td>
+                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
+                                            <td><fmt:formatNumber value="${roster.totalFootballStats.fantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
+                                            <td><fmt:formatNumber value="${roster.totalFootballStats.avgFantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
+                                            <td><c:out value="${opp}" /></td>
+                                        </tr>
+                                    </c:if>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
                                     <tr>

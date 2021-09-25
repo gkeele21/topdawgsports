@@ -40,10 +40,10 @@
 
                         <!-- Roster -->
                         <table>
-                            <tds:tableRows items="${teamRoster}" var="roster" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
+                            <tds:tableRows items="${teamActiveRoster}" var="roster" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
                                 <jsp:attribute name="rowTitle">
                                     <tr class="rowTitle">
-                                        <td colspan="8">${fsteam.FSLeague.leagueName} Roster</td>
+                                        <td colspan="8">${fsteam.FSLeague.leagueName} Active Roster</td>
                                     </tr>
                                     <tr>
                                         <td colspan="8">for Week #${fantasyCurrentWeek.FSSeasonWeekNo}</td>
@@ -86,6 +86,66 @@
                                 </jsp:attribute>
                             </tds:tableRows>
                         </table>
+                        <c:if test="${fsteam.FSLeague.includeIR == 1}">
+                            <table>
+                                <tds:tableRows items="${teamIRRoster}" var="roster" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2">
+                                    <jsp:attribute name="rowTitle">
+                                        <tr class="rowTitle">
+                                            <td colspan="8">${fsteam.FSLeague.leagueName} IR Roster</td>
+                                        </tr>
+                                    </jsp:attribute>
+                                    <jsp:attribute name="rowHeader">
+                                        <tr class="rowHeader">
+                                            <td></td>
+                                            <td>Pos</td>
+                                            <td>Team</td>
+                                            <td>Player</td>
+                                            <td>Status</td>
+                                            <td>WkOnIR</td>
+                                            <td>Total FP</td>
+                                            <td>Avg. FP</td>
+                                            <td>Opp</td>
+                                            <td>Game Date</td>
+                                        </tr>
+                                    </jsp:attribute>
+                                    <jsp:attribute name="rowData">
+                                        <c:set var="game" value="${tds:getGame(fantasyCurrentWeek.seasonWeekID,roster.player.team.teamID)}" />
+                                        <c:set var="opp" value="" />
+                                        <c:if test="${game != null}">
+                                            <c:set var="opp" value="${tds:getOpponentString(game,roster.player.team.teamID)}" />
+                                        </c:if>
+                                        <tr ${highlightRow1} class="rowData">
+                                            <c:set var="weekOnIR" value="${tds:getWeekPutOnIR(roster.FSTeam.FSLeagueID, roster.FSTeam.FSTeamID, roster.playerID)}" />
+                                            <c:set var="weeksSince" value="${fantasyCurrentWeek.FSSeasonWeekNo - weekOnIR.FSSeasonWeekNo}" />
+                                            <td>
+                                                <c:if test="${!game.gameHasStarted || game.isByeWeek}">
+                                                    <c:if test="${weeksSince >= 8 || roster.activeState == 'ir-covid'}">
+                                                        <a href="faDropPlayer.htm?pu=${roster.player.playerID}&addType=OFFIR">bring off IR</a>
+                                                    </c:if>
+                                                </c:if>
+                                            </td>
+                                            <td><c:out value="${roster.player.position.positionName}" /></td>
+                                            <td><c:out value="${roster.player.team.abbreviation}" /></td>
+                                            <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="false" /></td>
+                                            <td><c:out value="${roster.activeState}" /></td>
+                                            <td><c:out value="${weekOnIR.FSSeasonWeekNo}" /></td>
+                                            <td><fmt:formatNumber value="${roster.totalFootballStats.fantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
+                                            <td><fmt:formatNumber value="${roster.totalFootballStats.avgFantasyPts}" minFractionDigits="1" maxFractionDigits="1" /></td>
+                                            <td><c:out value="${opp}" /></td>
+                                            <td>
+                                                <fmt:parseDate  value="${game.gameDate}" type="date" pattern="yyyy-MM-dd'T'HH:mm" var="gameDate" />
+                                                <fmt:formatDate value="${gameDate}" pattern="E h:mm a" timeZone="America/Denver" />
+                                            </td>
+                                        </tr>
+                                    </jsp:attribute>
+                                    <jsp:attribute name="rowEmpty">
+                                        <tr>
+                                            <td colspan="8">You have no players on IR.</td>
+                                        </tr>
+                                    </jsp:attribute>
+                                </tds:tableRows>
+                            </table>
+                        </c:if>
                     </div> <!-- inner League Roster -->
                 </div> <!-- league roster -->
 
@@ -109,7 +169,7 @@
                         <table>
                             <tds:tableRows items="${freeAgents}" var="player" tableNumber="1" highlightRowAttribute="class" highlightRowValue="rowData2" displayRows="35" startingRowNum="${startingRowNum}">
                                 <jsp:attribute name="rowInfo">
-                                    
+
                                 </jsp:attribute>
                                 <jsp:attribute name="rowTitle">
                                     <tr class="rowTitle">
@@ -117,8 +177,8 @@
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
-                                    <tr class="rowHeader">                                        
-                                        <td>#</td>                                        
+                                    <tr class="rowHeader">
+                                        <td>#</td>
                                         <td>Pos</td>
                                         <td>Team</td>
                                         <td colspan="2">Player</td>
@@ -134,9 +194,9 @@
                                     <c:if test="${game != null}">
                                         <c:set var="opp" value="${tds:getOpponentString(game,player.team.teamID)}" />
                                     </c:if>
-                                    <tr ${highlightRow1} class="rowData">                                
+                                    <tr ${highlightRow1} class="rowData">
                                         <td>${currentRowOverall1}</td>
-                                        <td><c:out value="${player.position.positionName}" /></td>                                        
+                                        <td><c:out value="${player.position.positionName}" /></td>
                                         <td><c:out value="${player.team.abbreviation}" /></td>
                                         <td>
                                             <c:if test="${!afterStartersDeadline && (!game.gameHasStarted || game.isByeWeek)}">

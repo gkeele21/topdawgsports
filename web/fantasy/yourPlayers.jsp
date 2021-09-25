@@ -196,7 +196,8 @@
                                         <tr class="rowHeader">
                                             <td>Pos</td>
                                             <td>Team</td>
-                                            <td>Player</td>                                            
+                                            <td>Player</td>
+                                            <td>Status</td>
                                             <td>Added Week</td>
                                         </tr>
                                     </jsp:attribute>
@@ -206,6 +207,7 @@
                                             <td><c:out value="${roster.player.position.positionName}" /></td>
                                             <td><c:out value="${roster.player.team.abbreviation}" /></td>
                                             <td><tds:player player="${roster.player}" displayStatsLink="true" displayInjury="true" /></td>
+                                            <td><c:out value="${roster.activeState}" /></td>
                                             <td><c:out value="${weekOnIR.FSSeasonWeekNo}" /></td>
                                         </tr>
                                     </jsp:attribute>

@@ -36,14 +36,14 @@ public class faConfirmView extends BaseTeamView {
         page = htmlPage;
 
         String dropRosterID = FSUtils.getRequestParameter(request,"drop");
-        FSRoster dropRoster = null;
+        FSRoster dropRosterSpot = null;
         if (dropRosterID == null || dropRosterID.equals("")) {
-            dropRoster = (FSRoster)_Session.getHttpSession().getAttribute("dropRoster");
+            dropRosterSpot = (FSRoster)_Session.getHttpSession().getAttribute("dropRosterSpot");
         } else {
-            dropRoster = new FSRoster(Integer.parseInt(dropRosterID));
+            dropRosterSpot = new FSRoster(Integer.parseInt(dropRosterID));
         }
 
-        if (dropRoster == null) {
+        if (dropRosterSpot == null) {
             _Session.setErrorMessage("Error : please select a player to drop first.");
             return "faDropPlayer.htm";
         }
@@ -58,15 +58,21 @@ public class faConfirmView extends BaseTeamView {
             }
         }
 
-        _Session.getHttpSession().setAttribute("dropRoster",dropRoster);
+        _Session.getHttpSession().setAttribute("dropRosterSpot",dropRosterSpot);
         _Session.getHttpSession().setAttribute("dropType", dropType);
+
+        String addType = (String)_Session.getHttpSession().getAttribute("addType");
+        if (FSUtils.isEmpty(addType))
+        {
+            addType = "PU";
+        }
 
         Player puPlayer = (Player)_Session.getHttpSession().getAttribute("puPlayer");
 
         FSFootballTransaction transaction = new FSFootballTransaction();
 
-        transaction.setDropPlayer(dropRoster.getPlayer());
-        transaction.setDropPlayerID(dropRoster.getPlayerID());
+        transaction.setDropPlayer(dropRosterSpot.getPlayer());
+        transaction.setDropPlayerID(dropRosterSpot.getPlayerID());
         transaction.setDropType(dropType.toUpperCase());
         transaction.setFSLeagueID(_FSTeam.getFSLeagueID());
         transaction.setFSSeasonWeek(_CurrentFSSeasonWeek);
@@ -75,7 +81,7 @@ public class faConfirmView extends BaseTeamView {
         transaction.setFSTeamID(_FSTeam.getFSTeamID());
         transaction.setPUPlayer(puPlayer);
         transaction.setPUPlayerID(puPlayer.getPlayerID());
-        transaction.setPUType("PU");
+        transaction.setPUType(addType);
         transaction.setTransactionDate(LocalDateTime.now());
         transaction.setTransactionType("PU");
 

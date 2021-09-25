@@ -174,7 +174,11 @@ public class FSRoster {
             sql.append(" where r.FSTeamID = ").append(teamID);
             sql.append(" and r.FSSeasonWeekID = ").append(fsseasonweekID);
             if (!FSUtils.isEmpty(activeState)) {
-                sql.append(" and r.ActiveState = '").append(activeState).append("' ");
+                if (activeState.indexOf(",") > 0) {
+                    sql.append(" and r.ActiveState in (").append(activeState).append(") ");
+                } else {
+                    sql.append(" and r.ActiveState = '").append(activeState).append("' ");
+                }
             }
             sql.append(" order by r.ActiveState, ");
             if (sortByStarterState)
@@ -223,16 +227,18 @@ public class FSRoster {
             sql.append(" inner join SeasonWeek sw on sw.SeasonWeekID = fsw.SeasonWeekID ");
 //            sql.append(" left join FootballStats st on st.StatsPlayerID = p.StatsPlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
 //            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.StatsPlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
-            sql.append(" left join FootballStats st on st.StatsPlayerID = p.NFLGameStatsID and st.SeasonWeekID = sw.SeasonWeekID ");
-            sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
+            sql.append(" left join FootballStats st on st.PlayerID = p.PlayerID and st.SeasonWeekID = sw.SeasonWeekID ");
+            sql.append(" left join FootballStats tst on tst.PlayerID = p.PlayerID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
             sql.append(" where r.FSTeamID = ").append(teamID);
             sql.append(" and r.FSSeasonWeekID = ").append(fsseasonweekID);
             sql.append(" and r.PlayerID = ").append(playerID);
             sql.append(" order by r.ActiveState, r.StarterState desc, p.PositionID, r.ID");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
-
-            roster = new FSRoster(crs, "FSRoster$");
+            if (crs != null) {
+                crs.next();
+                roster = new FSRoster(crs, "FSRoster$");
+            }
         } catch (Exception e) {
             CTApplication._CT_LOG.error(e);
         } finally {

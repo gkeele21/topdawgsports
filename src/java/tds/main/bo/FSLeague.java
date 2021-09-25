@@ -636,7 +636,7 @@ public class FSLeague implements Serializable {
             sql.append(" left join FootballStats tst on tst.StatsPlayerID = p.NFLGameStatsID and tst.SeasonWeekID = 0 and tst.SeasonID = sw.SeasonID");
             sql.append(" where fsteam.FSLeagueID = ").append(_FSLeagueID);
             sql.append(" and r.FSSeasonWeekID = ").append(fsSeasonWeekID);
-            sql.append(" and r.ActiveState = 'ir' ");
+            sql.append(" and (r.ActiveState = 'ir' || r.ActiveState = 'ir-covid') ");
             sql.append(" order by r.FSTeamID, p.PositionID, r.ID");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());

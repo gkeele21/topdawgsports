@@ -290,7 +290,7 @@ public class FSFootballTransaction {
             sql.append(" WHERE t.FSLeagueID = ").append(fsLeagueID);
             sql.append(" AND t.FSTeamID = ").append(fsTeamID);
             sql.append(" AND t.DropPlayerID = ").append(playerID);
-            sql.append(" AND t.DropType = 'ONIR'");
+            sql.append(" AND (t.DropType = 'ONIR' OR t.DropType = 'ONIR-COVID')");
 
             crs = CTApplication._CT_QUICK_DB.executeQuery(sql.toString());
             if (crs.next()) {
