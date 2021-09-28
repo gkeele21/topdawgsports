@@ -86,7 +86,7 @@
                                                 <td></td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td><c:out value="${standings.FSTeam.teamName}" /></td>
+                                        <td title="${standings.FSTeam.FSTeamID}"><c:out value="${standings.FSTeam.teamName}" /></td>
                                         <td><c:out value="${standings.wins}" />-<c:out value="${standings.losses}" /><c:if test="${standings.ties > 0}">-<c:out value="${standings.ties}" /></c:if></td>
                                         <td><fmt:formatNumber value="${standings.totalFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td>
                                         <td><fmt:formatNumber value="${standings.totalFantasyPtsAgainst}" minFractionDigits="2" maxFractionDigits="2" /></td>
