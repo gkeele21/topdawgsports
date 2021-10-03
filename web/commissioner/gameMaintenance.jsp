@@ -144,7 +144,6 @@
                     }
                 })
 
-
             }
 
             function updateMarchMadnessScore(me) {

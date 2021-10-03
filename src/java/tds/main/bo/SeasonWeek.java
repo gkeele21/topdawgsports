@@ -203,6 +203,10 @@ public class SeasonWeek implements Serializable {
         if (doesExist) { Update(); } else { Insert(); }
     }
 
+    public String updateExternalIds() {
+        return MySportsFeeds_ProFootballAPI.updateGameExternalIds(this);
+    }
+
     // PRIVATE METHODS
 
     /* This method populates the constructed object with all the fields that are part of a queried result set */
