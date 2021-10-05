@@ -168,11 +168,11 @@ public class FSFootballTransaction {
         return ret;
     }
 
-    public static CTReturnCode insert(FSFootballTransactionRequest request, int beforeDeadline) throws Exception {
+    public static CTReturnCode insert(FSFootballTransactionRequest request) throws Exception {
 
         int id = CTApplication._CT_DB.updateDataSet(CTDataSetDef.INSERT_NEW_FSFOOTBALLTRANSACTION, request.getFSTeam().getFSLeagueID(), request.getFSTeamID(),
                 request.getFSSeasonWeekID(), LocalDateTime.now(), request.getDropPlayerID(),
-                request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU", beforeDeadline);
+                request.getDropType(), request.getPUPlayerID(), request.getPUType(), "PU");
 
         CTReturnCode ret = (id > 0) ? new CTReturnCode(tds.util.CTReturnType.SUCCESS,id) : new CTReturnCode(tds.util.CTReturnType.DB_ERROR,id);
 

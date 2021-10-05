@@ -26,6 +26,34 @@ public class MySportsFeeds_ProFootballAPI {
     private final static String PLAYED_STATUS_COMPLETED = "COMPLETED";
     private final static String PLAYED_STATUS_UNPLAYED = "UNPLAYED";
 
+    public static String updateGameExternalIds(SeasonWeek seasonWeek) {
+        String results = "";
+//        List<Players_PlayerObj> players = new ArrayList<>();
+        try {
+            if (seasonWeek != null) {
+                results = getAPIResults("/pull/nfl/current/week/" + seasonWeek.getWeekNo() + "/games.json");
+            } else {
+                results = getAPIResults("/pull/nfl/current/games.json");
+            }
+
+            if (results != null && !"".equals(results)) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode gamesObj = mapper.readTree(results);
+
+//                JsonNode playersJsonArray = playersObj.get("players");
+//
+//                if (playersJsonArray.isArray()) {
+//                    players = mapper.readValue(playersJsonArray.toString(), new TypeReference<List<Players_PlayerObj>>(){});
+//                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+
+    }
+
     public static List<Players_PlayerObj> getPlayers() {
 
         String results = "";

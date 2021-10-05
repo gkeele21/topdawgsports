@@ -136,7 +136,7 @@ public class FootballTransactionRequests implements Harnessable {
 
                         alldone = false;
 
-                        CTReturnCode rc = FSFootballTransaction.insert(request, 1);
+                        CTReturnCode rc = FSFootballTransaction.insert(request);
                         if (rc.isSuccess()) {
                             // mark this request as granted
                             request.setProcessed(1);
