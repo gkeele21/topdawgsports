@@ -4,6 +4,7 @@ import bglib.util.Application;
 import bglib.util.FSUtils;
 import tds.collegeloveleave.bo.CollegeLoveLeave;
 import tds.collegepickem.bo.CollegePickem;
+import tds.fantasy.scripts.FootballTransactionRequests;
 import tds.main.bo.*;
 import tds.mm.bo.*;
 import tds.proloveleave.bo.ProLoveLeave;
@@ -77,9 +78,12 @@ public class AjaxAction extends HttpServlet {
                 ret = UpdateTeamSeed(request);
             }
 
+            else if (method.equals("ProcessTransactionRequests")) {
+                ret = ProcessTransactionRequests();
+            }
+
         }
         catch (Exception e) { ret = e.getMessage(); }
-
 
     }
 
@@ -378,4 +382,17 @@ public class AjaxAction extends HttpServlet {
         return "<result>Success</result>";
 
     }
+
+    public String ProcessTransactionRequests() {
+        try {
+            FootballTransactionRequests requests = new FootballTransactionRequests();
+            System.out.println("Made it into ProcessTransactionRequests");
+            requests.run();
+        }
+        catch (Exception e) { return "<result>Process error : " + e.getMessage() + "</result>"; }
+
+        return "<result>Success</result>";
+
+    }
+
 }

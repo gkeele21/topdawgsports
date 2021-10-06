@@ -106,36 +106,21 @@ public class FootballPlayers_ProFootballAPI implements Harnessable {
                     } else if ("K".equals(position))
                     {
                         position = "PK";
-                    } else if ("FS".equals(position))
+                    } else if ("FS".equals(position) || "CB".equals(position) || "SS".equals(position) || "LS".equals(position))
                     {
                         position = "DB";
-                    } else if ("CB".equals(position))
-                    {
-                        position = "DB";
-                    } else if ("DT".equals(position))
+                    } else if ("DT".equals(position) || "DE".equals(position) || "NT".equals(position))
                     {
                         position = "DL";
-                    } else if ("SS".equals(position))
-                    {
-                        position = "DB";
-                    } else if ("OLB".equals(position))
+                    } else if ("OLB".equals(position) || "MLB".equals(position) || "ILB".equals(position))
                     {
                         position = "LB";
-                    } else if ("DE".equals(position))
-                    {
+                    }
+
+                    // hard-code certain players
+                    // Montez Sweat
+                    if (newPlayerId.equals("16474")) {
                         position = "DL";
-                    } else if ("MLB".equals(position))
-                    {
-                        position = "LB";
-                    } else if ("ILB".equals(position))
-                    {
-                        position = "LB";
-                    } else if ("NT".equals(position))
-                    {
-                        position = "DL";
-                    } else if ("LS".equals(position))
-                    {
-                        position = "DB";
                     }
 
                     if (team.equals("SD")) {
