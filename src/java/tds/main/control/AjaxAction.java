@@ -27,13 +27,26 @@ public class AjaxAction extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Made it into AjaxAction GET.");
+        String ret = "";
+        try {
+            String method = request.getParameter("method");
+
+            if ("ProcessTransactionRequests".equals(method)) {
+                ret = ProcessTransactionRequests();
+            } else if ("TestCron".equals(method)) {
+                ret = TestCron();
+            }
+
+        }
+        catch (Exception e) { ret = e.getMessage(); }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("Made it into AjaxAction.");
+        System.out.println("Made it into AjaxAction POST.");
         String ret = "";
         try {
             String method = request.getParameter("method");
@@ -388,6 +401,18 @@ public class AjaxAction extends HttpServlet {
             FootballTransactionRequests requests = new FootballTransactionRequests();
             System.out.println("Made it into ProcessTransactionRequests");
             requests.run();
+        }
+        catch (Exception e) { return "<result>Process error : " + e.getMessage() + "</result>"; }
+
+        return "<result>Success</result>";
+
+    }
+
+    public String TestCron() {
+        try {
+            System.out.println("Made it into TestCron");
+            Application app = Application.getInstance(1);
+            app.updateLastCronHit();
         }
         catch (Exception e) { return "<result>Process error : " + e.getMessage() + "</result>"; }
 

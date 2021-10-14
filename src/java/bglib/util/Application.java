@@ -2,8 +2,11 @@ package bglib.util;
 
 import bglib.data.JDBCDatabase;
 import sun.jdbc.rowset.CachedRowSet;
+import tds.main.bo.CTApplication;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +41,7 @@ public class Application {
     private String _EmailFooter;
     private String _SupportEmail;
     private String _CompanyName;
+    private LocalDateTime _LastCronHit;
 
     private Application(String appPrefix) throws Exception {
         System.out.println("Global connection string: " + _GLOBAL_SETTINGS.getDBConnectionString());
@@ -80,6 +84,10 @@ public class Application {
         _EmailFooter = crs.getString("EmailFooter");
         _SupportEmail = crs.getString("SupportEmail");
         _CompanyName = crs.getString("CompanyName");
+        Timestamp s = crs.getTimestamp("LastCronHit");
+        if (s != null) {
+            _LastCronHit = s.toLocalDateTime();
+        }
     }
 
     public static Application getInstance(String appName) {
@@ -123,10 +131,32 @@ public class Application {
     public String getEmailFooter() { return _EmailFooter; }
     public String getSupportEmail() { return _SupportEmail; }
     public String getCompanyName() { return _CompanyName; }
+    public LocalDateTime getLastCronHit() { return _LastCronHit; }
 
     public AppSettings getAppSettings() { return AppSettings.getInstance(_AppPrefix); }
     public Log getLogger() { return Log.getInstance(_AppPrefix); }
     public JDBCDatabase getQuickDB() {
         return JDBCDatabase.getInstance(getAppSettings().getDBConnectionString());
     }
+
+    public int updateLastCronHit() {
+
+        int retVal = -1;
+        StringBuilder sql = new StringBuilder();
+
+        // Create SQL statement
+        sql.append(" UPDATE Application ");
+        sql.append(" SET LastCronHit = now() ");
+        sql.append(" WHERE ApplicationID = ").append(this._AppID);
+
+        try {
+            retVal = CTApplication._CT_QUICK_DB.executeUpdate(sql.toString());
+
+        } catch (Exception e) {
+            CTApplication._CT_LOG.error(e);
+        }
+
+        return retVal;
+    }
+
 }
