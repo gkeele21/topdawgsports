@@ -82,7 +82,7 @@ public class faConfirmAction extends BaseAction {
             for (FSRoster roster : activeRoster) {
                 int posid = roster.getPlayer().getPositionID();
                 // if league does not use TE, then treat them as WR
-                if (team.getFSLeague().getIncludeTEasWR() != 1) {
+                if (team.getFSLeague().getIncludeTEasWR() == 1) {
                     if (posid == 4) {
                         posid = 3;
                     }
@@ -98,7 +98,7 @@ public class faConfirmAction extends BaseAction {
 
             Player puPlayer = transaction.getPUPlayer();
             int puposid = puPlayer.getPositionID();
-            if (team.getFSLeague().getIncludeTEasWR() != 1) {
+            if (team.getFSLeague().getIncludeTEasWR() == 1) {
                 if (puposid == 4) {
                     puposid = 3;
                 }
@@ -110,7 +110,7 @@ public class faConfirmAction extends BaseAction {
 
             Player dropPlayer = transaction.getDropPlayer();
             int dropposid = puPlayer.getPositionID();
-            if (team.getFSLeague().getIncludeTEasWR() != 1) {
+            if (team.getFSLeague().getIncludeTEasWR() == 1) {
                 if (dropposid == 4) {
                     dropposid = 3;
                 }
@@ -245,7 +245,8 @@ public class faConfirmAction extends BaseAction {
             }
 
         } catch (Exception e) {
-            CTApplication._CT_LOG.error(e);
+//            CTApplication._CT_LOG.error(e);
+            e.printStackTrace();
             //System.out.println("Error : " + e.getMessage());
             errorMsg = "Error processing team changes.";
         }
