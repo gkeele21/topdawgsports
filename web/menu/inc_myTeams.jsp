@@ -28,11 +28,11 @@
             <c:set var="prevGame" value="${team.FSLeague.FSSeason.FSGame.FSGameID}" />
         </c:if>
 
-        <!-- DISPLAY THE TEAM NAME -->        
-        <c:if test="${team.FSLeague.FSSeason.FSGameID == PRO_WINS_POOL_GAMEID}">
+        <!-- DISPLAY THE TEAM NAME -->  
+        <c:if test="${team.FSLeague.FSSeason.FSGameID == NFL_WINS_POOL_GAMEID || team.FSLeague.FSSeason.FSGameID == NBA_WINS_POOL_GAMEID}">
             <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURL}" target="_blank">
         </c:if>
-        <c:if test="${team.FSLeague.FSSeason.FSGameID != PRO_WINS_POOL_GAMEID}">
+        <c:if test="${team.FSLeague.FSSeason.FSGameID != NFL_WINS_POOL_GAMEID || team.FSLeague.FSSeason.FSGameID != NBA_WINS_POOL_GAMEID}">
             <a ${teamClass} href="${team.FSLeague.FSSeason.FSGame.homeURLShort}?tid=${team.FSTeamID}">
         </c:if>
         <c:if test="${team.FSLeague.FSSeason.FSGameID == HEAD_TO_HEAD_GAMEID}">${team.FSLeague.leagueName}</c:if>

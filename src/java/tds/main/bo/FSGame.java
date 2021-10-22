@@ -26,7 +26,8 @@ public class FSGame implements Serializable {
     public final static int FF_PLAYOFF = 10;
     public final static int GOLF_STATS_TRACKER = 11;
     public final static int FANTASY_GOLF = 12;
-    public final static int PRO_WINS_POOL = 13;
+    public final static int NFL_WINS_POOL = 13;
+    public final static int NBA_WINS_POOL = 14;
 
     // DB FIELDS
     private int _FSGameID;

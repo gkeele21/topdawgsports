@@ -189,7 +189,7 @@
                                         </c:if>
                                         <td>${playerstats.footballStats.passTwoPt + stats.rushTwoPt + stats.recTwoPt}</td>
                                         <td><fmt:formatNumber value="${playerstats.footballStats.fantasyPts}" minFractionDigits="2" /></td>
-                                        <c:if test="${reqWeek == 0}"><td><fmt:formatNumber value="${playerstats.footballStats.avgFantasyPts}" minFractionDigits="2" /></td></c:if>
+                                        <c:if test="${reqWeek == 0}"><td><fmt:formatNumber value="${playerstats.footballStats.avgFantasyPts}" minFractionDigits="2" maxFractionDigits="2" /></td></c:if>
                                     </tr>                                    
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">

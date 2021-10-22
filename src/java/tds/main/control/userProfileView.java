@@ -82,7 +82,8 @@ public class userProfileView extends BaseView {
         session.getHttpSession().setAttribute("activeTeams", activeTeams);
         session.getHttpSession().setAttribute("inactiveTeams", inactiveTeams);
         session.getHttpSession().setAttribute("HEAD_TO_HEAD_GAMEID", FSGame.HEAD_TO_HEAD);
-        session.getHttpSession().setAttribute("PRO_WINS_POOL_GAMEID", FSGame.PRO_WINS_POOL);
+        session.getHttpSession().setAttribute("NFL_WINS_POOL_GAMEID", FSGame.NFL_WINS_POOL);
+        session.getHttpSession().setAttribute("NBA_WINS_POOL_GAMEID", FSGame.NBA_WINS_POOL);
         
         return page;
     }    
