@@ -87,7 +87,7 @@
                     <li>League : ${activeTeam.FSLeague.leagueName}</li>
                     <li>League Size : ${activeTeam.FSLeague.numTeams}</li>
                     <c:choose>
-                        <c:when test="${activeTeam.FSLeague.FSSeason.FSGameID == PRO_WINS_POOL_GAMEID}">
+                        <c:when test="${activeTeam.FSLeague.FSSeason.FSGameID == NFL_WINS_POOL_GAMEID || activeTeam.FSLeague.FSSeason.FSGameID == NBA_WINS_POOL_GAMEID}">
                             <li>Team : <a href="${activeTeam.FSLeague.FSSeason.FSGame.homeURL}" target="_blank">${activeTeam.teamName}</a></li>                    
                         </c:when>
                         <c:otherwise>
