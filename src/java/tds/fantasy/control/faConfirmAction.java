@@ -104,7 +104,10 @@ public class faConfirmAction extends BaseAction {
                 }
             }
 
-            int numPlayers = rosterPositions.get(puposid);
+            int numPlayers = 0;
+            if (rosterPositions.containsKey(puposid)) {
+                numPlayers = rosterPositions.get(puposid);
+            }
             numPlayers++;
             rosterPositions.put(puposid,numPlayers);
 
@@ -121,7 +124,9 @@ public class faConfirmAction extends BaseAction {
 
            // check if the player being picked up will make too many players for a given position.
            FSFootballRosterPositions position = new FSFootballRosterPositions(currFSSeasonWeek.getFSSeasonID(),puposid,team.getFSLeagueID());
-           numPlayers = rosterPositions.get(puposid);
+           if (rosterPositions.containsKey(puposid)) {
+               numPlayers = rosterPositions.get(puposid);
+           }
             if (numPlayers > position.getMaxNum()) {
                 valid = false;
                 errorMsg = "ERROR : You can only carry " + position.getMaxNum() + " " + puPlayer.getPosition().getPositionName() + "s.";
