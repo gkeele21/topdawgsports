@@ -28,7 +28,7 @@
   </head>
   <body>
 
-    <div id="container">
+      <div id="container" <c:if test="${fsteam.FSLeague.FSLeagueID == 159}"> style='min-height:1500px;' </c:if>>
         <div id="header">
             <jsp:include page="../inc_header.jsp" />
         </div>
@@ -312,45 +312,68 @@
                     </div> <!-- inner League Transactions -->
                 </div> <!-- league Transactions -->
 
-                <c:if test="${fsteam.FSLeague.FSLeagueID == 147}">
+                <c:if test="${fsteam.FSLeague.FSLeagueID == 159}">
                     <div id="playoffBracket">
-                        <h2>2020 Playoffs</h2>
+                        <h2>2021 Playoffs</h2>
+                        
+                        <c:set var="y" value="1000"/>
 
                         <!-- ROUND 1 -->
-                        <div class="bracket" style="top: 700px; left: 100px; height: 50px; width: 100px;">
+                        <div class="bracket" style="top: ${y}px; left: 100px; height: 50px; width: 100px;">
                             <label class="seed" style="top: -27px; left: -25px; width:20px;">1</label>
-                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Jackson</a></label>
+                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Jordan</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label class="seed" style="top: 25px; left: -25px; width:20px;">4</label>
-                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Drew</a></label>
+                            <label class="seed" style="top: 25px; left: -25px; width:20px;">8</label>
+                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Nathan</a></label>
                         </div>
 
-                        <div class="bracket" style="top: 800px; left: 100px; height: 50px; width: 100px;">
-                            <label class="seed" style="top: -27px; left: -25px; width:20px;">2</label>
-                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=2">Bert</a></label>
+                        <div class="bracket" style="top: ${y+100}px; left: 100px; height: 50px; width: 100px;">
+                            <label class="seed" style="top: -27px; left: -25px; width:20px;">4</label>
+                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=2">John</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label class="seed" style="top: 25px; left: -25px; width:20px;">3</label>
+                            <label class="seed" style="top: 25px; left: -25px; width:20px;">5</label>
+                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=2">Case</a></label>
+                        </div>
+                        
+                        <div class="bracket" style="top: ${y+200}px; left: 100px; height: 50px; width: 100px;">
+                            <label class="seed" style="top: -27px; left: -25px; width:20px;">3</label>
+                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Mike</a></label>
+                            <label class="score" style="top: 0.0px; width: 100px;"></label>
+                            <label class="seed" style="top: 25px; left: -25px; width:20px;">6</label>
+                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=1">Bert</a></label>
+                        </div>
+
+                        <div class="bracket" style="top: ${y+300}px; left: 100px; height: 50px; width: 100px;">
+                            <label class="seed" style="top: -27px; left: -25px; width:20px;">2</label>
+                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=2">Jackson</a></label>
+                            <label class="score" style="top: 0.0px; width: 100px;"></label>
+                            <label class="seed" style="top: 25px; left: -25px; width:20px;">7</label>
                             <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=147&wk=15&game=2">Cooper</a></label>
                         </div>
 
-                        <!-- ROUND 2 -->
-                        <div class="bracket" style="top: 725px; left: 200px; height: 100px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1">Drew</a></label>
+                        <!-- SEMI FINAL -->
+                        <div class="bracket" style="top: ${y+25}px; left: 200px; height: 100px; width: 100px;">
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1">Bert</a></label>
+                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
                         </div>
-
-<%--
-                        <div class="bracket" style="top: 975px; left: 200px; height: 100px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=2">Jackson</a></label>
+                        
+                        <div class="bracket" style="top: ${y+225}px; left: 200px; height: 100px; width: 100px;">
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=2">Cooper</a></label>
+                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
                         </div>
---%>
+                        
+                        <!-- CHAMPIONSHIP -->
+                        <div class="bracket" style="top: ${y+75}px; left: 300px; height: 200px; width: 100px;">
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
+                            <label class="score" style="top: 0.0px; width: 100px;"></label>
+                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=147&wk=16&game=1"></a></label>
+                        </div>
 
                         <!-- CHAMPION -->
-                        <div class="finalBracket" style="top: 775px; left: 300px; height: 250px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;&#160;Bert</label>
+                        <div class="finalBracket" style="top: ${y+175}px; left: 400px; height: 250px; width: 100px;">
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;&#160;</label>
                         </div>
 
                     </div>
