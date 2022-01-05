@@ -60,7 +60,9 @@
                                         <td colspan="8">${fsteam.FSLeague.leagueName} Standings</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="8">through Week #${fantasyDisplayWeek.FSSeasonWeekNo}</td>
+                                        <td colspan="8">
+                                            <c:if test="${fsteam.FSLeague.FSLeagueID != 159}">through Week #${fantasyDisplayWeek.FSSeasonWeekNo}</c:if>
+                                        </td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowHeader">
@@ -231,11 +233,11 @@
                                         <td>TYPE</td>
                                         <td>POS</td>
                                         <td>TM</td>
-                                        <td>PLAYER</td>                                        
+                                        <td>PLAYER</td>
                                         <td>TYPE</td>
                                         <td>POS</td>
                                         <td>TM</td>
-                                        <td>PLAYER</td>                                        
+                                        <td>PLAYER</td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowData">
@@ -248,11 +250,11 @@
                                         <td><c:out value="${transaction.dropType}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.team.abbreviation}" /></td>
-                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>                                        
+                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.PUType}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.team.abbreviation}" /></td>
-                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>                                        
+                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -278,7 +280,7 @@
                                         <td>TYPE</td>
                                         <td>POS</td>
                                         <td>TM</td>
-                                        <td>PLAYER</td>                                        
+                                        <td>PLAYER</td>
                                         <td>TYPE</td>
                                         <td>POS</td>
                                         <td>TM</td>
@@ -295,11 +297,11 @@
                                         <td><c:out value="${transaction.dropType}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.dropPlayer.team.abbreviation}" /></td>
-                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>                                        
+                                        <td><tds:player player="${transaction.dropPlayer}" displayStatsLink="true" /></td>
                                         <td><c:out value="${transaction.PUType}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.position.positionName}" /></td>
                                         <td><c:out value="${transaction.PUPlayer.team.abbreviation}" /></td>
-                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>                                        
+                                        <td><tds:player player="${transaction.PUPlayer}" displayStatsLink="true" /></td>
                                     </tr>
                                 </jsp:attribute>
                                 <jsp:attribute name="rowEmpty">
@@ -315,7 +317,7 @@
                 <c:if test="${fsteam.FSLeague.FSLeagueID == 159}">
                     <div id="playoffBracket">
                         <h2>2021 Playoffs</h2>
-                        
+
                         <c:set var="y" value="1000"/>
 
                         <!-- ROUND 1 -->
@@ -334,7 +336,7 @@
                             <label class="seed" style="top: 25px; left: -25px; width:20px;">5</label>
                             <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=2">Case</a></label>
                         </div>
-                        
+
                         <div class="bracket" style="top: ${y+200}px; left: 100px; height: 50px; width: 100px;">
                             <label class="seed" style="top: -27px; left: -25px; width:20px;">3</label>
                             <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=3">Mike</a></label>
@@ -345,35 +347,35 @@
 
                         <div class="bracket" style="top: ${y+300}px; left: 100px; height: 50px; width: 100px;">
                             <label class="seed" style="top: -27px; left: -25px; width:20px;">2</label>
-                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=4">Jackson</a></label>
+                            <label style=" top: -27px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=4">Cooper</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
                             <label class="seed" style="top: 25px; left: -25px; width:20px;">7</label>
-                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=4">Cooper</a></label>
+                            <label style=" top: 25px; width: 100px;" class="team"><a href="gameMatchup.htm?lgid=159&wk=15&game=4">Jackson</a></label>
                         </div>
 
                         <!-- SEMI FINAL -->
                         <div class="bracket" style="top: ${y+25}px; left: 200px; height: 100px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1"></a></label>
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1">Jordan</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1"></a></label>
+                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1">Casey</a></label>
                         </div>
-                        
+
                         <div class="bracket" style="top: ${y+225}px; left: 200px; height: 100px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=2"></a></label>
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=2">Mike</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=2"></a></label>
+                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=2">Cooper</a></label>
                         </div>
-                        
+
                         <!-- CHAMPIONSHIP -->
                         <div class="bracket" style="top: ${y+75}px; left: 300px; height: 200px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1"></a></label>
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=17&game=1">Jordan</a></label>
                             <label class="score" style="top: 0.0px; width: 100px;"></label>
-                            <label style=" top: 75px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=16&game=1"></a></label>
+                            <label style=" top: 175px; width: 100px;" class="team">&#160;&#160;<a href="gameMatchup.htm?lgid=159&wk=17&game=1">Cooper</a></label>
                         </div>
 
                         <!-- CHAMPION -->
                         <div class="finalBracket" style="top: ${y+175}px; left: 400px; height: 250px; width: 100px;">
-                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;&#160;</label>
+                            <label style=" top: -27px; width: 100px;" class="team">&#160;&#160;&#160;Jordan</label>
                         </div>
 
                     </div>

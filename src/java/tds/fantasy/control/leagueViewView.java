@@ -10,11 +10,13 @@
 package tds.fantasy.control;
 
 import bglib.util.FSUtils;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import tds.main.bo.*;
 import tds.main.control.BaseTeamView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -104,7 +106,12 @@ public class leagueViewView extends BaseTeamView {
         request.setAttribute("fantasyCurrentWeek", _CurrentFSSeasonWeek);
 
         String sort = "s.Wins desc,s.Losses asc, s.TotalFantasyPts desc";
-        List<FSFootballStandings> lgStandings = league.GetStandings(_DisplayFSSeasonWeek.getFSSeasonWeekID(),sort);
+        List<FSFootballStandings> lgStandings = new ArrayList<>();
+        if (league.getFSLeagueID() == 159) {
+            lgStandings = league.GetStandings(1578, sort);
+        } else {
+            lgStandings = league.GetStandings(_DisplayFSSeasonWeek.getFSSeasonWeekID(), sort);
+        }
         if (lgStandings.isEmpty())
         {
             // get all teams in the league

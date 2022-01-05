@@ -199,7 +199,9 @@
                                         <td><c:out value="${player.position.positionName}" /></td>
                                         <td><c:out value="${player.team.abbreviation}" /></td>
                                         <td>
-                                            <c:if test="${!afterStartersDeadline && (!game.gameHasStarted || game.isByeWeek)}">
+                                            <c:out value="${game.gameID}" />
+                                            <c:if test="${(!game.gameHasStarted || game.isByeWeek)}">
+
                                                 <a href="faDropPlayer.htm?pu=${player.playerID}">
                                                     <img class="plusMinus" src="/topdawgsports/images/plus.png" />
                                                 </a>
