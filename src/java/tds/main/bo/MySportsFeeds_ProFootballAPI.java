@@ -31,7 +31,7 @@ public class MySportsFeeds_ProFootballAPI {
 //        List<Players_PlayerObj> players = new ArrayList<>();
         try {
             if (seasonWeek != null) {
-                results = getAPIResults("/pull/nfl/current/week/" + seasonWeek.getWeekNo() + "/games.json");
+                results = getAPIResults("/pull/nfl/2021-2022-regular/week/" + seasonWeek.getWeekNo() + "/games.json");
             } else {
                 results = getAPIResults("/pull/nfl/current/games.json");
             }
@@ -256,7 +256,7 @@ public class MySportsFeeds_ProFootballAPI {
         }
 
         try {
-            String results = getAPIResults("/pull/nfl/current/games/" + game.getExternalGameID() + "/boxscore.json");
+            String results = getAPIResults("/pull/nfl/2021-2022-regular/games/" + game.getExternalGameID() + "/boxscore.json");
 
             if (results != null && !"".equals(results)) {
                 ObjectMapper mapper = new ObjectMapper();
