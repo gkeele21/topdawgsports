@@ -8,8 +8,8 @@
 <html>
     <head>
         <title>TopDawgSports - Game Maintenance</title>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
         <style>
             button { background-color: #103B40; border-color: #731702; color: white; margin-left: 10px;}
             form { display:inline; margin-left: 20px; }

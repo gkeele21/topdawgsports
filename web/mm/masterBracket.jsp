@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function(){
@@ -107,7 +107,7 @@
 
                             <!-- WHEN CHANGING REGIONS -->
                             <c:if test="${currentRegion != game.region.regionID}">
-                                <c:if test="${roundNumber == begRoundNumber}">                                    
+                                <c:if test="${roundNumber == begRoundNumber}">
                                     <label class="regionName" style="top:${currentTop - 25}px;">${game.region.regionName}</label>
                                 </c:if>
                                 <c:set var="currentTop" value="${currentTop + regionSpacing}"/>
@@ -141,29 +141,29 @@
                                 </c:if>
 
                             </div>
-                                
+
                             <%-- FINAL GAME --%>
                             <c:if test="${game.nextGameID == null}">
-                                
+
                                 <!-- CHAMPS LINE-->
                                 <label class="finalLine" style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2))}px; left: ${(currentLeft + horizontalLength)}px; width: ${horizontalLength}px;" ></label>
 
                                 <!-- #1 CHAMPS LABEL-->
                                 <label class="champsLabel" style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2)) + 15}px; left: ${(currentLeft + horizontalLength) + 5}px; width: ${horizontalLength}px;">#1 Champs</label>
-                                
+
                                 <!-- WINNER-->
                                 <c:if test="${game.winnerID > 0}">
                                     <a class="champsText" style="top: ${(initialBracketYCoord + (power * firstRoundHeight) - (firstRoundHeight / 2)) - 30}px; left: ${(currentLeft + horizontalLength)}px; width: ${horizontalLength}px;">
                                         ${game.winner.team.displayName}
                                     </a>
-                                </c:if>                                
-                                
+                                </c:if>
+
                             </c:if>
 
                             <c:set var="currentTop" value="${currentTop + (power * bracketSpacing) + (power * firstRoundHeight)}"/>
 
                         </c:forEach>
-                                
+
                         <!-- This determines the final y coordinate so we can use that value to set the min height on the container div in order to view the entire bracket -->
                         <form action="">
                             <input type="hidden" id="finalTop" name="finalTop" value="${currentTop}" />

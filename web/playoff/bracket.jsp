@@ -9,10 +9,10 @@
 <html>
   <head>
     <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgMain.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/topDawgCommon.css" media="screen" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function(){
@@ -29,14 +29,14 @@
         #content { position: relative; }
         #innerTournament { margin: 0px 0px 0px 10px; }
 
-        .bottomTeam, .topTeam, .tourneyBracket, .bracketType, .winner, .score, .finalLine, .bracketNumText, .champsLabel, .champsText, 
+        .bottomTeam, .topTeam, .tourneyBracket, .bracketType, .winner, .score, .finalLine, .bracketNumText, .champsLabel, .champsText,
             .headerInfo, .headerTitle, .navArrows, .navText { position: absolute; text-align: center; }
         .bottomTeam, .topTeam, .score { display: block; }
         .bottomTeam, .topTeam { color: #103B40; text-decoration: none; }
         .champsLabel { font-size: 1.3em; text-transform: uppercase; }
         .champsText { font-size: 1.3em; color: #103B40; }
         .finalLine { border-bottom: solid black 3px; }
-        .headerTitle, .navText { color: #731702; }        
+        .headerTitle, .navText { color: #731702; }
         .highlightedTeam { background-color: #F2BC57; }
         .navArrows { height: 50px; }
         .score { color: #BF8339; text-decoration: underline; }
@@ -56,14 +56,14 @@
 
                 <div id="tournament">
                     <div id="innerTournament">
-                        
+
                         <c:choose>
                             <c:when test="${games==null}">
                                 <p>
                                     The bracket will be created once the sign-up process deadline passes (Saturday Nov 8th at 11:59 p.m.). <br />
                                     Please fill out your roster by picking all of your players on the roster page even before the bracket is created.
-                                </p>  
-                                
+                                </p>
+
                             </c:when>
                             <c:otherwise>
 
@@ -87,7 +87,7 @@
 
                                         <c:set var="currentFSSeasonWeekID" value="${game.round.FSSeasonWeekID}"/>
                                         <c:set var="roundNumber" value="${game.round.FSSeasonWeek.FSSeasonWeekNo}" />
-                                        <c:set var="currentTop" value="${(topMargin + (power * firstRoundHeight) - (firstRoundHeight / 2))}"/>                                
+                                        <c:set var="currentTop" value="${(topMargin + (power * firstRoundHeight) - (firstRoundHeight / 2))}"/>
                                         <c:set var="currentLeft" value="${(currentLeft + horizontalLength)}"/>
 
                                         <!-- FIGURE OUT POWERS OF 2 -->
@@ -101,7 +101,7 @@
 
                                             pageContext.setAttribute("cumulativeRoundsPower", cumulativeRoundsPower);
                                             pageContext.setAttribute("power", power);
-                                        %>                                
+                                        %>
 
                                         <!-- HEADER INFO -->
                                         <a class="headerTitle" href="bracket.htm?rd=${game.roundID}" style="top:${headerTop}px; left:${currentLeft + 20}px;">
@@ -152,7 +152,7 @@
                                     </div>
 
                                     <!-- ONE TIME ONLY --!>
-                                    <c:if test="${gameCount == 1}">                                
+                                    <c:if test="${gameCount == 1}">
                                         <c:if test="${begRoundNumber > 1}">
                                             <!-- LEFT ARROW -->
                                             <a href="bracket.htm?prd=${begRoundNumber - 1}">
@@ -168,8 +168,8 @@
                                     <c:set var="currentTop" value="${currentTop + (power * bracketSpacing) + (power * firstRoundHeight)}"/>
                                     <c:set var="gameCount" value="${gameCount + 1}" />
 
-                                </c:forEach>            
-                                            
+                                </c:forEach>
+
                                 <!-- OUTSIDE THE LOOP --!>
 
                                 <!-- This determines the final y coordinate so we can use that value to set the min height on the container div in order to view the entire bracket -->
